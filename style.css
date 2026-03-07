@@ -23,7 +23,6 @@ body, html {
     z-index: 999;
 }
 
-/* 强制晃动动画 */
 @keyframes delicateTwinkle {
     0% { transform: translate(0, 0); }
     25% { transform: translate(1.2px, -0.8px); }
@@ -31,9 +30,10 @@ body, html {
     100% { transform: translate(0, 0); }
 }
 
+/* 修改：左侧文字向中间移动，从 8% 改为 15% */
 .wuhu-scatter {
     position: absolute;
-    left: 8% !important;
+    left: 15% !important; 
     top: 15% !important;
     pointer-events: none;
     z-index: 1000;
@@ -51,10 +51,11 @@ body, html {
 .line-5 { font-size: 3.8rem; transform: translate(-10px, 50px); animation-duration: 2.6s !important; }
 .line-6 { font-size: 8.5rem; transform: translate(260px, 70px); animation-duration: 3.8s !important; letter-spacing: 6px; }
 
+/* 修改：右侧区域向中间移动，从 8% 改为 15% */
 .signature-wrap {
     position: absolute;
     bottom: 22%;
-    right: 8%;
+    right: 15% !important; 
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -71,15 +72,30 @@ body, html {
     -webkit-tap-highlight-color: transparent;
 }
 
-/* 按钮样式：圆润风格 */
+/* 弹跳动画保持不变 */
+@keyframes bounceOnce {
+    0% { transform: scale(1) rotate(2deg); }
+    30% { transform: scale(1.08) rotate(-3deg); }
+    100% { transform: scale(1) rotate(2deg); }
+}
+.animal-img.active { animation: bounceOnce 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; }
+
+.tab-container {
+    position: absolute;
+    bottom: 6%;
+    display: flex;
+    gap: 20px; /* 稍微缩小间距更聚拢 */
+    z-index: 1000;
+}
+
 .tab-link {
     border: 3.5px solid #000;
     border-radius: 90px;
-    padding: 15px 45px;
+    padding: 15px 40px;
     text-decoration: none;
     color: #000;
     font-weight: bold;
-    font-size: 1.6rem;
+    font-size: 1.5rem;
     text-transform: uppercase;
     transition: 0.3s;
     background: white;
