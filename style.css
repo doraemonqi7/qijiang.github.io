@@ -17,21 +17,19 @@ body, html {
     box-sizing: border-box;
 }
 
-/* --- 6行文字：粒子化随机排布 & 独立飘动 --- */
+/* --- 文字粒子：极致缩小 & 位置上移 --- */
 @keyframes particleFloat {
     0%, 100% { transform: translate(0, 0) rotate(0deg); }
-    25% { transform: translate(8px, -12px) rotate(1deg); }
-    50% { transform: translate(-10px, 8px) rotate(-1.5deg); }
-    75% { transform: translate(12px, 10px) rotate(1deg); }
+    50% { transform: translate(10px, -15px) rotate(1.5deg); }
 }
 
 .wuhu-scatter {
     position: absolute;
     left: 8vw;
-    top: 50%;
+    top: 40%; /* 整体位置上移，给底部 Tab 留出大量空间 */
     transform: translateY(-50%);
-    width: 38vw; /* 限制粒子活动范围 */
-    height: 60vh;
+    width: 32vw;
+    height: 50vh;
 }
 
 .wuhu-scatter div { 
@@ -40,22 +38,22 @@ body, html {
     animation: particleFloat 6s infinite ease-in-out; 
 }
 
-/* 粒子分布：通过正三角形逻辑排列，但位置随机化 */
-.line-1 { font-size: 1.5vw; top: 5%; left: 45%; animation-delay: 0s; opacity: 0.4; }
-.line-2 { font-size: 2.8vw; top: 20%; left: 30%; animation-delay: -1.5s; opacity: 0.7; }
-.line-3 { font-size: 3.5vw; top: 40%; left: 55%; animation-delay: -3s; }
-.line-4 { font-size: 5vw; top: 60%; left: 10%; animation-delay: -4.5s; font-weight: bold; }
-.line-5 { font-size: 6vw; top: 80%; left: 40%; animation-delay: -2s; }
-.line-6 { font-size: 7.5vw; top: 95%; left: 0%; animation-delay: -5.5s; }
+/* 粒子字号大幅度调小，使其不再喧宾夺主 */
+.line-1 { font-size: 1.2vw; top: 0%; left: 45%; animation-delay: 0s; opacity: 0.3; }
+.line-2 { font-size: 1.8vw; top: 15%; left: 25%; animation-delay: -1s; opacity: 0.5; }
+.line-3 { font-size: 2.2vw; top: 35%; left: 55%; animation-delay: -2s; opacity: 0.7; }
+.line-4 { font-size: 2.8vw; top: 55%; left: 10%; animation-delay: -3s; font-weight: bold; }
+.line-5 { font-size: 3.2vw; top: 75%; left: 35%; animation-delay: -4s; }
+.line-6 { font-size: 4.5vw; top: 90%; left: 0%; animation-delay: -5s; }
 
-/* --- 右侧署名区：构图微调 --- */
+/* --- 右侧署名区：放大长颈鹿 --- */
 .signature-wrap {
     position: absolute;
     right: 8vw;
     top: 45%;
     transform: translateY(-50%);
-    width: 42vw;
-    max-width: 600px; /* 锁定长颈鹿大小，防止踩到 Tab */
+    width: 48vw; /* 增加宽度占比 */
+    max-width: 800px; /* 提升长颈鹿的最大限制，让它看起来非常显著 */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -63,10 +61,10 @@ body, html {
 }
 
 .portfolio-title { 
-    font-size: 4vw; 
-    margin-bottom: 0.5vh; 
-    align-self: flex-end; /* Portfolio 靠右 */
-    margin-right: 5vw;
+    font-size: 3.5vw; 
+    margin-bottom: 0.2vh; 
+    align-self: flex-end;
+    margin-right: 4vw;
 }
 
 .animal-img {
@@ -77,43 +75,42 @@ body, html {
     transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.animal-img:hover { transform: scaleX(-1) scale(1.03) rotate(1deg); }
+.animal-img:hover { transform: scaleX(-1) scale(1.04) rotate(1deg); }
 
 .animal-img.active { animation: jumpMirror 0.45s ease-in-out; }
 @keyframes jumpMirror {
-    0%, 100% { transform: scaleX(-1) scale(1.03); }
-    50% { transform: scaleX(-1) scale(1.1) translateY(-3vh); }
+    0%, 100% { transform: scaleX(-1) scale(1.04); }
+    50% { transform: scaleX(-1) scale(1.15) translateY(-5vh); }
 }
 
 .signature-text { 
-    font-size: 3.5vw; 
+    font-size: 3vw; 
     font-weight: bold; 
-    margin-top: 1.5vh; /* 与长颈鹿脚部拉开距离 */
+    margin-top: 1.2vh;
     white-space: nowrap;
-    letter-spacing: 0.1vw;
 }
 
-/* --- 底部 Tab：位置与大小锁定 --- */
+/* --- 底部 Tab：维持美观的大小 --- */
 .tab-container {
     position: absolute;
-    bottom: 7vh;
+    bottom: 6vh;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 2.5vw; 
-    width: 65vw;
+    gap: 2vw; 
+    width: 60vw;
     justify-content: center;
     z-index: 100;
 }
 
 .tab-link {
-    border: 0.35vw solid #000;
+    border: 0.3vw solid #000;
     border-radius: 50px;
-    padding: 1vw 3.5vw; 
+    padding: 0.8vw 3vw; 
     text-decoration: none;
     color: #000;
     font-weight: bold;
-    font-size: 1.8vw; /* 维持你觉得很好的大小 */
+    font-size: 1.8vw; 
     background: #fff;
     white-space: nowrap;
     transition: 0.3s;
@@ -121,9 +118,8 @@ body, html {
 
 .tab-link:hover { background: #000; color: #fff; transform: translateY(-0.5vh); }
 
-/* 响应式：防止在手机或窄屏下重叠 */
 @media (max-width: 800px) {
-    .tab-container { width: 95vw; gap: 10px; bottom: 3vh; }
-    .tab-link { font-size: 3.5vw; padding: 10px 20px; }
-    .signature-wrap { width: 50vw; top: 40%; }
+    .tab-container { width: 95vw; bottom: 3vh; }
+    .tab-link { font-size: 3.5vw; }
+    .wuhu-scatter { width: 45vw; top: 35%; }
 }
