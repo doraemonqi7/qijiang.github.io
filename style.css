@@ -14,96 +14,115 @@ body, html {
     width: 100vw;
     height: 100vh;
     display: flex;
+    justify-content: center;
+    align-items: center; /* 确保整体在垂直方向居中 */
     position: relative;
 }
 
-/* --- Wuhu 文字灵动化处理 --- */
-@keyframes dynamicTwinkle {
-    0%, 100% { transform: translate(0, 0) rotate(0deg); }
-    25% { transform: translate(1.5px, -1.2px) rotate(-0.5deg); }
-    50% { transform: translate(-1.2px, 1.5px) rotate(0.3deg); }
-    75% { transform: translate(1px, 1px) rotate(-0.2deg); }
-}
+/* --- 6行文字：完全独立的随机晃动 --- */
+@keyframes shake1 { 0%, 100% { transform: translate(0,0); } 25% { transform: translate(2px,-1px); } 50% { transform: translate(-1px, 2px); } }
+@keyframes shake2 { 0%, 100% { transform: translate(0,0); } 30% { transform: translate(-2px,1px); } 60% { transform: translate(2px, -2px); } }
+@keyframes shake3 { 0%, 100% { transform: translate(0,0); } 20% { transform: translate(1px, 2px); } 70% { transform: translate(-2px, -1px); } }
+@keyframes shake4 { 0%, 100% { transform: translate(0,0); } 40% { transform: translate(2px, 2px); } 80% { transform: translate(-1px, -2px); } }
+@keyframes shake5 { 0%, 100% { transform: translate(0,0); } 35% { transform: translate(-2px,-2px); } 75% { transform: translate(1px, 1px); } }
+@keyframes shake6 { 0%, 100% { transform: translate(0,0); } 45% { transform: translate(3px, 0px); } 90% { transform: translate(-3px, 1px); } }
 
 .wuhu-scatter {
     position: absolute;
-    left: 8%;
-    top: 12%;
+    left: 10%;
+    top: 50%;
+    transform: translateY(-55%); /* 垂直居中微调 */
     z-index: 10;
 }
 
-.wuhu-scatter div {
-    display: block;
-    animation: dynamicTwinkle 3s infinite ease-in-out;
-    margin-bottom: 0.5vh;
-}
+.wuhu-scatter div { display: block; margin-bottom: 0.2vh; }
 
-/* 为每一行设置不同的动画速度，造成“随机晃动”的错觉 */
-.line-1 { font-size: 3.2vw; animation-duration: 2.1s !important; }
-.line-2 { font-size: 4.8vw; margin-left: 6vw; animation-duration: 2.9s !important; }
-.line-3 { font-size: 2.8vw; margin-left: 2vw; opacity: 0.7; animation-duration: 2.4s !important; }
-.line-4 { font-size: 5.8vw; margin-left: 10vw; font-weight: bold; animation-duration: 3.2s !important; }
-.line-5 { font-size: 3.8vw; animation-duration: 2.7s !important; }
-.line-6 { font-size: 8.5vw; margin-left: 13vw; letter-spacing: 0.2vw; animation-duration: 3.8s !important; }
+/* 每一行分配唯一的动画和时长 */
+.line-1 { font-size: 3.2vw; animation: shake1 2.3s infinite ease-in-out; }
+.line-2 { font-size: 4.8vw; margin-left: 5vw; animation: shake2 3.1s infinite ease-in-out; }
+.line-3 { font-size: 2.8vw; margin-left: 2vw; opacity: 0.6; animation: shake3 1.9s infinite ease-in-out; }
+.line-4 { font-size: 5.8vw; margin-left: 9vw; font-weight: bold; animation: shake4 2.7s infinite ease-in-out; }
+.line-5 { font-size: 3.8vw; animation: shake5 3.5s infinite ease-in-out; }
+.line-6 { font-size: 8.5vw; margin-left: 12vw; letter-spacing: 0.1vw; animation: shake6 4.2s infinite ease-in-out; }
 
-/* --- 右侧署名区：加大长颈鹿，平衡左右 --- */
+/* --- 右侧署名区：与左侧水平对齐 --- */
 .signature-wrap {
     position: absolute;
-    bottom: 22%;
-    right: 8%;
+    right: 10%;
+    top: 50%;
+    transform: translateY(-45%); /* 与左侧文字视觉水平对齐 */
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 38vw; /* 从30vw调大到38vw，让视觉更平衡 */
-    max-width: 450px; 
+    width: 40vw; 
+    max-width: 500px; 
 }
 
-.portfolio-title { font-size: 3.5vw; margin-bottom: 10px; }
+.portfolio-title { font-size: 4vw; margin-bottom: 10px; }
 
 .animal-img {
     width: 100%;
     height: auto;
     cursor: pointer;
-    transition: transform 0.2s;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* 弹性过渡 */
 }
 
+/* 鼠标经过或触摸时的动态变化：轻微放大并旋转 */
+.animal-img:hover {
+    transform: scale(1.05) rotate(-2deg);
+    filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));
+}
+
+/* 点击时的跳动 */
 .animal-img.active {
     animation: bounce 0.45s ease-in-out;
 }
 @keyframes bounce {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.08) translateY(-20px); }
+    0%, 100% { transform: scale(1.05); }
+    50% { transform: scale(1.15) translateY(-30px); }
 }
 
-.signature-text { font-size: 3vw; font-weight: bold; margin-top: 10px; }
+.signature-text { 
+    font-size: 3.5vw; /* 调大到跟 BY QI JIANG 视觉一致 */
+    font-weight: bold; 
+    margin-top: 15px; 
+}
 
-/* --- 底部 Tab：显著变大 --- */
+/* --- 底部 Tab：特大版 --- */
 .tab-container {
     position: absolute;
-    bottom: 7vh;
+    bottom: 8vh;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 30px; /* 加大按钮间距 */
+    gap: 40px;
     z-index: 1000;
 }
 
 .tab-link {
-    border: 3px solid #000; /* 加粗边框 */
-    border-radius: 60px;
-    padding: 12px 35px; /* 加大内边距 */
+    border: 3.5px solid #000;
+    border-radius: 100px;
+    padding: 18px 50px; /* 大幅增加点击区域 */
     text-decoration: none;
     color: #000;
     font-weight: bold;
-    font-size: clamp(14px, 1.6vw, 24px); /* 提升字号上限 */
+    font-size: 3.2vw; /* 关键：字号设为与 BY QI JIANG 接近的 3.2vw */
+    max-font-size: 28px;
     background: white;
     white-space: nowrap;
-    font-family: 'Gochi Hand', cursive !important;
     transition: all 0.3s;
+    line-height: 1;
+}
+
+/* 限制 Tab 字号在电脑端不要过于夸张 */
+@media (min-width: 1200px) {
+    .tab-link { font-size: 24px; }
+    .signature-text { font-size: 36px; }
 }
 
 .tab-link:hover {
     background: #000;
     color: #fff;
-    transform: translateY(-5px) scale(1.05);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 10px 0px rgba(0,0,0,0.05);
 }
