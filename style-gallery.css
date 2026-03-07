@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Gochi+Hand&display=swap');
+
+body {
+    background-color: #ffffff;
+    font-family: 'Gochi Hand', cursive;
+    margin: 0;
+    padding: 5vw;
+}
+
+/* 顶部标题与返回按钮 */
+.gallery-header {
+    margin-bottom: 50px;
+}
+
+.gallery-header h1 {
+    font-size: 4rem;
+    margin: 0;
+    letter-spacing: 2px;
+}
+
+.back-btn {
+    display: inline-block;
+    border: 2px solid #000;
+    border-radius: 10px;
+    padding: 5px 20px;
+    text-decoration: none;
+    color: #000;
+    font-weight: bold;
+    margin-top: 10px;
+    transition: 0.3s;
+}
+
+.back-btn:hover {
+    background: #000;
+    color: #fff;
+}
+
+/* 瀑布流布局 */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 40px;
+    align-items: start;
+}
+
+/* 图片容器：添加悬浮动画 */
+.gallery-item {
+    padding: 10px;
+    background: #fff;
+    transition: all 0.5s ease;
+    animation: float 4s infinite ease-in-out;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(0.5deg); }
+}
+
+/* 随机动画延迟，让它们动起来不整齐 */
+.gallery-item:nth-child(even) { animation-delay: 1s; }
+.gallery-item:nth-child(3n) { animation-delay: 2s; }
+
+.gallery-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* 效果图里的彩色粗边框 */
+.item-pink { border: 6px solid #ffb7b7; }
+.item-yellow { border: 6px solid #ffeeba; }
+.item-blue { border: 6px solid #b2ebf2; }
+.item-purple { border: 6px solid #f3e5f5; }
+.item-green { border: 6px solid #dcedc8; }
+.item-red { border: 6px solid #ffccbc; }
+.item-orange { border: 6px solid #ffe0b2; }
+.item-cyan { border: 6px solid #e0f2f1; }
+
+.gallery-item:hover {
+    transform: scale(1.03) translateY(-15px);
+    z-index: 10;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+}
