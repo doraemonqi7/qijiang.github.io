@@ -2,74 +2,50 @@
 
 body {
     background-color: #ffffff;
-    font-family: 'Gochi Hand', cursive !important;
+    font-family: 'Gochi Hand', cursive;
     margin: 0;
-    padding: 3vw 5vw;
+    padding: 5vw;
 }
 
-/* 顶部标题 */
-.gallery-header h1 {
-    font-size: clamp(2.5rem, 6vw, 4rem);
-    margin: 0;
-    font-family: 'Gochi Hand', cursive !important;
-}
+.gallery-header { margin-bottom: 50px; }
+.gallery-header h1 { font-size: clamp(2rem, 5vw, 4rem); margin: 0; }
 
 .back-btn {
     display: inline-block;
     border: 2px solid #000;
-    border-radius: 12px;
-    padding: 8px 25px;
+    border-radius: 10px;
+    padding: 5px 20px;
     text-decoration: none;
     color: #000;
     font-weight: bold;
-    margin-top: 15px;
+    margin-top: 10px;
     transition: 0.3s;
 }
 
-/* 瀑布流布局：确保图片变小 */
+.back-btn:hover { background: #000; color: #fff; }
+
 .gallery-grid {
-    column-count: 3; /* 限制为 3 列 */
-    column-gap: 3vw;
-    width: 100%;
-    margin-top: 40px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 40px;
 }
 
-@media (max-width: 900px) { .gallery-grid { column-count: 2; } }
-@media (max-width: 600px) { .gallery-grid { column-count: 1; } }
-
-/* 图片项：彩色外框紧贴图片 */
 .gallery-item {
-    display: inline-block;
-    width: 100%;
-    margin-bottom: 30px;
     padding: 10px;
-    background: #fff;
-    box-sizing: border-box;
-    transition: all 0.4s ease;
-    animation: cargoFloat 5s infinite ease-in-out;
+    transition: all 0.5s ease;
+    animation: float 4s infinite ease-in-out;
 }
 
-/* 强制缩放图片大小 */
-.gallery-item img {
-    width: 100%;
-    height: auto;
-    max-height: 60vh; /* 限制高度，解决图片超级大的问题 */
-    display: block;
-    object-fit: contain;
-}
-
-@keyframes cargoFloat {
+@keyframes float {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
+    50% { transform: translateY(-15px); }
 }
 
-.gallery-item:hover {
-    transform: scale(1.05) translateY(-15px) !important;
-    z-index: 10;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-}
+.gallery-item:nth-child(even) { animation-delay: 1.5s; }
 
-/* 彩色边框样式 */
+.gallery-item img { width: 100%; height: auto; }
+
+/* 彩色边框 */
 .item-pink { border: 6px solid #ffb7b7; }
 .item-yellow { border: 6px solid #ffeeba; }
 .item-blue { border: 6px solid #b2ebf2; }
@@ -78,3 +54,5 @@ body {
 .item-red { border: 6px solid #ffccbc; }
 .item-orange { border: 6px solid #ffe0b2; }
 .item-cyan { border: 6px solid #e0f2f1; }
+
+.gallery-item:hover { transform: scale(1.05) translateY(-20px); z-index: 5; }
