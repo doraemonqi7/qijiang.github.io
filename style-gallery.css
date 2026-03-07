@@ -2,74 +2,85 @@
 
 body {
     background-color: #ffffff;
-    font-family: 'Gochi Hand', cursive;
+    font-family: 'Gochi Hand', cursive !important;
     margin: 0;
-    padding: 4vw 8vw; /* 增加整体边距，让画面更呼吸 */
+    padding: 5vw;
 }
 
-/* 标题样式 */
-.gallery-header h1 { font-size: clamp(2rem, 5vw, 3.5rem); margin: 0; }
+/* 顶部标题与返回按钮 */
+.gallery-header {
+    margin-bottom: 60px;
+}
+
+.gallery-header h1 {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    margin: 0;
+}
+
 .back-btn {
+    display: inline-block;
     border: 2px solid #000;
-    border-radius: 10px;
+    border-radius: 12px;
     padding: 8px 25px;
     text-decoration: none;
     color: #000;
     font-weight: bold;
-    display: inline-block;
     margin-top: 15px;
     transition: 0.3s;
 }
-.back-btn:hover { background: #000; color: #fff; }
 
-/* --- 核心修复：通过增加列数让图片显著变小 --- */
-.gallery-grid {
-    column-count: 4; /* 强制分为 4 列，图片宽度会自动缩小 */
-    column-gap: 40px; /* 列间距 */
-    width: 100%;
-    margin-top: 60px;
+.back-btn:hover {
+    background: #000;
+    color: #fff;
 }
 
-/* 适配手机和中等屏幕，防止列数过多 */
-@media (max-width: 1100px) { .gallery-grid { column-count: 3; } }
-@media (max-width: 800px) { .gallery-grid { column-count: 2; } }
-@media (max-width: 500px) { .gallery-grid { column-count: 1; } }
+/* 瀑布流核心：实现不规则排列 */
+.gallery-grid {
+    column-count: 3; /* 默认分为3列 */
+    column-gap: 40px; /* 列间距 */
+    width: 100%;
+}
 
-/* 图片容器：模仿宝丽来/洗出来的照片感 */
+/* 响应式：屏幕小时减少列数 */
+@media (max-width: 1000px) { .gallery-grid { column-count: 2; } }
+@media (max-width: 600px) { .gallery-grid { column-count: 1; } }
+
+/* 图片容器：彩色外框紧贴图片 */
 .gallery-item {
-    display: inline-block; /* 必须是这个才能实现错落排列 */
+    display: inline-block; /* 必须是这个才能在瀑布流里显示 */
     width: 100%;
     margin-bottom: 40px; 
-    padding: 12px; /* 边框内部的留白 */
+    padding: 10px; /* 边框内部留白 */
     background: #fff;
     box-sizing: border-box;
     transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     cursor: pointer;
-    animation: float 5s infinite ease-in-out;
+    animation: cargoFloat 5s infinite ease-in-out;
 }
 
-/* 图片本身：限制高度，防止由于长图导致过大 */
+/* 每一张图设置不同的动画延迟，让它们动起来不整齐 */
+.gallery-item:nth-child(even) { animation-delay: 1.2s; animation-duration: 4s; }
+.gallery-item:nth-child(3n) { animation-delay: 2.5s; animation-duration: 6s; }
+
+@keyframes cargoFloat {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-12px) rotate(0.5deg); }
+}
+
 .gallery-item img {
     width: 100%;
-    height: auto;
-    max-height: 500px; /* 限制每张图的最大高度 */
-    object-fit: contain;
+    height: auto; /* 高度自适应，外框随图片比例而定 */
     display: block;
 }
 
-/* 动画：悬停时放大并上浮 */
+/* 鼠标放上去变大的动画 */
 .gallery-item:hover {
-    transform: scale(1.1) translateY(-15px); /* 放大 10% 并浮起 */
+    transform: scale(1.08) translateY(-20px) !important;
     z-index: 100;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
 }
 
-/* 漂浮动画延迟，增加随机感 */
-@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-.gallery-item:nth-child(even) { animation-delay: 1s; }
-.gallery-item:nth-child(3n) { animation-delay: 2s; }
-
-/* 彩色边框：对应 index.html 中的 class */
+/* 彩色边框样式 */
 .item-pink { border: 6px solid #ffb7b7; }
 .item-yellow { border: 6px solid #ffeeba; }
 .item-blue { border: 6px solid #b2ebf2; }
@@ -79,5 +90,7 @@ body {
 .item-orange { border: 6px solid #ffe0b2; }
 .item-cyan { border: 6px solid #e0f2f1; }
 
-/* 针对特定图片的手动缩放 */
-.special-large { transform: scale(1.05); }
+/* 专门为广州阿那亚设置稍微大一点 */
+.special-large {
+    transform: scale(1.04);
+}
