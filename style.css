@@ -10,7 +10,7 @@ body, html {
     font-family: 'Gochi Hand', cursive !important;
 }
 
-/* 使用 Grid 将整个页面划分为左 30% 右 70% */
+/* 维持 3:7 比例锁死，增加左右留白增强精致感 */
 .cargo-canvas {
     display: grid;
     grid-template-columns: 3fr 7fr; 
@@ -18,10 +18,10 @@ body, html {
     height: 100vh;
     align-items: center;
     box-sizing: border-box;
-    padding: 0 4vw;
+    padding: 0 8vw; 
 }
 
-/* --- 左侧 Wuhu 区：极致缩小，作为背景点缀 --- */
+/* --- 左侧 Wuhu 区：字大在上，字小在下 --- */
 .wuhu-scatter {
     display: flex;
     flex-direction: column;
@@ -29,24 +29,24 @@ body, html {
 }
 
 /* 独立随机晃动动画 */
-@keyframes r1 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(1.5px, -1px); } }
-@keyframes r2 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(-1px, 1.5px); } }
-@keyframes r3 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(1.5px, 1.5px); } }
-@keyframes r4 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(-1.5px, -1px); } }
-@keyframes r5 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(1px, -1.5px); } }
+@keyframes r1 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(2px, -1px); } }
+@keyframes r2 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(-1.5px, 2px); } }
+@keyframes r3 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(2px, 2px); } }
+@keyframes r4 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(-2px, -1.5px); } }
+@keyframes r5 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(1.5px, -2px); } }
 @keyframes r6 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(-1px, 0.5px); } }
 
-.wuhu-scatter div { display: block; margin-bottom: 0.2vh; white-space: nowrap; }
+.wuhu-scatter div { display: block; margin-bottom: 0.8vh; white-space: nowrap; }
 
-/* 进一步缩小字号，确保长颈鹿是主角 */
-.line-1 { font-size: 1.8vw; animation: r1 2.5s infinite; }
-.line-2 { font-size: 2.8vw; margin-left: 2.5vw; animation: r2 3.2s infinite; }
-.line-3 { font-size: 1.5vw; margin-left: 1vw; opacity: 0.4; animation: r3 1.9s infinite; }
-.line-4 { font-size: 3.5vw; margin-left: 6vw; font-weight: bold; animation: r4 2.7s infinite; }
-.line-5 { font-size: 2.2vw; animation: r5 3.1s infinite; }
-.line-6 { font-size: 5.5vw; margin-left: 8vw; animation: r6 4s infinite; }
+/* 重新排列字号：上大下小 */
+.line-1 { font-size: 6.5vw; font-weight: bold; animation: r1 2.5s infinite; }
+.line-2 { font-size: 4.8vw; margin-left: 3vw; animation: r2 3.2s infinite; }
+.line-3 { font-size: 3.5vw; margin-left: 1.5vw; animation: r3 1.9s infinite; }
+.line-4 { font-size: 2.8vw; margin-left: 6vw; opacity: 0.8; animation: r4 2.7s infinite; }
+.line-5 { font-size: 2.2vw; margin-left: 2vw; opacity: 0.6; animation: r5 3.1s infinite; }
+.line-6 { font-size: 1.5vw; margin-left: 8vw; opacity: 0.4; animation: r6 4s infinite; }
 
-/* --- 右侧长颈鹿区：显著放大，占据 70% 空间 --- */
+/* --- 右侧长颈鹿区：视觉核心 --- */
 .signature-wrap {
     display: flex;
     flex-direction: column;
@@ -56,13 +56,13 @@ body, html {
 }
 
 .portfolio-title { 
-    font-size: 4vw; 
+    font-size: 4.2vw; 
     margin-bottom: 0.5vh; 
 }
 
 .animal-img {
-    width: 85%; /* 在 70% 的空间里占 85% */
-    max-width: 650px; /* 进一步拉高电脑端上限 */
+    width: 85%;
+    max-width: 680px; 
     height: auto;
     cursor: pointer;
     transition: all 0.4s ease-out;
@@ -81,32 +81,32 @@ body, html {
 }
 
 .signature-text { 
-    font-size: 3.5vw; 
+    font-size: 3.8vw; 
     font-weight: bold; 
-    margin-top: 1vh; 
+    margin-top: 1.5vh; 
 }
 
-/* --- 底部 Tab：完全随窗口缩放版 --- */
+/* --- 底部 Tab：聚拢且全自动缩放版 --- */
 .tab-container {
     position: absolute;
     bottom: 6vh;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 3vw;
-    width: 90vw; 
+    gap: 2.5vw; 
+    width: 70vw; /* 进一步聚拢，增加两侧呼吸感 */
     justify-content: center;
     z-index: 1000;
 }
 
 .tab-link {
-    border: 0.3vw solid #000; /* 边框厚度随窗口变化 */
-    border-radius: 10vw; /* 圆角随窗口变化 */
-    padding: 1vw 3.5vw; /* 内边距完全随窗口缩放 */
+    border: 0.3vw solid #000;
+    border-radius: 10vw;
+    padding: 1vw 3.5vw; 
     text-decoration: none;
     color: #000;
     font-weight: bold;
-    font-size: 2.2vw; /* 关键：放弃固定像素，完全使用 vw */
+    font-size: 2.2vw; 
     background: white;
     white-space: nowrap;
     transition: 0.3s;
@@ -119,7 +119,9 @@ body, html {
     transform: translateY(-1vh);
 }
 
-/* 针对手机等超窄屏的补丁，防止按钮重叠 */
-@media (max-width: 600px) {
+/* 适配移动端：防止按钮重叠或字号过小 */
+@media (max-width: 768px) {
+    .tab-container { width: 95vw; gap: 1.5vw; }
     .tab-link { font-size: 3.5vw; padding: 2vw 4vw; }
+    .wuhu-scatter { padding-left: 0; }
 }
