@@ -24,26 +24,32 @@ body {
 
 .back-btn:hover { background: #000; color: #fff; }
 
+/* 网格布局 */
 .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    /* 调整这里，让图片在小屏幕上也能自动缩小 */
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 40px;
 }
 
 .gallery-item {
     padding: 10px;
-    transition: all 0.5s ease;
+    background: #fff; /* 确保图片有白色底，像宝丽来照片 */
+    /* 优化过渡效果，让放大更丝滑 */
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    /* 默认漂浮动画 */
     animation: float 4s infinite ease-in-out;
+    cursor: pointer;
 }
 
 @keyframes float {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-15px); }
+    50% { transform: translateY(-12px); }
 }
 
 .gallery-item:nth-child(even) { animation-delay: 1.5s; }
 
-.gallery-item img { width: 100%; height: auto; }
+.gallery-item img { width: 100%; height: auto; display: block; }
 
 /* 彩色边框 */
 .item-pink { border: 6px solid #ffb7b7; }
@@ -55,4 +61,11 @@ body {
 .item-orange { border: 6px solid #ffe0b2; }
 .item-cyan { border: 6px solid #e0f2f1; }
 
-.gallery-item:hover { transform: scale(1.05) translateY(-20px); z-index: 5; }
+/* --- 核心修复：显著放大鼠标悬停效果 --- */
+.gallery-item:hover { 
+    /* 从 1.05 加大到 1.1（放大 10%），并浮起更多 */
+    transform: scale(1.1) translateY(-25px); 
+    z-index: 10; /* 提升层级，防止被邻居挡住 */
+    /* 增加阴影，让它看起来“飘”起来了 */
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1); 
+}
