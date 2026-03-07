@@ -10,118 +10,115 @@ body, html {
     font-family: 'Gochi Hand', cursive !important;
 }
 
-/* 维持 3:7 比例锁死，增加左右留白增强精致感 */
+/* 背景画板：确保所有元素在任何窗口下都保持比例 */
 .cargo-canvas {
-    display: grid;
-    grid-template-columns: 3fr 7fr; 
     width: 100vw;
     height: 100vh;
-    align-items: center;
+    position: relative;
     box-sizing: border-box;
-    padding: 0 8vw; 
 }
 
-/* --- 左侧 Wuhu 区：字大在上，字小在下 --- */
+/* --- 6行文字：粒子化随机散落 --- */
+@keyframes particle1 { 0%, 100% { transform: translate(0,0) rotate(0deg); } 50% { transform: translate(5px, -3px) rotate(1deg); } }
+@keyframes particle2 { 0%, 100% { transform: translate(0,0) rotate(0deg); } 50% { transform: translate(-3px, 5px) rotate(-1.5deg); } }
+
 .wuhu-scatter {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    position: absolute;
+    left: 5vw;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 35vw; /* 限制宽度，防止与长颈鹿相撞 */
+    height: 60vh;
+    z-index: 5;
 }
 
-/* 独立随机晃动动画 */
-@keyframes r1 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(2px, -1px); } }
-@keyframes r2 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(-1.5px, 2px); } }
-@keyframes r3 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(2px, 2px); } }
-@keyframes r4 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(-2px, -1.5px); } }
-@keyframes r5 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(1.5px, -2px); } }
-@keyframes r6 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(-1px, 0.5px); } }
+/* 粒子化定位：通过绝对定位让它们看起来是随机摆放的 */
+.wuhu-scatter div { position: absolute; white-space: nowrap; transition: all 0.5s; }
 
-.wuhu-scatter div { display: block; margin-bottom: 0.8vh; white-space: nowrap; }
+/* 字大在上，字小在下，位置随机偏移 */
+.line-1 { font-size: 6.5vw; top: 0%; left: 0%; animation: particle1 3.1s infinite; }
+.line-2 { font-size: 5vw; top: 25%; left: 15%; animation: particle2 2.8s infinite; }
+.line-3 { font-size: 3.8vw; top: 15%; left: 45%; animation: particle1 3.5s infinite; opacity: 0.8; }
+.line-4 { font-size: 3vw; top: 55%; left: 5%; animation: particle2 2.4s infinite; opacity: 0.6; }
+.line-5 { font-size: 2.2vw; top: 75%; left: 25%; animation: particle1 3.8s infinite; opacity: 0.5; }
+.line-6 { font-size: 1.5vw; top: 85%; left: 10%; animation: particle2 4.2s infinite; opacity: 0.4; }
 
-/* 重新排列字号：上大下小 */
-.line-1 { font-size: 6.5vw; font-weight: bold; animation: r1 2.5s infinite; }
-.line-2 { font-size: 4.8vw; margin-left: 3vw; animation: r2 3.2s infinite; }
-.line-3 { font-size: 3.5vw; margin-left: 1.5vw; animation: r3 1.9s infinite; }
-.line-4 { font-size: 2.8vw; margin-left: 6vw; opacity: 0.8; animation: r4 2.7s infinite; }
-.line-5 { font-size: 2.2vw; margin-left: 2vw; opacity: 0.6; animation: r5 3.1s infinite; }
-.line-6 { font-size: 1.5vw; margin-left: 8vw; opacity: 0.4; animation: r6 4s infinite; }
-
-/* --- 右侧长颈鹿区：视觉核心 --- */
+/* --- 右侧长颈鹿区：视觉核心，防止与 Tab 重叠 --- */
 .signature-wrap {
+    position: absolute;
+    right: 5vw;
+    top: 45%; /* 稍微往上移，给下面的 Tab 留出绝对空间 */
+    transform: translateY(-50%);
+    width: 45vw; 
+    max-width: 700px; 
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    width: 100%;
+    z-index: 10;
 }
 
-.portfolio-title { 
-    font-size: 4.2vw; 
-    margin-bottom: 0.5vh; 
-}
+.portfolio-title { font-size: 4.5vw; margin-bottom: 0.5vh; }
 
 .animal-img {
-    width: 85%;
-    max-width: 680px; 
+    width: 100%;
     height: auto;
     cursor: pointer;
-    transition: all 0.4s ease-out;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.animal-img:hover {
-    transform: scale(1.03) rotate(-1.5deg);
-}
+.animal-img:hover { transform: scale(1.02) rotate(-1deg); }
 
-.animal-img.active {
-    animation: jump 0.45s ease-in-out;
-}
+.animal-img.active { animation: jump 0.45s ease-in-out; }
 @keyframes jump {
-    0%, 100% { transform: scale(1.03); }
-    50% { transform: scale(1.12) translateY(-4vh); }
+    0%, 100% { transform: scale(1.02); }
+    50% { transform: scale(1.1) translateY(-5vh); }
 }
 
+/* 名字文字：强制不折行 */
 .signature-text { 
-    font-size: 3.8vw; 
+    font-size: 3.5vw; 
     font-weight: bold; 
-    margin-top: 1.5vh; 
+    margin-top: 1vh;
+    white-space: nowrap;
 }
 
-/* --- 底部 Tab：聚拢且全自动缩放版 --- */
+/* --- 底部 Tab：最优化间距与防重叠 --- */
 .tab-container {
     position: absolute;
-    bottom: 6vh;
+    bottom: 5vh; /* 锁定在底部，不随内容浮动 */
     left: 50%;
     transform: translateX(-50%);
     display: flex;
     gap: 2.5vw; 
-    width: 70vw; /* 进一步聚拢，增加两侧呼吸感 */
+    width: 65vw; /* 更加聚拢，留出两侧白空间 */
     justify-content: center;
     z-index: 1000;
+    min-width: 320px;
 }
 
 .tab-link {
-    border: 0.3vw solid #000;
-    border-radius: 10vw;
-    padding: 1vw 3.5vw; 
+    border: 0.35vw solid #000;
+    border-radius: 50px;
+    padding: 0.8vw 3vw; 
     text-decoration: none;
     color: #000;
     font-weight: bold;
-    font-size: 2.2vw; 
+    font-size: 1.8vw; /* 略微缩小，让比例更精致 */
     background: white;
     white-space: nowrap;
-    transition: 0.3s;
-    line-height: 1.2;
+    transition: all 0.3s ease;
+    line-height: 1.4;
 }
 
 .tab-link:hover {
     background: #000;
     color: #fff;
-    transform: translateY(-1vh);
+    transform: translateY(-5px);
 }
 
-/* 适配移动端：防止按钮重叠或字号过小 */
-@media (max-width: 768px) {
-    .tab-container { width: 95vw; gap: 1.5vw; }
-    .tab-link { font-size: 3.5vw; padding: 2vw 4vw; }
-    .wuhu-scatter { padding-left: 0; }
+/* 关键：响应式补丁，防止在扁平窗口下重叠 */
+@media (max-height: 600px) {
+    .signature-wrap { top: 40%; }
+    .tab-container { bottom: 2vh; }
+    .animal-img { max-width: 350px; }
 }
