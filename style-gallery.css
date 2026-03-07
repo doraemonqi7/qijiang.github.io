@@ -4,82 +4,71 @@ body {
     background-color: #ffffff;
     font-family: 'Gochi Hand', cursive;
     margin: 0;
-    padding: 5vw;
+    padding: 3vw 5vw;
 }
 
-/* 头部样式保持简洁 */
-.gallery-header { margin-bottom: 60px; }
-.gallery-header h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); margin: 0; }
+.gallery-header h1 { font-size: clamp(2rem, 5vw, 3.5rem); margin: 0; }
 .back-btn {
-    display: inline-block;
     border: 2px solid #000;
-    border-radius: 12px;
-    padding: 8px 25px;
+    border-radius: 10px;
+    padding: 5px 20px;
     text-decoration: none;
     color: #000;
     font-weight: bold;
-    margin-top: 15px;
-    transition: 0.3s;
+    display: inline-block;
+    margin-top: 10px;
 }
-.back-btn:hover { background: #000; color: #fff; }
 
-/* 瀑布流核心：不整齐排列的关键 */
+/* 核心修复：增加列数，减小单张图片的显示空间 */
 .gallery-grid {
-    column-count: 3; /* 分为三列 */
-    column-gap: 40px; /* 列间距 */
+    column-count: 4; /* 增加到 4 列，让单图变小 */
+    column-gap: 30px;
     width: 100%;
+    margin-top: 40px;
 }
 
-@media (max-width: 900px) { .gallery-grid { column-count: 2; } }
-@media (max-width: 600px) { .gallery-grid { column-count: 1; } }
+/* 响应式：根据屏幕宽度自动减少列数 */
+@media (max-width: 1200px) { .gallery-grid { column-count: 3; } }
+@media (max-width: 800px) { .gallery-grid { column-count: 2; } }
+@media (max-width: 500px) { .gallery-grid { column-count: 1; } }
 
-/* 图片项：外框紧贴图片 */
 .gallery-item {
-    display: inline-block; /* 必须是 inline-block 才能在瀑布流里正常显示 */
+    display: inline-block;
     width: 100%;
-    margin-bottom: 40px; /* 行间距 */
-    padding: 12px;
+    margin-bottom: 30px;
+    padding: 8px; /* 稍微缩小内边距 */
     background: #fff;
     box-sizing: border-box;
-    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    cursor: pointer;
-    animation: float 5s infinite ease-in-out;
-}
-
-/* 每一行设置不同的漂浮节奏，让它们看起来更随机 */
-.gallery-item:nth-child(even) { animation-duration: 4s; animation-delay: 1s; }
-.gallery-item:nth-child(3n) { animation-duration: 6s; animation-delay: 2s; }
-
-@keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    animation: float 4s infinite ease-in-out;
 }
 
 .gallery-item img {
     width: 100%;
-    height: auto; /* 关键：高度自适应，外框随图片大小变 */
+    height: auto;
+    max-height: 70vh; /* 关键：限制图片高度最高不超过屏幕的 70% */
+    object-fit: contain; /* 确保图片完整显示 */
     display: block;
 }
 
-/* 鼠标放上去变大的动画 */
+/* 鼠标经过放大效果 */
 .gallery-item:hover {
-    transform: scale(1.08) translateY(-20px) !important;
-    z-index: 100;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+    transform: scale(1.05) translateY(-10px);
+    z-index: 10;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 }
 
-/* 彩色边框样式 */
-.item-pink { border: 6px solid #ffb7b7; }
-.item-yellow { border: 6px solid #ffeeba; }
-.item-blue { border: 6px solid #b2ebf2; }
-.item-purple { border: 6px solid #f3e5f5; }
-.item-green { border: 6px solid #dcedc8; }
-.item-red { border: 6px solid #ffccbc; }
-.item-orange { border: 6px solid #ffe0b2; }
-.item-cyan { border: 6px solid #e0f2f1; }
+/* 彩色边框样式保持不变 */
+.item-pink { border: 5px solid #ffb7b7; }
+.item-yellow { border: 5px solid #ffeeba; }
+.item-blue { border: 5px solid #b2ebf2; }
+.item-purple { border: 5px solid #f3e5f5; }
+.item-green { border: 5px solid #dcedc8; }
+.item-red { border: 5px solid #ffccbc; }
+.item-orange { border: 5px solid #ffe0b2; }
+.item-cyan { border: 5px solid #e0f2f1; }
 
-/* 特殊定制：广州阿那亚稍微大一点点 */
-.special-large {
-    transform: scale(1.05);
-    margin-top: 20px;
-}
+/* 广州阿那亚稍微突出一点 */
+.special-large { transform: scale(1.03); }
+
+@keyframes float { 50% { transform: translateY(-8px); } }
