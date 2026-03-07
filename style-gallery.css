@@ -1,48 +1,108 @@
+/* 引入最具马克笔粗笔触感的涂鸦字体 */
 @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
 
 body, html {
-    margin: 0; padding: 0; overflow-y: scroll;
+    margin: 0;
+    padding: 0;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    /* 核心：强制全局使用 Permanent Marker */
     font-family: 'Permanent Marker', cursive !important;
+    background-color: #ffffff;
 }
 
+/* 隐藏原生滚动条 */
+body::-webkit-scrollbar { display: none; }
+
+/* 左上角标题与按钮组合 */
 .header-nav-stack {
-    position: fixed; top: 50px; left: 45px;
-    display: flex; flex-direction: column; align-items: flex-start;
-    gap: 25px; z-index: 100;
+    position: fixed;
+    top: 45px;
+    left: 45px;
+    display: flex;
+    flex-direction: column; 
+    align-items: flex-start;
+    gap: 15px; 
+    z-index: 100;
 }
 
-.gallery-header-text { font-size: 3.5rem !important; margin: 0; }
+.gallery-header-text {
+    font-size: 2.2rem !important;
+    font-family: 'Permanent Marker', cursive !important;
+    color: #000;
+    margin: 0;
+    line-height: 1;
+}
 
 .back-btn-handdrawn {
-    text-decoration: none; color: #000; border: 3px solid #000;
-    padding: 8px 25px; border-radius: 15px; font-size: 1.2rem !important;
-    background: white; transition: 0.3s;
+    font-family: 'Permanent Marker', cursive !important;
+    text-decoration: none;
+    color: #000;
+    border: 5px solid #000; 
+    padding: 10px 25px;
+    border-radius: 15px; 
+    font-size: 1.2rem !important;
+    background: white;
+    transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: inline-block;
 }
-.back-btn-handdrawn:hover { background: #000; color: #fff; transform: translateY(-5px); }
 
-/* 核心修复：三列居中且锁定宽度 */
+.back-btn-handdrawn:hover {
+    background: #000;
+    color: #fff;
+    transform: scale(1.05) rotate(-2deg);
+}
+
+/* 核心修改：三列布局且水平居中 */
 .vertical-gallery {
     display: grid;
-    grid-template-columns: repeat(3, 280px); /* 锁定宽度防止图片超大 */
-    justify-content: center; gap: 60px 80px;
-    padding: 280px 50px 200px 50px; margin: 0 auto;
-    position: relative; z-index: 10;
+    /* 修改为 3 列，每列 280px */
+    grid-template-columns: repeat(3, 280px); 
+    /* 确保整个网格在 Cargo 页面内水平居中 */
+    justify-content: center; 
+    gap: 40px 60px;
+    padding: 220px 20px 200px 20px; 
+    position: relative;
+    z-index: 10;
+    max-width: 1200px;
+    margin: 0 auto; /* 容器自身居中 */
 }
 
 .gallery-item {
-    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    cursor: pointer; position: relative;
+    transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: zoom-in;
 }
 
-.gallery-item:nth-child(3n-1) { margin-top: 60px; }
+/* 错落感逻辑：每行的中间一个（2, 5, 8...）下移 */
+.gallery-item:nth-child(3n-1) { margin-top: 50px; }
 
 .img-frame {
-    border: 9px solid var(--frame-color, #000); border-radius: 5px;
-    overflow: hidden; background: #fff;
+    border: 9px solid var(--frame-color, #000); 
+    border-radius: 5px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    background: #fff;
 }
 
-.gallery-item img { width: 100%; height: auto; display: block; }
+.gallery-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
 
-/* 恢复悬停放大 */
-.gallery-item:hover { transform: scale(1.2) rotate(2deg); z-index: 999; }
-.gallery-item:hover .img-frame { box-shadow: 0 15px 50px var(--frame-color); }
+.gallery-item:hover { 
+    transform: scale(1.35) rotate(2deg); 
+    z-index: 50; 
+}
+
+.gallery-item:hover .img-frame {
+    box-shadow: 0 15px 50px var(--frame-color);
+}
+
+/* 响应式：小屏幕自动变回一列 */
+@media (max-width: 1000px) {
+    .vertical-gallery {
+        grid-template-columns: repeat(1, 280px);
+    }
+    .gallery-item:nth-child(n) { margin-top: 0; }
+}
