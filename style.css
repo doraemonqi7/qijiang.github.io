@@ -1,124 +1,102 @@
-@import url('https://fonts.googleapis.com/css2?family=Gochi+Hand&display=swap');
+/* 引入手写体 */
+@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
 
 body, html {
-    margin: 0 !important;
-    padding: 0 !important;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden !important; 
+    margin: 0;
+    padding: 0;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    font-family: 'Permanent Marker', cursive !important;
     background-color: #ffffff;
-    font-family: 'Gochi Hand', cursive !important;
 }
 
-/* 背景画板：确保所有元素在任何窗口下都保持比例 */
-.cargo-canvas {
-    width: 100vw;
-    height: 100vh;
-    position: relative;
-    box-sizing: border-box;
-}
+body::-webkit-scrollbar { display: none; }
 
-/* --- 6行文字：粒子化随机散落 --- */
-@keyframes particle1 { 0%, 100% { transform: translate(0,0) rotate(0deg); } 50% { transform: translate(5px, -3px) rotate(1deg); } }
-@keyframes particle2 { 0%, 100% { transform: translate(0,0) rotate(0deg); } 50% { transform: translate(-3px, 5px) rotate(-1.5deg); } }
-
-.wuhu-scatter {
-    position: absolute;
-    left: 5vw;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 35vw; /* 限制宽度，防止与长颈鹿相撞 */
-    height: 60vh;
-    z-index: 5;
-}
-
-/* 粒子化定位：通过绝对定位让它们看起来是随机摆放的 */
-.wuhu-scatter div { position: absolute; white-space: nowrap; transition: all 0.5s; }
-
-/* 字大在上，字小在下，位置随机偏移 */
-.line-1 { font-size: 6.5vw; top: 0%; left: 0%; animation: particle1 3.1s infinite; }
-.line-2 { font-size: 5vw; top: 25%; left: 15%; animation: particle2 2.8s infinite; }
-.line-3 { font-size: 3.8vw; top: 15%; left: 45%; animation: particle1 3.5s infinite; opacity: 0.8; }
-.line-4 { font-size: 3vw; top: 55%; left: 5%; animation: particle2 2.4s infinite; opacity: 0.6; }
-.line-5 { font-size: 2.2vw; top: 75%; left: 25%; animation: particle1 3.8s infinite; opacity: 0.5; }
-.line-6 { font-size: 1.5vw; top: 85%; left: 10%; animation: particle2 4.2s infinite; opacity: 0.4; }
-
-/* --- 右侧长颈鹿区：视觉核心，防止与 Tab 重叠 --- */
-.signature-wrap {
-    position: absolute;
-    right: 5vw;
-    top: 45%; /* 稍微往上移，给下面的 Tab 留出绝对空间 */
-    transform: translateY(-50%);
-    width: 45vw; 
-    max-width: 700px; 
+/* 左上角标题区域：适配更大的字号 */
+.header-nav-stack {
+    position: fixed;
+    top: 50px;
+    left: 45px;
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-direction: column; 
+    align-items: flex-start;
+    gap: 25px; 
+    z-index: 100;
+}
+
+.gallery-header-text {
+    font-size: 3.5rem !important; /* 放大后的标题 */
+    color: #000;
+    margin: 0;
+}
+
+.back-btn-handdrawn {
+    text-decoration: none;
+    color: #000;
+    border: 3px solid #000; /* 变细后的边框 */
+    padding: 8px 25px;
+    border-radius: 15px; 
+    font-size: 1.2rem !important;
+    background: white;
+    transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.back-btn-handdrawn:hover {
+    background: #000;
+    color: #fff;
+    transform: scale(1.05) rotate(-2deg);
+}
+
+/* 核心修复：三列居中且图片可放大 */
+.vertical-gallery {
+    display: grid;
+    grid-template-columns: repeat(3, 280px); /* 维持三列 */
+    justify-content: center; /* 水平居中核心属性 */
+    gap: 60px 80px; 
+    padding: 300px 0 200px 0; /* 增加顶部边距适配大标题 */
+    margin: 0 auto !important; 
+    width: fit-content; 
+    position: relative;
     z-index: 10;
 }
 
-.portfolio-title { font-size: 4.5vw; margin-bottom: 0.5vh; }
+/* 悬停放大逻辑 */
+.gallery-item {
+    transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    z-index: 11;
+}
 
-.animal-img {
+/* 错落感：中间列下移 */
+.gallery-item:nth-child(3n-1) { margin-top: 60px; }
+
+.img-frame {
+    border: 9px solid var(--frame-color, #000); 
+    border-radius: 5px;
+    overflow: hidden;
+    background: #fff;
+    pointer-events: auto; /* 确保鼠标事件穿透 */
+}
+
+.gallery-item img {
     width: 100%;
     height: auto;
-    cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: block;
 }
 
-.animal-img:hover { transform: scale(1.02) rotate(-1deg); }
-
-.animal-img.active { animation: jump 0.45s ease-in-out; }
-@keyframes jump {
-    0%, 100% { transform: scale(1.02); }
-    50% { transform: scale(1.1) translateY(-5vh); }
+/* 鼠标放上去图片放大 1.35 倍 */
+.gallery-item:hover { 
+    transform: scale(1.35) rotate(2deg); 
+    z-index: 50; 
 }
 
-/* 名字文字：强制不折行 */
-.signature-text { 
-    font-size: 3.5vw; 
-    font-weight: bold; 
-    margin-top: 1vh;
-    white-space: nowrap;
+.gallery-item:hover .img-frame {
+    box-shadow: 0 15px 50px var(--frame-color);
 }
 
-/* --- 底部 Tab：最优化间距与防重叠 --- */
-.tab-container {
-    position: absolute;
-    bottom: 5vh; /* 锁定在底部，不随内容浮动 */
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 2.5vw; 
-    width: 65vw; /* 更加聚拢，留出两侧白空间 */
-    justify-content: center;
-    z-index: 1000;
-    min-width: 320px;
-}
-
-.tab-link {
-    border: 0.35vw solid #000;
-    border-radius: 50px;
-    padding: 0.8vw 3vw; 
-    text-decoration: none;
-    color: #000;
-    font-weight: bold;
-    font-size: 1.8vw; /* 略微缩小，让比例更精致 */
-    background: white;
-    white-space: nowrap;
-    transition: all 0.3s ease;
-    line-height: 1.4;
-}
-
-.tab-link:hover {
-    background: #000;
-    color: #fff;
-    transform: translateY(-5px);
-}
-
-/* 关键：响应式补丁，防止在扁平窗口下重叠 */
-@media (max-height: 600px) {
-    .signature-wrap { top: 40%; }
-    .tab-container { bottom: 2vh; }
-    .animal-img { max-width: 350px; }
+/* 响应式 */
+@media (max-width: 1100px) {
+    .vertical-gallery { grid-template-columns: repeat(2, 280px); }
+    .gallery-item:nth-child(3n-1) { margin-top: 0; }
+    .gallery-item:nth-child(even) { margin-top: 60px; }
 }
