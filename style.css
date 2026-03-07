@@ -1,102 +1,92 @@
-/* 引入手写体 */
-@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Gochi+Hand&display=swap');
 
 body, html {
-    margin: 0;
-    padding: 0;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    font-family: 'Permanent Marker', cursive !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden !important; 
     background-color: #ffffff;
 }
 
-body::-webkit-scrollbar { display: none; }
-
-/* 左上角标题区域：适配更大的字号 */
-.header-nav-stack {
-    position: fixed;
-    top: 50px;
-    left: 45px;
+.cargo-canvas {
+    width: 100vw;
+    height: 100vh;
     display: flex;
-    flex-direction: column; 
-    align-items: flex-start;
-    gap: 25px; 
-    z-index: 100;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    font-family: 'Gochi Hand', cursive !important;
+    color: #000000;
+    z-index: 999;
 }
 
-.gallery-header-text {
-    font-size: 3.5rem !important; /* 放大后的标题 */
-    color: #000;
-    margin: 0;
+/* 强制晃动动画 */
+@keyframes delicateTwinkle {
+    0% { transform: translate(0, 0); }
+    25% { transform: translate(1.2px, -0.8px); }
+    50% { transform: translate(-0.8px, 1.2px); }
+    100% { transform: translate(0, 0); }
 }
 
-.back-btn-handdrawn {
+.wuhu-scatter {
+    position: absolute;
+    left: 8% !important;
+    top: 15% !important;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.wuhu-scatter div {
+    display: block !important;
+    animation: delicateTwinkle 2.5s infinite ease-in-out !important;
+}
+
+.line-1 { font-size: 3.2rem; transform: translate(10px, 0); animation-duration: 2s !important; }
+.line-2 { font-size: 4.8rem; transform: translate(140px, -20px); animation-duration: 2.8s !important; }
+.line-3 { font-size: 2.8rem; transform: translate(30px, 10px); animation-duration: 2.3s !important; opacity: 0.7; }
+.line-4 { font-size: 5.8rem; transform: translate(220px, 25px); animation-duration: 3.2s !important; font-weight: bold; }
+.line-5 { font-size: 3.8rem; transform: translate(-10px, 50px); animation-duration: 2.6s !important; }
+.line-6 { font-size: 8.5rem; transform: translate(260px, 70px); animation-duration: 3.8s !important; letter-spacing: 6px; }
+
+.signature-wrap {
+    position: absolute;
+    bottom: 22%;
+    right: 8%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.portfolio-title { font-size: 3.5rem; font-weight: bold; margin-bottom: 15px; }
+
+.animal-img {
+    width: 380px;
+    cursor: pointer;
+    transform: rotate(2deg);
+    outline: none !important;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* 按钮样式：圆润风格 */
+.tab-link {
+    border: 3.5px solid #000;
+    border-radius: 90px;
+    padding: 15px 45px;
     text-decoration: none;
     color: #000;
-    border: 3px solid #000; /* 变细后的边框 */
-    padding: 8px 25px;
-    border-radius: 15px; 
-    font-size: 1.2rem !important;
+    font-weight: bold;
+    font-size: 1.6rem;
+    text-transform: uppercase;
+    transition: 0.3s;
     background: white;
-    transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.back-btn-handdrawn:hover {
+.tab-link:hover {
     background: #000;
     color: #fff;
-    transform: scale(1.05) rotate(-2deg);
-}
-
-/* 核心修复：三列居中且图片可放大 */
-.vertical-gallery {
-    display: grid;
-    grid-template-columns: repeat(3, 280px); /* 维持三列 */
-    justify-content: center; /* 水平居中核心属性 */
-    gap: 60px 80px; 
-    padding: 300px 0 200px 0; /* 增加顶部边距适配大标题 */
-    margin: 0 auto !important; 
-    width: fit-content; 
-    position: relative;
-    z-index: 10;
-}
-
-/* 悬停放大逻辑 */
-.gallery-item {
-    transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    position: relative;
-    z-index: 11;
-}
-
-/* 错落感：中间列下移 */
-.gallery-item:nth-child(3n-1) { margin-top: 60px; }
-
-.img-frame {
-    border: 9px solid var(--frame-color, #000); 
-    border-radius: 5px;
-    overflow: hidden;
-    background: #fff;
-    pointer-events: auto; /* 确保鼠标事件穿透 */
-}
-
-.gallery-item img {
-    width: 100%;
-    height: auto;
-    display: block;
-}
-
-/* 鼠标放上去图片放大 1.35 倍 */
-.gallery-item:hover { 
-    transform: scale(1.35) rotate(2deg); 
-    z-index: 50; 
-}
-
-.gallery-item:hover .img-frame {
-    box-shadow: 0 15px 50px var(--frame-color);
-}
-
-/* 响应式 */
-@media (max-width: 1100px) {
-    .vertical-gallery { grid-template-columns: repeat(2, 280px); }
-    .gallery-item:nth-child(3n-1) { margin-top: 0; }
-    .gallery-item:nth-child(even) { margin-top: 60px; }
+    transform: translateY(-5px);
 }
