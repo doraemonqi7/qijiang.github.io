@@ -17,10 +17,12 @@ body, html {
     box-sizing: border-box;
 }
 
-/* --- 文字粒子：正三角形排布 (下宽上窄) --- */
-@keyframes cuteShake {
-    0%, 100% { transform: translate(0,0) rotate(0deg); }
-    50% { transform: translate(2px, -2px) rotate(1deg); }
+/* --- 6行文字：粒子化随机排布 & 独立飘动 --- */
+@keyframes particleFloat {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(8px, -12px) rotate(1deg); }
+    50% { transform: translate(-10px, 8px) rotate(-1.5deg); }
+    75% { transform: translate(12px, 10px) rotate(1deg); }
 }
 
 .wuhu-scatter {
@@ -28,44 +30,54 @@ body, html {
     left: 8vw;
     top: 50%;
     transform: translateY(-50%);
-    width: 35vw;
+    width: 38vw; /* 限制粒子活动范围 */
     height: 60vh;
 }
 
-.wuhu-scatter div { position: absolute; white-space: nowrap; animation: cuteShake 3.5s infinite ease-in-out; }
+.wuhu-scatter div { 
+    position: absolute; 
+    white-space: nowrap; 
+    animation: particleFloat 6s infinite ease-in-out; 
+}
 
-/* 正三角逻辑：上面的字号小且靠中间，下面的字号大且散开 */
-.line-1 { font-size: 1.5vw; top: 0%; left: 40%; opacity: 0.4; }
-.line-2 { font-size: 2.5vw; top: 15%; left: 35%; opacity: 0.6; }
-.line-3 { font-size: 3.5vw; top: 35%; left: 25%; opacity: 0.8; }
-.line-4 { font-size: 4.8vw; top: 55%; left: 15%; font-weight: bold; }
-.line-5 { font-size: 5.8vw; top: 75%; left: 5%; }
-.line-6 { font-size: 7vw; top: 95%; left: 0%; }
+/* 粒子分布：通过正三角形逻辑排列，但位置随机化 */
+.line-1 { font-size: 1.5vw; top: 5%; left: 45%; animation-delay: 0s; opacity: 0.4; }
+.line-2 { font-size: 2.8vw; top: 20%; left: 30%; animation-delay: -1.5s; opacity: 0.7; }
+.line-3 { font-size: 3.5vw; top: 40%; left: 55%; animation-delay: -3s; }
+.line-4 { font-size: 5vw; top: 60%; left: 10%; animation-delay: -4.5s; font-weight: bold; }
+.line-5 { font-size: 6vw; top: 80%; left: 40%; animation-delay: -2s; }
+.line-6 { font-size: 7.5vw; top: 95%; left: 0%; animation-delay: -5.5s; }
 
-/* --- 右侧区域：给署名留出空间 --- */
+/* --- 右侧署名区：构图微调 --- */
 .signature-wrap {
     position: absolute;
-    right: 5vw;
-    top: 42%; /* 稍微上移，防止踩到署名 */
+    right: 8vw;
+    top: 45%;
     transform: translateY(-50%);
-    width: 45vw;
-    max-width: 650px; /* 略微缩小，保证不遮挡底部 */
+    width: 42vw;
+    max-width: 600px; /* 锁定长颈鹿大小，防止踩到 Tab */
     display: flex;
     flex-direction: column;
     align-items: center;
+    z-index: 10;
 }
 
-.portfolio-title { font-size: 4vw; margin-bottom: 0.5vh; }
+.portfolio-title { 
+    font-size: 4vw; 
+    margin-bottom: 0.5vh; 
+    align-self: flex-end; /* Portfolio 靠右 */
+    margin-right: 5vw;
+}
 
 .animal-img {
-    width: 85%; /* 缩减宽度，让出垂直空间给 BY QI JIANG */
+    width: 100%;
     height: auto;
     cursor: pointer;
-    transform: scaleX(-1); /* 保持镜像向左看 */
-    transition: 0.4s;
+    transform: scaleX(-1); /* 镜像朝左 */
+    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.animal-img:hover { transform: scaleX(-1) scale(1.03) rotate(1.5deg); }
+.animal-img:hover { transform: scaleX(-1) scale(1.03) rotate(1deg); }
 
 .animal-img.active { animation: jumpMirror 0.45s ease-in-out; }
 @keyframes jumpMirror {
@@ -73,35 +85,45 @@ body, html {
     50% { transform: scaleX(-1) scale(1.1) translateY(-3vh); }
 }
 
-/* 名字文字：确保有足够的 margin-top 和字号可见性 */
 .signature-text { 
-    font-size: 3.2vw; 
+    font-size: 3.5vw; 
     font-weight: bold; 
-    margin-top: 2vh; /* 增加间距，确保不被长颈鹿脚挡住 */
+    margin-top: 1.5vh; /* 与长颈鹿脚部拉开距离 */
     white-space: nowrap;
-    background: white; /* 加上背景色，以防万一重叠也能看清 */
+    letter-spacing: 0.1vw;
 }
 
-/* --- 底部 Tab --- */
+/* --- 底部 Tab：位置与大小锁定 --- */
 .tab-container {
     position: absolute;
-    bottom: 6vh;
+    bottom: 7vh;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
     gap: 2.5vw; 
-    width: 60vw;
+    width: 65vw;
     justify-content: center;
+    z-index: 100;
 }
 
 .tab-link {
     border: 0.35vw solid #000;
     border-radius: 50px;
-    padding: 0.8vw 3vw; 
+    padding: 1vw 3.5vw; 
     text-decoration: none;
     color: #000;
     font-weight: bold;
-    font-size: 1.8vw;
+    font-size: 1.8vw; /* 维持你觉得很好的大小 */
     background: #fff;
     white-space: nowrap;
+    transition: 0.3s;
+}
+
+.tab-link:hover { background: #000; color: #fff; transform: translateY(-0.5vh); }
+
+/* 响应式：防止在手机或窄屏下重叠 */
+@media (max-width: 800px) {
+    .tab-container { width: 95vw; gap: 10px; bottom: 3vh; }
+    .tab-link { font-size: 3.5vw; padding: 10px 20px; }
+    .signature-wrap { width: 50vw; top: 40%; }
 }
