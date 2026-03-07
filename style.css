@@ -17,36 +17,47 @@ body, html {
     box-sizing: border-box;
 }
 
-/* --- 6行文字：粒子化随机散落 (上大下小) --- */
-@keyframes particle1 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(4px, -3px); } }
-@keyframes particle2 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(-3px, 4px); } }
+/* --- 文字粒子化排布：可爱随机抖动 --- */
+/* 定义更灵动的动画：包含位移、极小幅度的旋转和缩放 */
+@keyframes cuteShake1 {
+    0%, 100% { transform: translate(0,0) rotate(0deg) scale(1); }
+    25% { transform: translate(2px, -2px) rotate(1deg) scale(1.02); }
+    50% { transform: translate(-1px, 2px) rotate(-0.5deg) scale(0.98); }
+    75% { transform: translate(1px, 1px) rotate(0.5deg) scale(1.01); }
+}
+
+@keyframes cuteShake2 {
+    0%, 100% { transform: translate(0,0) rotate(0deg) scale(1); }
+    30% { transform: translate(-2px, 1px) rotate(-1deg) scale(1.03); }
+    60% { transform: translate(2px, -1px) rotate(0.8deg) scale(0.97); }
+}
 
 .wuhu-scatter {
     position: absolute;
     left: 5vw;
     top: 50%;
     transform: translateY(-50%);
-    width: 30vw; /* 占据约 30% 空间 */
+    width: 30vw;
     height: 65vh;
 }
 
 .wuhu-scatter div { position: absolute; white-space: nowrap; }
 
-/* 随机粒子坐标调整 */
-.line-1 { font-size: 6.5vw; top: 0%; left: 0%; animation: particle1 3s infinite; }
-.line-2 { font-size: 5vw; top: 20%; left: 18%; animation: particle2 2.7s infinite; }
-.line-3 { font-size: 3.8vw; top: 12%; left: 45%; animation: particle1 3.5s infinite; opacity: 0.8; }
-.line-4 { font-size: 3vw; top: 52%; left: 5%; animation: particle2 2.4s infinite; opacity: 0.6; }
-.line-5 { font-size: 2.2vw; top: 72%; left: 30%; animation: particle1 3.8s infinite; opacity: 0.5; }
-.line-6 { font-size: 1.5vw; top: 88%; left: 12%; animation: particle2 4.2s infinite; opacity: 0.4; }
+/* 粒子分布与独立动画时长 */
+.line-1 { font-size: 6.5vw; top: 0%; left: 0%; animation: cuteShake1 3.2s infinite ease-in-out; }
+.line-2 { font-size: 5vw; top: 22%; left: 15%; animation: cuteShake2 2.8s infinite ease-in-out; }
+.line-3 { font-size: 3.8vw; top: 10%; left: 48%; animation: cuteShake1 3.8s infinite ease-in-out; opacity: 0.8; }
+.line-4 { font-size: 3vw; top: 55%; left: 5%; animation: cuteShake2 2.5s infinite ease-in-out; opacity: 0.6; }
+.line-5 { font-size: 2.2vw; top: 75%; left: 28%; animation: cuteShake1 4.2s infinite ease-in-out; opacity: 0.5; }
+.line-6 { font-size: 1.5vw; top: 90%; left: 10%; animation: cuteShake2 3.5s infinite ease-in-out; opacity: 0.4; }
 
-/* --- 右侧长颈鹿区：视觉核心 (占据 70% 空间) --- */
+/* --- 右侧署名与长颈鹿：占据 70% 空间 --- */
 .signature-wrap {
     position: absolute;
     right: 5vw;
     top: 45%; 
     transform: translateY(-50%);
-    width: 50vw; /* 占据约 70% 的视觉宽度 */
+    width: 50vw;
     max-width: 750px; 
     display: flex;
     flex-direction: column;
@@ -59,7 +70,7 @@ body, html {
     width: 100%;
     height: auto;
     cursor: pointer;
-    transition: all 0.4s ease;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .animal-img:hover { transform: scale(1.03) rotate(-1.5deg); }
@@ -67,20 +78,20 @@ body, html {
 .animal-img.active { animation: jump 0.45s ease-in-out; }
 @keyframes jump {
     0%, 100% { transform: scale(1.03); }
-    50% { transform: scale(1.12) translateY(-4vh); }
+    50% { transform: scale(1.15) translateY(-5vh); }
 }
 
 .signature-text { font-size: 3.8vw; font-weight: bold; margin-top: 1.5vh; white-space: nowrap; }
 
-/* --- 底部 Tab：向中间聚拢 & 全自动缩放 --- */
+/* --- 底部 Tab：向中间深度聚拢 --- */
 .tab-container {
     position: absolute;
     bottom: 6vh;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 3vw; 
-    width: 70vw; /* 限制宽度让其聚拢 */
+    gap: 2.5vw; 
+    width: 60vw; /* 修改：进一步缩小宽度到 60vw，确保按钮远离屏幕边缘 */
     justify-content: center;
     z-index: 1000;
 }
@@ -88,19 +99,25 @@ body, html {
 .tab-link {
     border: 0.35vw solid #000;
     border-radius: 50px;
-    padding: 1vw 3.5vw; 
+    padding: 0.8vw 3vw; 
     text-decoration: none;
     color: #000;
     font-weight: bold;
-    font-size: 2.2vw; 
+    font-size: 2vw; /* 字号随窗口缩放 */
     background: white;
     white-space: nowrap;
-    transition: 0.3s;
+    transition: all 0.3s ease;
 }
 
-.tab-link:hover { background: #000; color: #fff; transform: translateY(-1vh); }
+.tab-link:hover {
+    background: #000;
+    color: #fff;
+    transform: translateY(-8px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
 
+/* 适配移动端 */
 @media (max-width: 768px) {
-    .tab-container { width: 95vw; }
-    .tab-link { font-size: 3.5vw; }
+    .tab-container { width: 90vw; gap: 10px; }
+    .tab-link { font-size: 3.5vw; padding: 10px 15px; }
 }
