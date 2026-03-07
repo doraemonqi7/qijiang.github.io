@@ -7,8 +7,12 @@ body {
     padding: 3vw 5vw;
 }
 
-.gallery-header { margin-bottom: 50px; }
-.gallery-header h1 { font-size: clamp(2rem, 5vw, 4rem); margin: 0; }
+/* 顶部标题 */
+.gallery-header h1 {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    margin: 0;
+    font-family: 'Gochi Hand', cursive !important;
+}
 
 .back-btn {
     display: inline-block;
@@ -18,19 +22,22 @@ body {
     text-decoration: none;
     color: #000;
     font-weight: bold;
-    margin-top: 10px;
+    margin-top: 15px;
+    transition: 0.3s;
 }
 
-/* 瀑布流：增加列数以减小图片视觉尺寸 */
+/* 瀑布流布局：确保图片变小 */
 .gallery-grid {
-    column-count: 4; 
-    column-gap: 30px;
+    column-count: 3; /* 限制为 3 列 */
+    column-gap: 3vw;
     width: 100%;
+    margin-top: 40px;
 }
 
-@media (max-width: 1100px) { .gallery-grid { column-count: 3; } }
-@media (max-width: 700px) { .gallery-grid { column-count: 2; } }
+@media (max-width: 900px) { .gallery-grid { column-count: 2; } }
+@media (max-width: 600px) { .gallery-grid { column-count: 1; } }
 
+/* 图片项：彩色外框紧贴图片 */
 .gallery-item {
     display: inline-block;
     width: 100%;
@@ -39,30 +46,27 @@ body {
     background: #fff;
     box-sizing: border-box;
     transition: all 0.4s ease;
-    cursor: pointer;
     animation: cargoFloat 5s infinite ease-in-out;
 }
 
-/* 随机动画延迟 */
-.gallery-item:nth-child(even) { animation-delay: 1.5s; }
-.gallery-item:nth-child(3n) { animation-delay: 2.5s; }
-
-@keyframes cargoFloat {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-}
-
+/* 强制缩放图片大小 */
 .gallery-item img {
     width: 100%;
     height: auto;
-    max-height: 60vh; /* 限制高度防止过大 */
+    max-height: 60vh; /* 限制高度，解决图片超级大的问题 */
     display: block;
+    object-fit: contain;
+}
+
+@keyframes cargoFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
 }
 
 .gallery-item:hover {
-    transform: scale(1.05) translateY(-15px);
+    transform: scale(1.05) translateY(-15px) !important;
     z-index: 10;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 }
 
 /* 彩色边框样式 */
