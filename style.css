@@ -10,120 +10,116 @@ body, html {
     font-family: 'Gochi Hand', cursive !important;
 }
 
-/* 主容器：强行拉开左右 4:6 的空间 */
+/* 使用 Grid 将整个页面划分为左 30% 右 70% */
 .cargo-canvas {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center; 
-    padding: 0 4vw;
+    display: grid;
+    grid-template-columns: 3fr 7fr; 
+    width: 100vw;
+    height: 100vh;
+    align-items: center;
     box-sizing: border-box;
+    padding: 0 4vw;
 }
 
-/* --- 左侧 Wuhu 区：占比约 40% --- */
+/* --- 左侧 Wuhu 区：极致缩小，作为背景点缀 --- */
 .wuhu-scatter {
-    flex: 4; 
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding-left: 3vw;
 }
 
 /* 独立随机晃动动画 */
-@keyframes sh1 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(2px, -1px); } }
-@keyframes sh2 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(-1.5px, 2px); } }
-@keyframes sh3 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(2px, 1.5px); } }
-@keyframes sh4 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(-2px, -1.5px); } }
-@keyframes sh5 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(1.5px, -2px); } }
-@keyframes sh6 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(-1.5px, 0.5px); } }
+@keyframes r1 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(1.5px, -1px); } }
+@keyframes r2 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(-1px, 1.5px); } }
+@keyframes r3 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(1.5px, 1.5px); } }
+@keyframes r4 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(-1.5px, -1px); } }
+@keyframes r5 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(1px, -1.5px); } }
+@keyframes r6 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(-1px, 0.5px); } }
 
-.wuhu-scatter div { display: block; margin-bottom: 0.3vh; }
+.wuhu-scatter div { display: block; margin-bottom: 0.2vh; white-space: nowrap; }
 
-/* 缩小左侧，防止抢戏 */
-.line-1 { font-size: 2.2vw; animation: sh1 2.5s infinite; }
-.line-2 { font-size: 3.4vw; margin-left: 3vw; animation: sh2 3.2s infinite; }
-.line-3 { font-size: 1.8vw; margin-left: 1vw; opacity: 0.4; animation: sh3 1.9s infinite; }
-.line-4 { font-size: 4.2vw; margin-left: 7vw; font-weight: bold; animation: sh4 2.7s infinite; }
-.line-5 { font-size: 2.8vw; animation: sh5 3.1s infinite; }
-.line-6 { font-size: 6.5vw; margin-left: 9vw; animation: sh6 4s infinite; }
+/* 进一步缩小字号，确保长颈鹿是主角 */
+.line-1 { font-size: 1.8vw; animation: r1 2.5s infinite; }
+.line-2 { font-size: 2.8vw; margin-left: 2.5vw; animation: r2 3.2s infinite; }
+.line-3 { font-size: 1.5vw; margin-left: 1vw; opacity: 0.4; animation: r3 1.9s infinite; }
+.line-4 { font-size: 3.5vw; margin-left: 6vw; font-weight: bold; animation: r4 2.7s infinite; }
+.line-5 { font-size: 2.2vw; animation: r5 3.1s infinite; }
+.line-6 { font-size: 5.5vw; margin-left: 8vw; animation: r6 4s infinite; }
 
-/* --- 右侧长颈鹿区：占比约 60% --- */
+/* --- 右侧长颈鹿区：显著放大，占据 70% 空间 --- */
 .signature-wrap {
-    flex: 6; 
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding-right: 2vw;
+    width: 100%;
 }
 
 .portfolio-title { 
-    font-size: 4.5vw; /* 稍微加大标题 */
-    margin-bottom: 10px; 
+    font-size: 4vw; 
+    margin-bottom: 0.5vh; 
 }
 
 .animal-img {
-    width: 90%; /* 在 60% 的空间里占 90% */
-    max-width: 550px; /* 进一步调大上限 */
+    width: 85%; /* 在 70% 的空间里占 85% */
+    max-width: 650px; /* 进一步拉高电脑端上限 */
     height: auto;
     cursor: pointer;
     transition: all 0.4s ease-out;
 }
 
 .animal-img:hover {
-    transform: scale(1.05) rotate(-2deg);
+    transform: scale(1.03) rotate(-1.5deg);
 }
 
 .animal-img.active {
     animation: jump 0.45s ease-in-out;
 }
 @keyframes jump {
-    0%, 100% { transform: scale(1.05); }
-    50% { transform: scale(1.15) translateY(-35px); }
+    0%, 100% { transform: scale(1.03); }
+    50% { transform: scale(1.12) translateY(-4vh); }
 }
 
 .signature-text { 
-    font-size: 3.8vw; /* 与 BY QI JIANG 视觉平衡 */
+    font-size: 3.5vw; 
     font-weight: bold; 
-    margin-top: 15px; 
+    margin-top: 1vh; 
 }
 
-/* --- 底部 Tab：特大且不溢出 --- */
+/* --- 底部 Tab：完全随窗口缩放版 --- */
 .tab-container {
     position: absolute;
-    bottom: 7vh;
+    bottom: 6vh;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 2.5vw;
-    width: 94vw; /* 限制总宽，防止溢出 */
+    gap: 3vw;
+    width: 90vw; 
     justify-content: center;
     z-index: 1000;
 }
 
 .tab-link {
-    border: 3.5px solid #000;
-    border-radius: 100px;
-    padding: 1.5vw 3.5vw; /* 加大内边距，让按钮看起来很厚实 */
+    border: 0.3vw solid #000; /* 边框厚度随窗口变化 */
+    border-radius: 10vw; /* 圆角随窗口变化 */
+    padding: 1vw 3.5vw; /* 内边距完全随窗口缩放 */
     text-decoration: none;
     color: #000;
     font-weight: bold;
-    font-size: clamp(14px, 2.5vw, 28px); /* 字体大且随比例缩放 */
+    font-size: 2.2vw; /* 关键：放弃固定像素，完全使用 vw */
     background: white;
     white-space: nowrap;
     transition: 0.3s;
-    line-height: 1;
+    line-height: 1.2;
 }
 
 .tab-link:hover {
     background: #000;
     color: #fff;
-    transform: translateY(-8px);
-    box-shadow: 0 10px 0px rgba(0,0,0,0.05);
+    transform: translateY(-1vh);
 }
 
-/* 适配超窄屏幕 */
+/* 针对手机等超窄屏的补丁，防止按钮重叠 */
 @media (max-width: 600px) {
-    .tab-container { gap: 10px; }
-    .tab-link { padding: 10px 15px; font-size: 13px; }
+    .tab-link { font-size: 3.5vw; padding: 2vw 4vw; }
 }
