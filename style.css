@@ -7,102 +7,100 @@ body, html {
     height: 100vh;
     overflow: hidden !important; 
     background-color: #ffffff;
+    font-family: 'Gochi Hand', cursive !important;
 }
 
 .cargo-canvas {
     width: 100vw;
     height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    font-family: 'Gochi Hand', cursive !important;
-    color: #000000;
-    z-index: 999;
+    position: relative;
+    box-sizing: border-box;
 }
 
-@keyframes delicateTwinkle {
-    0% { transform: translate(0, 0); }
-    25% { transform: translate(1.2px, -0.8px); }
-    50% { transform: translate(-0.8px, 1.2px); }
-    100% { transform: translate(0, 0); }
-}
+/* --- 6行文字：粒子化随机散落 (上大下小) --- */
+@keyframes particle1 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(4px, -3px); } }
+@keyframes particle2 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(-3px, 4px); } }
 
-/* 修改：左侧文字向中间移动，从 8% 改为 15% */
 .wuhu-scatter {
     position: absolute;
-    left: 15% !important; 
-    top: 15% !important;
-    pointer-events: none;
-    z-index: 1000;
+    left: 5vw;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 30vw; /* 占据约 30% 空间 */
+    height: 65vh;
 }
 
-.wuhu-scatter div {
-    display: block !important;
-    animation: delicateTwinkle 2.5s infinite ease-in-out !important;
-}
+.wuhu-scatter div { position: absolute; white-space: nowrap; }
 
-.line-1 { font-size: 3.2rem; transform: translate(10px, 0); animation-duration: 2s !important; }
-.line-2 { font-size: 4.8rem; transform: translate(140px, -20px); animation-duration: 2.8s !important; }
-.line-3 { font-size: 2.8rem; transform: translate(30px, 10px); animation-duration: 2.3s !important; opacity: 0.7; }
-.line-4 { font-size: 5.8rem; transform: translate(220px, 25px); animation-duration: 3.2s !important; font-weight: bold; }
-.line-5 { font-size: 3.8rem; transform: translate(-10px, 50px); animation-duration: 2.6s !important; }
-.line-6 { font-size: 8.5rem; transform: translate(260px, 70px); animation-duration: 3.8s !important; letter-spacing: 6px; }
+/* 随机粒子坐标调整 */
+.line-1 { font-size: 6.5vw; top: 0%; left: 0%; animation: particle1 3s infinite; }
+.line-2 { font-size: 5vw; top: 20%; left: 18%; animation: particle2 2.7s infinite; }
+.line-3 { font-size: 3.8vw; top: 12%; left: 45%; animation: particle1 3.5s infinite; opacity: 0.8; }
+.line-4 { font-size: 3vw; top: 52%; left: 5%; animation: particle2 2.4s infinite; opacity: 0.6; }
+.line-5 { font-size: 2.2vw; top: 72%; left: 30%; animation: particle1 3.8s infinite; opacity: 0.5; }
+.line-6 { font-size: 1.5vw; top: 88%; left: 12%; animation: particle2 4.2s infinite; opacity: 0.4; }
 
-/* 修改：右侧区域向中间移动，从 8% 改为 15% */
+/* --- 右侧长颈鹿区：视觉核心 (占据 70% 空间) --- */
 .signature-wrap {
     position: absolute;
-    bottom: 22%;
-    right: 15% !important; 
+    right: 5vw;
+    top: 45%; 
+    transform: translateY(-50%);
+    width: 50vw; /* 占据约 70% 的视觉宽度 */
+    max-width: 750px; 
     display: flex;
     flex-direction: column;
     align-items: center;
-    text-align: center;
 }
 
-.portfolio-title { font-size: 3.5rem; font-weight: bold; margin-bottom: 15px; }
+.portfolio-title { font-size: 4.2vw; margin-bottom: 0.5vh; }
 
 .animal-img {
-    width: 380px;
+    width: 100%;
+    height: auto;
     cursor: pointer;
-    transform: rotate(2deg);
-    outline: none !important;
-    -webkit-tap-highlight-color: transparent;
+    transition: all 0.4s ease;
 }
 
-/* 弹跳动画保持不变 */
-@keyframes bounceOnce {
-    0% { transform: scale(1) rotate(2deg); }
-    30% { transform: scale(1.08) rotate(-3deg); }
-    100% { transform: scale(1) rotate(2deg); }
-}
-.animal-img.active { animation: bounceOnce 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; }
+.animal-img:hover { transform: scale(1.03) rotate(-1.5deg); }
 
+.animal-img.active { animation: jump 0.45s ease-in-out; }
+@keyframes jump {
+    0%, 100% { transform: scale(1.03); }
+    50% { transform: scale(1.12) translateY(-4vh); }
+}
+
+.signature-text { font-size: 3.8vw; font-weight: bold; margin-top: 1.5vh; white-space: nowrap; }
+
+/* --- 底部 Tab：向中间聚拢 & 全自动缩放 --- */
 .tab-container {
     position: absolute;
-    bottom: 6%;
+    bottom: 6vh;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
-    gap: 20px; /* 稍微缩小间距更聚拢 */
+    gap: 3vw; 
+    width: 70vw; /* 限制宽度让其聚拢 */
+    justify-content: center;
     z-index: 1000;
 }
 
 .tab-link {
-    border: 3.5px solid #000;
-    border-radius: 90px;
-    padding: 15px 40px;
+    border: 0.35vw solid #000;
+    border-radius: 50px;
+    padding: 1vw 3.5vw; 
     text-decoration: none;
     color: #000;
     font-weight: bold;
-    font-size: 1.5rem;
-    text-transform: uppercase;
-    transition: 0.3s;
+    font-size: 2.2vw; 
     background: white;
+    white-space: nowrap;
+    transition: 0.3s;
 }
 
-.tab-link:hover {
-    background: #000;
-    color: #fff;
-    transform: translateY(-5px);
+.tab-link:hover { background: #000; color: #fff; transform: translateY(-1vh); }
+
+@media (max-width: 768px) {
+    .tab-container { width: 95vw; }
+    .tab-link { font-size: 3.5vw; }
 }
