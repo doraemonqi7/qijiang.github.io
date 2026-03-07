@@ -1,0 +1,39 @@
+<div class="cargo-canvas">
+
+    <div class="wuhu-scatter">
+        <div class="line-1">wuhuwuhuwuhu</div>
+        <div class="line-2">wuhuwuhuwuhu</div>
+        <div class="line-3">wuhuwuhuwuhu</div>
+        <div class="line-4">wuhuwuhuwuhu</div>
+        <div class="line-5">wuhuwuhuwuhu</div>
+        <div class="line-6">wuhuhulalaaal</div>
+    </div>
+
+    <div class="signature-wrap">
+        <div class="portfolio-title">Portfolio</div>
+        
+        <img class="animal-img" id="giraffe" onclick="playBounce()" src="https://freight.cargo.site/t/original/i/R2827857287254243483226718341063/1.png" tabindex="-1">
+        
+        <div class="signature-text" style="font-size: 3.5rem; font-weight: bold; margin-top:15px;">BY QI JIANG</div>
+    </div>
+
+    <div class="tab-container">
+        <a class="tab-link" href="/Visual-Art-Illustration">Visual Art &amp; Illustration</a>
+        <a class="tab-link" href="/digital-creation">Digital Image &amp; 3D Creation</a>
+        <a class="tab-link" href="/new-media">New Media Art &amp; Installation</a>
+    </div>
+
+</div>
+
+<script>
+/**
+ * 长颈鹿跳动动画脚本
+ */
+function playBounce() {
+    const el = document.getElementById('giraffe');
+    el.classList.remove('active');
+    void el.offsetWidth; // 触发强制重绘
+    el.classList.add('active');
+    setTimeout(() => { el.classList.remove('active'); }, 450);
+}
+</script>
