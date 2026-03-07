@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Gochi+Hand&display=swap');
 
-/* 全局基础设置：确保画面完全居中且无滚动 */
 body, html {
     margin: 0 !important;
     padding: 0 !important;
@@ -16,7 +15,7 @@ body, html {
     display: flex;
     justify-content: center;
     align-items: center;
-    position: fixed; /* 锁定全屏，防止画面偏移 */
+    position: fixed;
     top: 0;
     left: 0;
     font-family: 'Gochi Hand', cursive !important;
@@ -24,7 +23,6 @@ body, html {
     z-index: 999;
 }
 
-/* 核心修复：强制晃动动画 */
 @keyframes delicateTwinkle {
     0% { transform: translate(0, 0); }
     25% { transform: translate(1.2px, -0.8px); }
@@ -32,7 +30,6 @@ body, html {
     100% { transform: translate(0, 0); }
 }
 
-/* 左侧文字区：强制开启动画 */
 .wuhu-scatter {
     position: absolute;
     left: 8% !important;
@@ -46,7 +43,6 @@ body, html {
     animation: delicateTwinkle 2.5s infinite ease-in-out !important;
 }
 
-/* 为每一行设置错落的尺寸和晃动节奏 */
 .line-1 { font-size: 3.2rem; transform: translate(10px, 0); animation-duration: 2s !important; }
 .line-2 { font-size: 4.8rem; transform: translate(140px, -20px); animation-duration: 2.8s !important; }
 .line-3 { font-size: 2.8rem; transform: translate(30px, 10px); animation-duration: 2.3s !important; opacity: 0.7; }
@@ -54,7 +50,6 @@ body, html {
 .line-5 { font-size: 3.8rem; transform: translate(-10px, 50px); animation-duration: 2.6s !important; }
 .line-6 { font-size: 8.5rem; transform: translate(260px, 70px); animation-duration: 3.8s !important; letter-spacing: 6px; }
 
-/* 右侧署名与长颈鹿区 */
 .signature-wrap {
     position: absolute;
     bottom: 22%;
@@ -75,7 +70,6 @@ body, html {
     -webkit-tap-highlight-color: transparent;
 }
 
-/* 底部 Tab 按钮：稍微放大并保持圆角 */
 .tab-container {
     position: absolute;
     bottom: 6%;
@@ -102,12 +96,4 @@ body, html {
     background: #000;
     color: #fff;
     transform: translateY(-5px);
-}
-
-[id="R1726258846"].page {
-	min-height: var(--viewport-height);
-}
-
-[id="R1726258846"] .page-content {
-	align-items: flex-start;
 }
