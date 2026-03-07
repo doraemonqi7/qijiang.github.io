@@ -1,4 +1,4 @@
-/* 引入最具马克笔粗笔触感的涂鸦字体 */
+/* 引入手写体 */
 @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
 
 body, html {
@@ -6,45 +6,39 @@ body, html {
     padding: 0;
     overflow-y: scroll;
     overflow-x: hidden;
-    /* 核心：强制全局使用 Permanent Marker */
     font-family: 'Permanent Marker', cursive !important;
     background-color: #ffffff;
 }
 
-/* 隐藏原生滚动条 */
 body::-webkit-scrollbar { display: none; }
 
-/* 左上角标题与按钮组合 */
+/* 左上角标题区域：适配更大的字号 */
 .header-nav-stack {
     position: fixed;
-    top: 45px;
+    top: 50px;
     left: 45px;
     display: flex;
     flex-direction: column; 
     align-items: flex-start;
-    gap: 15px; 
+    gap: 25px; 
     z-index: 100;
 }
 
 .gallery-header-text {
-    font-size: 2.2rem !important;
-    font-family: 'Permanent Marker', cursive !important;
+    font-size: 3.5rem !important; /* 放大后的标题 */
     color: #000;
     margin: 0;
-    line-height: 1;
 }
 
 .back-btn-handdrawn {
-    font-family: 'Permanent Marker', cursive !important;
     text-decoration: none;
     color: #000;
-    border: 5px solid #000; 
-    padding: 10px 25px;
+    border: 3px solid #000; /* 变细后的边框 */
+    padding: 8px 25px;
     border-radius: 15px; 
     font-size: 1.2rem !important;
     background: white;
     transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    display: inline-block;
 }
 
 .back-btn-handdrawn:hover {
@@ -53,35 +47,35 @@ body::-webkit-scrollbar { display: none; }
     transform: scale(1.05) rotate(-2deg);
 }
 
-/* 核心修改：三列布局且水平居中 */
+/* 核心修复：三列居中且图片可放大 */
 .vertical-gallery {
     display: grid;
-    /* 修改为 3 列，每列 280px */
-    grid-template-columns: repeat(3, 280px); 
-    /* 确保整个网格在 Cargo 页面内水平居中 */
-    justify-content: center; 
-    gap: 40px 60px;
-    padding: 220px 20px 200px 20px; 
+    grid-template-columns: repeat(3, 280px); /* 维持三列 */
+    justify-content: center; /* 水平居中核心属性 */
+    gap: 60px 80px; 
+    padding: 300px 0 200px 0; /* 增加顶部边距适配大标题 */
+    margin: 0 auto !important; 
+    width: fit-content; 
     position: relative;
     z-index: 10;
-    max-width: 1200px;
-    margin: 0 auto; /* 容器自身居中 */
 }
 
+/* 悬停放大逻辑 */
 .gallery-item {
     transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    cursor: zoom-in;
+    position: relative;
+    z-index: 11;
 }
 
-/* 错落感逻辑：每行的中间一个（2, 5, 8...）下移 */
-.gallery-item:nth-child(3n-1) { margin-top: 50px; }
+/* 错落感：中间列下移 */
+.gallery-item:nth-child(3n-1) { margin-top: 60px; }
 
 .img-frame {
     border: 9px solid var(--frame-color, #000); 
     border-radius: 5px;
     overflow: hidden;
-    transition: all 0.3s ease;
     background: #fff;
+    pointer-events: auto; /* 确保鼠标事件穿透 */
 }
 
 .gallery-item img {
@@ -90,6 +84,7 @@ body::-webkit-scrollbar { display: none; }
     display: block;
 }
 
+/* 鼠标放上去图片放大 1.35 倍 */
 .gallery-item:hover { 
     transform: scale(1.35) rotate(2deg); 
     z-index: 50; 
@@ -99,10 +94,9 @@ body::-webkit-scrollbar { display: none; }
     box-shadow: 0 15px 50px var(--frame-color);
 }
 
-/* 响应式：小屏幕自动变回一列 */
-@media (max-width: 1000px) {
-    .vertical-gallery {
-        grid-template-columns: repeat(1, 280px);
-    }
-    .gallery-item:nth-child(n) { margin-top: 0; }
+/* 响应式 */
+@media (max-width: 1100px) {
+    .vertical-gallery { grid-template-columns: repeat(2, 280px); }
+    .gallery-item:nth-child(3n-1) { margin-top: 0; }
+    .gallery-item:nth-child(even) { margin-top: 60px; }
 }
