@@ -7,6 +7,7 @@ body {
     padding: 3vw 5vw;
 }
 
+/* 标题样式 */
 .gallery-header h1 { font-size: clamp(2rem, 5vw, 3.5rem); margin: 0; }
 .back-btn {
     border: 2px solid #000;
@@ -17,17 +18,19 @@ body {
     font-weight: bold;
     display: inline-block;
     margin-top: 10px;
+    transition: 0.3s;
 }
+.back-btn:hover { background: #000; color: #fff; }
 
-/* 核心修复：增加列数，减小单张图片的显示空间 */
+/* --- 核心修复：增加列数以缩小图片显示宽度 --- */
 .gallery-grid {
-    column-count: 4; /* 增加到 4 列，让单图变小 */
+    column-count: 4; /* 从3增加到4列，单图视觉尺寸会变小 */
     column-gap: 30px;
     width: 100%;
     margin-top: 40px;
 }
 
-/* 响应式：根据屏幕宽度自动减少列数 */
+/* 响应式调整：根据窗口大小动态改变列数 */
 @media (max-width: 1200px) { .gallery-grid { column-count: 3; } }
 @media (max-width: 800px) { .gallery-grid { column-count: 2; } }
 @media (max-width: 500px) { .gallery-grid { column-count: 1; } }
@@ -36,7 +39,7 @@ body {
     display: inline-block;
     width: 100%;
     margin-bottom: 30px;
-    padding: 8px; /* 稍微缩小内边距 */
+    padding: 8px; 
     background: #fff;
     box-sizing: border-box;
     transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -46,19 +49,19 @@ body {
 .gallery-item img {
     width: 100%;
     height: auto;
-    max-height: 70vh; /* 关键：限制图片高度最高不超过屏幕的 70% */
-    object-fit: contain; /* 确保图片完整显示 */
+    max-height: 65vh; /* 关键：限制图片最大高度不超过屏幕的65%，防止“巨屏”现象 */
+    object-fit: contain; 
     display: block;
 }
 
-/* 鼠标经过放大效果 */
+/* 鼠标悬停时的放大动态 */
 .gallery-item:hover {
-    transform: scale(1.05) translateY(-10px);
+    transform: scale(1.06) translateY(-12px);
     z-index: 10;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.1);
 }
 
-/* 彩色边框样式保持不变 */
+/* 保持彩色边框风格 */
 .item-pink { border: 5px solid #ffb7b7; }
 .item-yellow { border: 5px solid #ffeeba; }
 .item-blue { border: 5px solid #b2ebf2; }
@@ -66,9 +69,8 @@ body {
 .item-green { border: 5px solid #dcedc8; }
 .item-red { border: 5px solid #ffccbc; }
 .item-orange { border: 5px solid #ffe0b2; }
-.item-cyan { border: 5px solid #e0f2f1; }
+.item-cyan { border: 6px solid #e0f2f1; }
 
-/* 广州阿那亚稍微突出一点 */
 .special-large { transform: scale(1.03); }
 
 @keyframes float { 50% { transform: translateY(-8px); } }
