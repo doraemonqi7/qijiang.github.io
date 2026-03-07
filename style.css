@@ -10,83 +10,79 @@ body, html {
     font-family: 'Gochi Hand', cursive !important;
 }
 
+/* 背景画板：使用 Grid 锁定 3:7 黄金比例 */
 .cargo-canvas {
+    display: grid;
+    grid-template-columns: 3fr 7fr; 
     width: 100vw;
     height: 100vh;
-    position: relative;
+    align-items: center;
     box-sizing: border-box;
+    padding: 0 5vw;
 }
 
-/* --- 6行文字：粒子抖动 (保持原样) --- */
-@keyframes particle1 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(4px, -3px); } }
-@keyframes particle2 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(-3px, 4px); } }
+/* --- 左侧文字：保持粒子抖动 --- */
+@keyframes cuteShake {
+    0%, 100% { transform: translate(0,0) rotate(0deg); }
+    50% { transform: translate(2px, -2px) rotate(1deg); }
+}
 
 .wuhu-scatter {
-    position: absolute;
-    left: 5vw;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 30vw;
-    height: 65vh;
+    position: relative;
+    height: 60vh;
+    z-index: 5;
 }
 
-.wuhu-scatter div { position: absolute; white-space: nowrap; }
+.wuhu-scatter div { position: absolute; white-space: nowrap; animation: cuteShake 3s infinite ease-in-out; }
 
-.line-1 { font-size: 6.5vw; top: 0%; left: 0%; animation: particle1 3s infinite; }
-.line-2 { font-size: 5vw; top: 20%; left: 18%; animation: particle2 2.7s infinite; }
-.line-3 { font-size: 3.8vw; top: 12%; left: 45%; animation: particle1 3.5s infinite; opacity: 0.8; }
-.line-4 { font-size: 3vw; top: 52%; left: 5%; animation: particle2 2.4s infinite; opacity: 0.6; }
-.line-5 { font-size: 2.2vw; top: 72%; left: 30%; animation: particle1 3.8s infinite; opacity: 0.5; }
-.line-6 { font-size: 1.5vw; top: 88%; left: 12%; animation: particle2 4.2s infinite; opacity: 0.4; }
+.line-1 { font-size: 5vw; top: 0%; left: 0%; animation-duration: 2.5s; }
+.line-2 { font-size: 4vw; top: 20%; left: 15%; animation-duration: 3.2s; }
+.line-3 { font-size: 3vw; top: 12%; left: 45%; opacity: 0.8; }
+.line-4 { font-size: 2.5vw; top: 55%; left: 5%; opacity: 0.6; }
+.line-5 { font-size: 1.8vw; top: 78%; left: 25%; opacity: 0.5; }
+.line-6 { font-size: 1.2vw; top: 92%; left: 10%; opacity: 0.4; }
 
-/* --- 右侧长颈鹿区：实现镜像翻转 --- */
+/* --- 右侧长颈鹿区：向左靠拢并显著加大 --- */
 .signature-wrap {
-    position: absolute;
-    right: 5vw;
-    top: 45%; 
-    transform: translateY(-50%);
-    width: 50vw;
-    max-width: 750px; 
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-left: -5vw; /* 核心修改：让长颈鹿整体向左位移，靠近中心 */
+    z-index: 10;
 }
 
-.portfolio-title { font-size: 4.2vw; margin-bottom: 0.5vh; }
+.portfolio-title { font-size: 4vw; margin-bottom: 0.5vh; }
 
 .animal-img {
-    width: 100%;
+    width: 95%; /* 进一步加大图片占比 */
+    max-width: 750px; /* 提升上限，让它在屏幕上更大 */
     height: auto;
     cursor: pointer;
-    /* 核心修改：使用 scaleX(-1) 实现水平镜像翻转 */
-    transform: scaleX(-1); 
+    transform: scaleX(-1); /* 保持镜像向左看 */
     transition: all 0.4s ease;
 }
 
-.animal-img:hover { 
-    /* 悬停时保持镜像状态并轻微放大旋转 */
-    transform: scaleX(-1) scale(1.03) rotate(1.5deg); 
-}
+.animal-img:hover { transform: scaleX(-1) scale(1.03) rotate(1.5deg); }
 
-/* 修正跳动动画：确保在跳动时图片依然是镜像的 */
 .animal-img.active { animation: jumpMirror 0.45s ease-in-out; }
-
 @keyframes jumpMirror {
     0%, 100% { transform: scaleX(-1) scale(1.03); }
-    50% { transform: scaleX(-1) scale(1.12) translateY(-4vh); }
+    50% { transform: scaleX(-1) scale(1.15) translateY(-5vh); }
 }
 
-.signature-text { font-size: 3.8vw; font-weight: bold; margin-top: 1.5vh; white-space: nowrap; }
+.signature-text { font-size: 3.5vw; font-weight: bold; margin-top: 1vh; white-space: nowrap; }
 
-/* --- 底部 Tab：向中间聚拢 --- */
+/* --- 底部 Tab：向中间聚拢版 --- */
 .tab-container {
     position: absolute;
     bottom: 6vh;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 3vw; 
-    width: 70vw;
+    gap: 2.5vw; 
+    width: 55vw; /* 核心修改：从 70vw 降到 55vw，强制按钮向中间靠拢，远离两侧边缘 */
     justify-content: center;
     z-index: 1000;
 }
@@ -94,19 +90,20 @@ body, html {
 .tab-link {
     border: 0.35vw solid #000;
     border-radius: 50px;
-    padding: 1vw 3.5vw; 
+    padding: 0.8vw 3vw; 
     text-decoration: none;
     color: #000;
     font-weight: bold;
-    font-size: 2.2vw; 
-    background: white;
+    font-size: 1.8vw; /* 略微缩小字号确保精致感 */
+    background: #fff;
     white-space: nowrap;
     transition: 0.3s;
 }
 
-.tab-link:hover { background: #000; color: #fff; transform: translateY(-1vh); }
+.tab-link:hover { background: #000; color: #fff; transform: translateY(-8px); }
 
-@media (max-width: 768px) {
-    .tab-container { width: 95vw; }
-    .tab-link { font-size: 3.5vw; }
+/* 针对窄屏的适配，防止按钮重叠 */
+@media (max-width: 850px) {
+    .tab-container { width: 90vw; gap: 1.5vw; }
+    .tab-link { font-size: 3vw; padding: 1.5vw 2.5vw; }
 }
