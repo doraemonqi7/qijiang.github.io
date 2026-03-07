@@ -7,45 +7,68 @@ body {
     padding: 5vw;
 }
 
-.gallery-header { margin-bottom: 50px; }
-.gallery-header h1 { font-size: clamp(2rem, 5vw, 4rem); margin: 0; }
-
+/* 头部样式保持简洁 */
+.gallery-header { margin-bottom: 60px; }
+.gallery-header h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); margin: 0; }
 .back-btn {
     display: inline-block;
     border: 2px solid #000;
-    border-radius: 10px;
-    padding: 5px 20px;
+    border-radius: 12px;
+    padding: 8px 25px;
     text-decoration: none;
     color: #000;
     font-weight: bold;
-    margin-top: 10px;
+    margin-top: 15px;
     transition: 0.3s;
 }
-
 .back-btn:hover { background: #000; color: #fff; }
 
+/* 瀑布流核心：不整齐排列的关键 */
 .gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 40px;
+    column-count: 3; /* 分为三列 */
+    column-gap: 40px; /* 列间距 */
+    width: 100%;
 }
 
+@media (max-width: 900px) { .gallery-grid { column-count: 2; } }
+@media (max-width: 600px) { .gallery-grid { column-count: 1; } }
+
+/* 图片项：外框紧贴图片 */
 .gallery-item {
-    padding: 10px;
-    transition: all 0.5s ease;
-    animation: float 4s infinite ease-in-out;
+    display: inline-block; /* 必须是 inline-block 才能在瀑布流里正常显示 */
+    width: 100%;
+    margin-bottom: 40px; /* 行间距 */
+    padding: 12px;
+    background: #fff;
+    box-sizing: border-box;
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+    animation: float 5s infinite ease-in-out;
 }
+
+/* 每一行设置不同的漂浮节奏，让它们看起来更随机 */
+.gallery-item:nth-child(even) { animation-duration: 4s; animation-delay: 1s; }
+.gallery-item:nth-child(3n) { animation-duration: 6s; animation-delay: 2s; }
 
 @keyframes float {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-15px); }
+    50% { transform: translateY(-10px); }
 }
 
-.gallery-item:nth-child(even) { animation-delay: 1.5s; }
+.gallery-item img {
+    width: 100%;
+    height: auto; /* 关键：高度自适应，外框随图片大小变 */
+    display: block;
+}
 
-.gallery-item img { width: 100%; height: auto; }
+/* 鼠标放上去变大的动画 */
+.gallery-item:hover {
+    transform: scale(1.08) translateY(-20px) !important;
+    z-index: 100;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+}
 
-/* 彩色边框 */
+/* 彩色边框样式 */
 .item-pink { border: 6px solid #ffb7b7; }
 .item-yellow { border: 6px solid #ffeeba; }
 .item-blue { border: 6px solid #b2ebf2; }
@@ -55,4 +78,8 @@ body {
 .item-orange { border: 6px solid #ffe0b2; }
 .item-cyan { border: 6px solid #e0f2f1; }
 
-.gallery-item:hover { transform: scale(1.05) translateY(-20px); z-index: 5; }
+/* 特殊定制：广州阿那亚稍微大一点点 */
+.special-large {
+    transform: scale(1.05);
+    margin-top: 20px;
+}
