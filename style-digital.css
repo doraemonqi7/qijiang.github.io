@@ -2,37 +2,37 @@
 @import url('https://fonts.googleapis.com/css2?family=Gochi+Hand&display=swap');
 
 * {
-    /* 核心修复：确保所有元素都使用手写体 */
+    /* 核心修复：确保所有文字强制使用手写体 */
     font-family: 'Gochi Hand', cursive !important;
 }
 
 body {
     background-color: #ffffff;
     margin: 0;
-    padding: 3vw;
+    padding: 4vw;
     overflow-x: hidden;
 }
 
-/* 2. 标题与按钮区域 */
+/* 2. 标题与按钮 */
 .gallery-header {
     margin-bottom: 40px;
     text-align: left;
 }
 
 .gallery-header h1 {
-    font-size: 3rem;
-    margin-bottom: 10px;
+    font-size: 3.5rem;
+    margin: 0 0 15px 0;
 }
 
 .back-btn {
     display: inline-block;
-    border: 2px solid #000;
+    border: 3px solid #000;
     border-radius: 12px;
     padding: 10px 30px;
     text-decoration: none;
     color: #000;
     font-weight: bold;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     transition: 0.3s;
 }
 
@@ -42,35 +42,34 @@ body {
     transform: translateY(-3px);
 }
 
-/* 3. 核心布局修复：锁定三列，不再无限变大 */
+/* 3. 核心布局修复：锁定三列，防止视频巨大化 */
 .video-grid {
     display: grid;
-    /* 强制一行三个，每列宽度限制在 250px 到 400px 之间 */
-    grid-template-columns: repeat(3, minmax(250px, 400px));
-    gap: 40px;
-    justify-content: center; /* 整体居中 */
+    /* 强制锁定三列，每列宽度在 280px 到 400px 之间 */
+    grid-template-columns: repeat(3, minmax(280px, 400px));
+    gap: 60px;
+    justify-content: center; /* 整个网格水平居中 */
     align-items: start;
     margin: 50px auto;
     max-width: 1400px;
 }
 
-/* 4. 视频容器与动画 */
+/* 4. 视频项与动画 */
 .video-item {
     width: 100%;
     background: #fff;
-    padding: 0;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     animation: float 5s infinite ease-in-out;
     position: relative;
     box-sizing: border-box;
 }
 
-/* 悬停放大：必须关掉 float 动画，放大倍数才稳定 */
+/* 悬停放大：必须关掉 float 动画，放大效果才稳定 */
 .video-item:hover {
     animation: none !important;
     transform: scale(1.1) translateY(-15px) !important;
     z-index: 100;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    box-shadow: 0 20px 45px rgba(0,0,0,0.12);
 }
 
 @keyframes float {
@@ -78,27 +77,28 @@ body {
     50% { transform: translateY(-12px); }
 }
 
-/* 强制视频自适应容器宽度 */
 video {
     width: 100%;
     height: auto;
     display: block;
     border-radius: 15px;
+    background: #f0f0f0; /* 视频未加载时的占位色 */
 }
 
 .video-label {
     margin-top: 15px;
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     font-weight: bold;
+    text-align: center;
 }
 
 /* 5. 视频专属彩色边框 */
-.v-blue { border: 6px solid #b2ebf2; border-radius: 20px; padding: 10px; }
-.v-purple { border: 6px solid #f3e5f5; border-radius: 20px; padding: 10px; }
-.v-green { border: 6px solid #dcedc8; border-radius: 20px; padding: 10px; }
+.v-blue { border: 8px solid #b2ebf2; border-radius: 25px; padding: 12px; }
+.v-purple { border: 8px solid #f3e5f5; border-radius: 25px; padding: 12px; }
+.v-green { border: 8px solid #dcedc8; border-radius: 25px; padding: 12px; }
 
 /* 响应式：屏幕太小时自动变一列 */
-@media (max-width: 900px) {
+@media (max-width: 950px) {
     .video-grid {
         grid-template-columns: 1fr;
         max-width: 450px;
