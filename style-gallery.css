@@ -21,25 +21,37 @@ body {
     margin-top: 10px;
     transition: 0.3s;
 }
-
 .back-btn:hover { background: #000; color: #fff; }
 
 /* 网格布局 */
 .gallery-grid {
     display: grid;
-    /* 调整这里，让图片在小屏幕上也能自动缩小 */
+    /* 自动填充列，最小 280px */
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 40px;
+    gap: 60px;
+    align-items: start; /* 重要：顶部对齐 */
 }
 
 .gallery-item {
-    padding: 10px;
-    background: #fff; /* 确保图片有白色底，像宝丽来照片 */
-    /* 优化过渡效果，让放大更丝滑 */
+    background: #fff;
+    padding: 0; 
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     /* 默认漂浮动画 */
     animation: float 4s infinite ease-in-out;
     cursor: pointer;
+    position: relative;
+    /* 核心修复：确保容器高度完全由图片决定 */
+    height: fit-content; 
+    width: 100%;
+}
+
+/* 核心修复：鼠标悬停放大 */
+/* 增加 !important 确保覆盖掉 float 动画中的 transform */
+.gallery-item:hover { 
+    animation-play-state: paused; /* 悬停时暂停漂浮，防止抖动 */
+    transform: scale(1.1) translateY(-20px) !important; 
+    z-index: 100; 
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1); 
 }
 
 @keyframes float {
@@ -49,23 +61,18 @@ body {
 
 .gallery-item:nth-child(even) { animation-delay: 1.5s; }
 
-.gallery-item img { width: 100%; height: auto; display: block; }
-
-/* 彩色边框 */
-.item-pink { border: 6px solid #ffb7b7; }
-.item-yellow { border: 6px solid #ffeeba; }
-.item-blue { border: 6px solid #b2ebf2; }
-.item-purple { border: 6px solid #f3e5f5; }
-.item-green { border: 6px solid #dcedc8; }
-.item-red { border: 6px solid #ffccbc; }
-.item-orange { border: 6px solid #ffe0b2; }
-.item-cyan { border: 6px solid #e0f2f1; }
-
-/* --- 核心修复：显著放大鼠标悬停效果 --- */
-.gallery-item:hover { 
-    /* 从 1.05 加大到 1.1（放大 10%），并浮起更多 */
-    transform: scale(1.1) translateY(-25px); 
-    z-index: 10; /* 提升层级，防止被邻居挡住 */
-    /* 增加阴影，让它看起来“飘”起来了 */
-    box-shadow: 0 15px 35px rgba(0,0,0,0.1); 
+.gallery-item img { 
+    width: 100%; 
+    height: auto; 
+    display: block; /* 核心修复：消除图片底部 3px 缝隙 */
 }
+
+/* 彩色边框样式 */
+.item-pink { border: 8px solid #ffb7b7; }
+.item-yellow { border: 8px solid #ffeeba; }
+.item-blue { border: 8px solid #b2ebf2; }
+.item-purple { border: 8px solid #f3e5f5; }
+.item-green { border: 8px solid #dcedc8; }
+.item-red { border: 8px solid #ffccbc; }
+.item-orange { border: 8px solid #ffe0b2; }
+.item-cyan { border: 8px solid #e0f2f1; }
