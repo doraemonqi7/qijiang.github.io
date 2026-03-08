@@ -1,39 +1,36 @@
-<!DOCTYPE html>
-<html lang="zh">
-<head>
-    <meta charset="UTF-8">
-    <title>Digital Image & 3D Creation</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-<div class="gallery-header">
-    <h1>Digital Image & 3D Creation</h1>
-    <a href="index.html" class="back-btn">Back to Home</a>
-</div>
-
-<div class="video-grid">
-    <div class="video-item v-blue">
-        <video muted autoplay loop playsinline>
-            <source src="视频1.mp4" type="video/mp4">
+<div class="media-grid">
+    <div class="media-item item-pink" onclick="playVideo(this)">
+        <img src="chuchuang.png" class="poster">
+        
+        <video class="video-player" loop playsinline muted controls style="display: none;">
+            <source src="chuchuang.mp4" type="video/mp4">
+            お使いのブラウザは動画タグをサポートしていません。
         </video>
-        <p style="margin-top:15px; font-size:1.5rem;">3D Modeling - Computer</p>
+        
+        <div class="media-info">
+            <h2>WINDOW DESIGN</h2>
+            <p>New media art combined with window design for multi-sensory experience.</p>
+        </div>
+    </div>
+    
     </div>
 
-    <div class="video-item v-purple">
-        <video muted autoplay loop playsinline>
-            <source src="视频2.mp4" type="video/mp4">
-        </video>
-        <p style="margin-top:15px; font-size:1.5rem;">Character Animation</p>
-    </div>
-
-    <div class="video-item v-green">
-        <video muted autoplay loop playsinline>
-            <source src="视频3.mp4" type="video/mp4">
-        </video>
-        <p style="margin-top:15px; font-size:1.5rem;">Environment Render</p>
-    </div>
-</div>
-
-</body>
-</html>
+<script>
+    function playVideo(container) {
+        const poster = container.querySelector('.poster');
+        const video = container.querySelector('.video-player');
+        const info = container.querySelector('.media-info');
+        
+        // 画像とテキストを非表示にする
+        poster.style.display = 'none';
+        if(info) info.style.display = 'none';
+        
+        // 動画を表示して再生
+        video.style.display = 'block';
+        video.play();
+        
+        // 親要素の浮遊アニメーションを止める（操作しやすくするため）
+        container.style.animation = 'none';
+        container.style.transform = 'none';
+    }
+</script>
