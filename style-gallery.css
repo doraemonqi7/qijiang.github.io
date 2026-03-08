@@ -1,75 +1,84 @@
-/* 引入手写字体 */
+/* 强制引入手写字体 */
 @import url('https://fonts.googleapis.com/css2?family=Gochi+Hand&display=swap');
+
+* {
+    /* 核心修复：强制全局使用手写体，防止 GitHub Pages 回退到系统字体 */
+    font-family: 'Gochi Hand', cursive !important;
+}
 
 body {
     background-color: #ffffff;
-    font-family: 'Gochi Hand', cursive !important;
     margin: 0;
-    padding: 0;
+    padding: 3vw;
     overflow-x: hidden;
 }
 
-/* 标题区域：固定在左上角，确保不被图片遮挡 */
+/* 标题与返回按钮区域 */
 .gallery-header {
-    position: fixed;
-    top: 30px;
-    left: 40px;
+    margin-bottom: 50px;
+    text-align: left;
+    position: relative;
     z-index: 1000;
-    background: rgba(255,255,255,0.8); /* 半透明底色，防止背景太乱 */
-    padding: 10px;
-    border-radius: 10px;
 }
 
-.gallery-header h1 { font-size: 2.5rem; margin: 0; }
+.gallery-header h1 {
+    font-size: 3.5rem;
+    margin: 0 0 15px 0;
+}
 
 .back-btn {
     display: inline-block;
-    border: 2px solid #000;
-    border-radius: 10px;
-    padding: 5px 20px;
+    border: 3px solid #000;
+    border-radius: 12px;
+    padding: 10px 30px;
     text-decoration: none;
     color: #000;
     font-weight: bold;
-    margin-top: 10px;
-    transition: 0.3s;
+    font-size: 1.3rem;
+    transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-.back-btn:hover { background: #000; color: #fff; }
 
-/* 核心布局修复：三列居中，限制单张图最大宽度 */
+.back-btn:hover {
+    background: #000;
+    color: #fff;
+    transform: translateY(-5px);
+}
+
+/* 核心修复：锁定三列布局，防止图片无限变大 */
 .gallery-grid {
     display: grid;
-    /* 强制锁定为三列，每列最大不超过 350px */
-    grid-template-columns: repeat(3, minmax(200px, 350px)); 
+    /* 强制一行三个，单张图宽度锁定在 280px 到 400px 之间 */
+    grid-template-columns: repeat(3, minmax(280px, 400px)); 
     justify-content: center; /* 整个网格居中 */
-    gap: 40px;
-    padding: 200px 5vw 100px 5vw; /* 顶部留出足够空间给标题 */
-    max-width: 1200px;
-    margin: 0 auto; /* 容器居中 */
+    gap: 50px 70px;
+    padding: 50px 20px;
+    margin: 0 auto;
+    max-width: 1400px;
 }
 
 .gallery-item {
     background: #fff;
-    padding: 0;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     animation: float 4s infinite ease-in-out;
     cursor: pointer;
     position: relative;
-    box-sizing: border-box;
-    width: 100%; /* 随网格宽度缩放 */
+    width: 100%;
 }
 
-/* 鼠标悬停放大：增加 !important 确保覆盖动画 */
+/* 悬停放大：停止漂浮并显著放大 */
 .gallery-item:hover { 
     animation: none !important;
-    transform: scale(1.1) translateY(-15px) !important; 
+    transform: scale(1.15) translateY(-20px) !important; 
     z-index: 100; 
-    box-shadow: 0 20px 40px rgba(0,0,0,0.1); 
+    box-shadow: 0 30px 60px rgba(0,0,0,0.15); 
 }
 
 @keyframes float {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-12px); }
+    50% { transform: translateY(-15px); }
 }
+
+.gallery-item:nth-child(even) { animation-delay: 1.5s; }
 
 .gallery-item img { 
     width: 100%; 
@@ -79,17 +88,17 @@ body {
 }
 
 /* 边框样式 */
-.item-pink { border: 6px solid #ffb7b7; }
-.item-yellow { border: 1px solid #ffeeba; } /* 根据你截图里的 tiger 边框细一点 */
-.item-blue { border: 6px solid #b2ebf2; }
-.item-purple { border: 6px solid #f3e5f5; }
-.item-red { border: 6px solid #ffccbc; }
-.item-cyan { border: 6px solid #e0f2f1; }
+.item-pink { border: 9px solid #ffb7b7; }
+.item-yellow { border: 9px solid #ffeeba; }
+.item-blue { border: 9px solid #b2ebf2; }
+.item-purple { border: 9px solid #f3e5f5; }
+.item-red { border: 9px solid #ffccbc; }
+.item-cyan { border: 9px solid #e0f2f1; }
 
-/* 响应式：手机端改为一列 */
-@media (max-width: 800px) {
-    .gallery-grid {
-        grid-template-columns: repeat(1, 1fr);
-        padding-top: 150px;
-    }
+/* 响应式适配 */
+@media (max-width: 1000px) {
+    .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+    .gallery-grid { grid-template-columns: 1fr; }
 }
