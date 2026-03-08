@@ -4,7 +4,111 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visual Art & Illustration | Boring Still Life</title>
-    <link rel="stylesheet" href="style-gallery.css">
+    <style>
+        /* 1. 强制引入手写字体并应用 */
+        @import url('https://fonts.googleapis.com/css2?family=Gochi+Hand&display=swap');
+
+        * {
+            font-family: 'Gochi Hand', cursive !important;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #ffffff;
+            margin: 0;
+            padding: 40px;
+            overflow-x: hidden;
+        }
+
+        /* 2. 标题和返回按钮 */
+        .gallery-header {
+            margin-bottom: 50px;
+            text-align: left;
+        }
+
+        .gallery-header h1 {
+            font-size: 3.5rem;
+            margin: 0 0 15px 0;
+            color: #000;
+        }
+
+        .back-btn {
+            display: inline-block;
+            border: 3px solid #000;
+            border-radius: 12px;
+            padding: 10px 30px;
+            text-decoration: none;
+            color: #000;
+            font-weight: bold;
+            font-size: 1.3rem;
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .back-btn:hover {
+            background: #000;
+            color: #fff;
+            transform: translateY(-5px);
+        }
+
+        /* 3. 核心布局修复：强制一行三个 */
+        .gallery-grid {
+            display: grid;
+            /* 关键：锁定三列，每列平分空间，最大宽度不超过 400px */
+            grid-template-columns: repeat(3, minmax(200px, 400px)); 
+            justify-content: center; /* 整体居中 */
+            gap: 60px; /* 图片之间的间距 */
+            padding: 20px;
+            margin: 0 auto;
+            max-width: 1400px;
+        }
+
+        /* 4. 图片项、边框与动画 */
+        .gallery-item {
+            background: #fff;
+            padding: 0;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            /* 上下漂浮动画 */
+            animation: float 4s infinite ease-in-out;
+            cursor: pointer;
+            position: relative;
+            width: 100%;
+        }
+
+        /* 鼠标碰到图片变大 */
+        .gallery-item:hover { 
+            animation: none !important; /* 停止漂浮 */
+            transform: scale(1.15) translateY(-20px) !important; 
+            z-index: 100; 
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15); 
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .gallery-item:nth-child(even) { animation-delay: 1.5s; }
+
+        .gallery-item img { 
+            width: 100%; 
+            height: auto; 
+            display: block; 
+            border-radius: 5px;
+        }
+
+        /* 5. 彩色边框样式 */
+        .item-pink { border: 9px solid #ffb7b7; }
+        .item-yellow { border: 9px solid #ffeeba; }
+        .item-blue { border: 9px solid #b2ebf2; }
+        .item-purple { border: 9px solid #f3e5f5; }
+        .item-red { border: 9px solid #ffccbc; }
+        .item-cyan { border: 9px solid #e0f2f1; }
+
+        /* 手机端自动变为一列 */
+        @media (max-width: 900px) {
+            .gallery-grid { grid-template-columns: 1fr; max-width: 450px; }
+        }
+    </style>
 </head>
 <body>
 
@@ -14,31 +118,24 @@
     </div>
 
     <div class="gallery-grid">
-        
         <div class="gallery-item item-pink">
             <img src="https://freight.cargo.site/t/original/i/R2827972798146195394092440487879/festival.png" alt="Festival">
         </div>
-        
         <div class="gallery-item item-yellow">
             <img src="https://freight.cargo.site/t/original/i/B2827972798164642138166150039495/tiger.png" alt="Tiger">
         </div>
-
         <div class="gallery-item item-blue">
             <img src="https://freight.cargo.site/t/original/i/O2827965266561951027367030294471/cat.png" alt="Cat">
         </div>
-
         <div class="gallery-item item-purple">
             <img src="https://freight.cargo.site/t/original/i/G2827961172380890843826887329735/-copy.png" alt="Apple">
         </div>
-
         <div class="gallery-item item-red">
             <img src="https://freight.cargo.site/t/original/i/J2827956943501705434059598464967/.png" alt="Architecture">
         </div>
-
         <div class="gallery-item item-cyan">
-            <img src="https://freight.cargo.site/t/original/i/O2827949345988797747896250795975/cute.png" alt="Cute version of friends">
+            <img src="https://freight.cargo.site/t/original/i/O2827949345988797747896250795975/cute.png" alt="Friends">
         </div>
-
     </div>
 
 </body>
