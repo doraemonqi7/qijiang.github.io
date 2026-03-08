@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visual Portfolio | QI JIANG</title>
     <style>
+        /* 使用国内镜像字体加速加载 */
         @import url('https://fonts.font.im/css2?family=Gochi+Hand&display=swap');
 
         * { font-family: 'Gochi Hand', cursive !important; box-sizing: border-box; }
@@ -14,14 +15,25 @@
             background-color: #ffffff;
             width: 100%; height: 100%;
             overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        /* 背景文字区域：打散分布 */
+        /* 核心逻辑：使用一个大容器承载所有元素，按视口比例缩放 */
+        .viewport-wrapper {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            max-width: 1920px; /* 防止超大屏幕下过于散乱 */
+            margin: 0 auto;
+        }
+
+        /* 1. 零散背景文字：使用 vw/vh 锁定位置 */
         .bg-wuhu-layer {
             position: absolute;
             top: 0; left: 0;
-            width: 50%; /* 限制在左半边，不干扰右侧长颈鹿 */
-            height: 100%;
+            width: 50%; height: 100%;
             z-index: 1;
             pointer-events: none;
             opacity: 0.4;
@@ -30,54 +42,46 @@
         .wuhu-scatter {
             position: absolute;
             white-space: nowrap;
-            display: inline-block;
             animation: float 6s infinite ease-in-out;
         }
 
-        /* 随机散落在各处 */
-        .w1 { top: 10%; left: 15%; font-size: 5rem; transform: rotate(-10deg); }
-        .w2 { top: 25%; left: 40%; font-size: 3.5rem; transform: rotate(15deg); }
-        .w3 { top: 40%; left: 10%; font-size: 6rem; transform: rotate(-5deg); font-weight: bold; }
-        .w4 { top: 15%; left: 65%; font-size: 2.5rem; transform: rotate(20deg); }
-        .w5 { top: 60%; left: 20%; font-size: 4.5rem; transform: rotate(-15deg); }
-        .w6 { top: 75%; left: 45%; font-size: 3rem; transform: rotate(10deg); }
-        .w7 { top: 85%; left: 10%; font-size: 5.5rem; transform: rotate(-8deg); }
-        .w8 { top: 50%; left: 55%; font-size: 2rem; transform: rotate(30deg); opacity: 0.6; }
+        /* 坐标全部改为相对单位，确保随窗口移动 */
+        .w1 { top: 10vh; left: 5vw; font-size: 5vw; transform: rotate(-10deg); }
+        .w2 { top: 25vh; left: 15vw; font-size: 3vw; transform: rotate(15deg); }
+        .w3 { top: 45vh; left: 3vw; font-size: 6vw; transform: rotate(-5deg); font-weight: bold; }
+        .w4 { top: 15vh; left: 30vw; font-size: 2.5vw; transform: rotate(20deg); }
+        .w5 { top: 70vh; left: 10vw; font-size: 4.5vw; transform: rotate(-15deg); }
+        .w6 { top: 80vh; left: 25vw; font-size: 3vw; transform: rotate(10deg); }
 
         @keyframes float {
             0%, 100% { transform: translate(0, 0) rotate(var(--rot, 0deg)); }
-            50% { transform: translate(15px, -10px) rotate(calc(var(--rot, 0deg) + 3deg)); }
+            50% { transform: translate(1vw, -1vh) rotate(calc(var(--rot, 0deg) + 2deg)); }
         }
 
-        /* 主内容布局 */
+        /* 2. 主内容区域：长颈鹿与文字作为整体 */
         .main-content {
-            position: relative;
-            width: 100%; height: 100%;
-            display: flex;
-            justify-content: flex-end; /* 长颈鹿靠右 */
-            align-items: center;
-            z-index: 10;
-            padding-right: 8%;
-        }
-
-        .content-aligner {
+            position: absolute;
+            right: 5vw;
+            top: 45%;
+            transform: translateY(-50%);
             display: flex;
             align-items: flex-end;
-            gap: 40px;
-            margin-bottom: 80px; /* 长颈鹿向上移 */
+            gap: 3vw;
+            z-index: 10;
         }
 
         .text-block {
             text-align: right;
-            margin-bottom: 60px;
+            margin-bottom: 5vh; /* 随窗口高度缩放间距 */
         }
 
-        .title-text { font-size: 5.5rem; font-weight: bold; margin: 0; line-height: 1; }
-        .name-text { font-size: 4rem; font-weight: bold; margin: 10px 0 0 0; line-height: 1; }
+        /* 字体大小使用 vw，随窗口变大变小 */
+        .title-text { font-size: 6vw; font-weight: bold; margin: 0; line-height: 1; }
+        .name-text { font-size: 4vw; font-weight: bold; margin: 1vh 0 0 0; line-height: 1; }
 
         .animal-img {
-            width: 700px;
-            max-width: 48vw;
+            width: 45vw; /* 宽度锁定为视口的 45% */
+            max-width: 800px;
             cursor: pointer;
             transform: scaleX(-1) rotate(2deg);
             transition: 0.3s;
@@ -90,34 +94,49 @@
             50% { transform: scaleX(-1) scale(1.02) rotate(-2deg); }
         }
 
-        /* 底部按钮 */
+        /* 3. 底部按钮：显著放大并保持位置 */
         .nav-tabs {
             position: absolute;
-            bottom: 6%;
+            bottom: 8vh;
             left: 50%;
             transform: translateX(-50%);
-            display: flex; gap: 20px;
+            display: flex; 
+            gap: 2vw;
             z-index: 20;
         }
 
         .tab {
-            border: 3.5px solid #000;
-            border-radius: 60px;
-            padding: 15px 40px;
+            border: 0.4vw solid #000;
+            border-radius: 100px;
+            padding: 1.5vh 3.5vw; /* 响应式内边距 */
             text-decoration: none;
             color: #000;
             font-weight: bold;
-            font-size: 1.5rem; /* 稍微调大 */
+            font-size: 1.8vw; /* 按钮文字也随窗口缩放 */
+            min-font-size: 16px;
             background: #fff;
             transition: 0.3s;
             white-space: nowrap;
+            box-shadow: 0 0.5vh 0 #000;
         }
-        .tab:hover { background: #000; color: #fff; transform: translateY(-8px); }
+        
+        /* 移动端特殊处理，防止文字太小 */
+        @media (max-width: 768px) {
+            .tab { font-size: 1.2rem; padding: 10px 20px; border-width: 3px; }
+            .nav-tabs { flex-direction: column; bottom: 5vh; }
+            .main-content { right: 0; width: 100%; justify-content: center; top: 40%; }
+            .animal-img { width: 80vw; }
+            .title-text { font-size: 12vw; }
+            .name-text { font-size: 8vw; }
+        }
 
-        /* 星星 */
+        .tab:hover { background: #000; color: #fff; transform: translateY(-0.5vh); box-shadow: 0 0.8vh 0 #000; }
+
+        /* 星星特效 */
         .sparkle {
             position: absolute;
-            width: 40px; height: 40px;
+            width: 4vw; height: 4vw;
+            max-width: 40px;
             background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.8 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z" fill="%23FFD700"/></svg>') no-repeat center/contain;
             pointer-events: none;
             animation: burst 0.8s ease-out forwards;
@@ -132,24 +151,24 @@
 </head>
 <body>
 
-    <div class="bg-wuhu-layer">
-        <span class="wuhu-scatter w1" style="--rot:-10deg">wuhuwuhu</span>
-        <span class="wuhu-scatter w2" style="--rot:15deg">wuhuwuhuwuhu</span>
-        <span class="wuhu-scatter w3" style="--rot:-5deg">wuhu!</span>
-        <span class="wuhu-scatter w4" style="--rot:20deg">lalala</span>
-        <span class="wuhu-scatter w5" style="--rot:-15deg">wuhuwuhu</span>
-        <span class="wuhu-scatter w6" style="--rot:10deg">wuhulalaaa</span>
-        <span class="wuhu-scatter w7" style="--rot:-8deg">wuhuwuhu</span>
-        <span class="wuhu-scatter w8" style="--rot:30deg">wuhu~</span>
-    </div>
+    <div class="viewport-wrapper">
+        <div class="bg-wuhu-layer">
+            <span class="wuhu-scatter w1" style="--rot:-10deg">wuhuwuhu</span>
+            <span class="wuhu-scatter w2" style="--rot:15deg">wuhuwuhuwuhu</span>
+            <span class="wuhu-scatter w3" style="--rot:-5deg">wuhu!</span>
+            <span class="wuhu-scatter w4" style="--rot:20deg">lalala</span>
+            <span class="wuhu-scatter w5" style="--rot:-15deg">wuhuwuhu</span>
+            <span class="wuhu-scatter w6" style="--rot:10deg">wuhulalaaa</span>
+        </div>
 
-    <div class="main-content">
-        <div class="content-aligner">
+        <div class="main-content">
             <div class="text-block">
                 <p class="title-text">Portfolio</p>
                 <p class="name-text">BY QI JIANG</p>
             </div>
-            <img id="giraffe" class="animal-img" onclick="clickGiraffe(event)" src="1.png">
+            <div class="giraffe-wrap">
+                <img id="giraffe" class="animal-img" onclick="clickGiraffe(event)" src="1.png">
+            </div>
         </div>
 
         <div class="nav-tabs">
@@ -171,12 +190,12 @@
     function createStar(x, y) {
         const star = document.createElement('div');
         star.className = 'sparkle';
-        const dx = (Math.random() - 0.5) * 200 + 'px';
-        const dy = (Math.random() - 0.5) * 200 + 'px';
+        const dx = (Math.random() - 0.5) * 20 + 'vw';
+        const dy = (Math.random() - 0.5) * 20 + 'vh';
         star.style.setProperty('--dx', dx);
         star.style.setProperty('--dy', dy);
-        star.style.left = (x - 20) + 'px';
-        star.style.top = (y - 20) + 'px';
+        star.style.left = x + 'px';
+        star.style.top = y + 'px';
         document.body.appendChild(star);
         setTimeout(() => star.remove(), 800);
     }
