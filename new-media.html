@@ -4,98 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>New Media Art & Installation</title>
-    <style>
-        /* 1. 强制应用圆润手写字体 */
-        @import url('https://fonts.googleapis.com/css2?family=Gochi+Hand&display=swap');
-        
-        * { font-family: 'Gochi Hand', cursive !important; box-sizing: border-box; }
-
-        body {
-            background-color: #ffffff;
-            margin: 0;
-            padding: 40px;
-            overflow-x: hidden;
-        }
-
-        .gallery-header { margin-bottom: 40px; }
-        .gallery-header h1 { font-size: 3.5rem; margin: 0; }
-
-        .back-btn {
-            display: inline-block;
-            border: 2px solid #000;
-            border-radius: 12px;
-            padding: 10px 30px;
-            text-decoration: none;
-            color: #000;
-            font-weight: bold;
-            font-size: 1.3rem;
-            margin-top: 15px;
-            transition: 0.3s;
-        }
-        .back-btn:hover { background: #000; color: #fff; transform: translateY(-5px); }
-
-        /* 2. 核心布局：一行两个，显著放大 */
-        .media-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr); 
-            gap: 60px;
-            justify-content: center;
-            margin: 50px auto;
-            max-width: 1400px;
-        }
-
-        .media-item {
-            background: #fff;
-            padding: 15px;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            animation: float 5s infinite ease-in-out;
-            cursor: pointer;
-            text-align: center;
-            border-radius: 25px;
-            position: relative;
-        }
-
-        /* 鼠标悬停时停止晃动，方便操作 */
-        .media-item:hover {
-            animation-play-state: paused;
-            transform: scale(1.02) translateY(-10px);
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-12px); }
-        }
-
-        /* 3. 图片与视频样式 */
-        .poster {
-            width: 100%;
-            height: auto;
-            display: block;
-            border-radius: 15px;
-        }
-
-        .video-player {
-            width: 100%;
-            height: auto;
-            display: none; /* 初始隐藏 */
-            border-radius: 15px;
-            background: #000;
-        }
-
-        .media-info { padding: 20px; text-align: left; }
-        .media-info h2 { margin: 0 0 10px 0; font-size: 2rem; }
-        .media-info p { margin: 0; font-size: 1.2rem; line-height: 1.4; opacity: 0.8; }
-
-        /* 彩色边框 */
-        .item-pink { border: 8px solid #ffb7b7; }
-        .item-blue { border: 8px solid #b2ebf2; }
-        .item-green { border: 8px solid #dcedc8; }
-        .item-purple { border: 8px solid #f3e5f5; }
-
-        @media (max-width: 900px) {
-            .media-grid { grid-template-columns: 1fr; }
-        }
-    </style>
+    <link rel="stylesheet" href="style-newmedia.css">
 </head>
 <body>
 
@@ -112,7 +21,7 @@
         </video>
         <div class="media-info">
             <h2>WINDOW DESIGN</h2>
-            <p>New media art combined with window design for multi-sensory experience.</p>
+            <p>Combining new media art with window design to break single visual forms and provide a multi-sensory experience.</p>
         </div>
     </div>
 
@@ -122,8 +31,8 @@
             <source src="haishang.mp4" type="video/mp4">
         </video>
         <div class="media-info">
-            <h2>INSTALL PROJECTION ART YANG JIANG MUSEUM</h2>
-            <p>Functional and entertaining device to understand history at Yang Jiang Museum.</p>
+            <h2>INSTALLATION PROJECTION ART</h2>
+            <p>A functional and entertaining device for Yang Jiang Museum, enabling visitors to understand and participate in history.</p>
         </div>
     </div>
 
@@ -133,8 +42,8 @@
             <source src="game.mp4" type="video/mp4">
         </video>
         <div class="media-info">
-            <h2>DLAB Unreal Engine</h2>
-            <p>Game production workshop using Houdini and Unreal Engine interactions.</p>
+            <h2>DLAB UNREAL ENGINE</h2>
+            <p>Game production workshop at DLAB, using Houdini for node-based modeling and creating interactions in Unreal Engine.</p>
         </div>
     </div>
 
@@ -144,9 +53,19 @@
             <source src="jianzhu.mp4" type="video/mp4">
         </video>
         <div class="media-info">
-            <h2>DLAB Architecture</h2>
-            <p>Digital scanning and 3D-printed reconstruction of Wright’s Imperial Hotel.</p>
+            <h2>DLAB ARCHITECTURE</h2>
+            <p>Digital scanning and 3D-printed reconstruction of plaster models of Wright’s Imperial Hotel.</p>
         </div>
+    </div>
+
+    <div class="media-item item-orange">
+        <a href="firework.html" style="text-decoration: none; color: inherit;">
+            <img src="fireworks.png" class="poster"> <div class="media-info">
+                <h2>LUMI - INTERACTIVE FIREWORKS</h2>
+                <p>An interactive art installation using gesture recognition. Launch customized fireworks through hand motions.</p>
+                <div style="margin-top:10px; color:#ff6b6b; font-weight:bold;">✨ CLICK TO START INTERACTION</div>
+            </div>
+        </a>
     </div>
 </div>
 
@@ -155,13 +74,12 @@
         const poster = container.querySelector('.poster');
         const video = container.querySelector('.video-player');
         
-        // 核心修复：点击后隐藏图片，显示视频并播放
-        if (poster.style.display !== 'none') {
+        // 只有在没点击过的情况下触发
+        if (poster && poster.style.display !== 'none') {
             poster.style.display = 'none';
             video.style.display = 'block';
             video.play();
-            
-            // 点击后停止晃动，方便拖拽进度条
+            // 播放视频时停止晃动，方便操作进度条
             container.style.animation = 'none';
         }
     }
