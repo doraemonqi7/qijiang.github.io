@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visual Art & Illustration | Boring Still Life</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Gochi+Hand&display=swap');
+        /* 核心修复 1：使用国内镜像加速字体，解决 VPN 依赖问题 */
+        @import url('https://fonts.font.im/css2?family=Gochi+Hand&display=swap');
 
         * { font-family: 'Gochi Hand', cursive !important; box-sizing: border-box; }
 
@@ -25,7 +26,7 @@
             display: grid;
             grid-template-columns: repeat(3, minmax(250px, 380px)); 
             justify-content: center;
-            gap: 70px;
+            gap: 50px;
             margin: 50px auto;
             max-width: 1400px;
             align-items: start;
@@ -37,21 +38,20 @@
             animation: float 4s infinite ease-in-out;
             cursor: pointer;
             width: 100%;
-            padding: 20px; /* 为手绘边框留出空间 */
+            padding: 15px; /* 略微收紧，防止外框显得过大 */
         }
 
         .gallery-item:hover { 
             animation: none !important;
-            transform: scale(1.08) translateY(-15px) !important; 
+            transform: scale(1.05) translateY(-10px) !important; 
             z-index: 100; 
         }
 
         @keyframes float {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-12px); }
+            50% { transform: translateY(-10px); }
         }
 
-        /* 核心修改：彩色手绘边框逻辑 */
         .sketchy-frame {
             position: relative;
             display: block;
@@ -59,19 +59,19 @@
             background: #fff;
         }
 
-        /* 使用 SVG 绘制不规则手绘边框，避免全黑线条 */
         .sketchy-frame::after {
             content: "";
             position: absolute;
-            top: -12px; left: -12px; right: -12px; bottom: -12px;
-            border: 6px solid currentColor; /* 继承父级定义的颜色 */
-            /* 关键：使用 mask 实现手绘的毛糙感，而不是用黑色的图片 */
-            border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+            top: -10px; left: -10px; right: -10px; bottom: -10px;
+            border: 5px solid currentColor;
+            /* 更有手绘感的不规则弧度 */
+            border-radius: 255px 25px 225px 25px/25px 225px 25px 255px;
             pointer-events: none;
             z-index: -1;
+            opacity: 0.8;
         }
 
-        /* 莫兰迪/马卡龙配色方案 */
+        /* 莫兰迪色系保持不变 */
         .c-pink { color: #ffb7b7; }
         .c-yellow { color: #ffeeba; }
         .c-blue { color: #b2ebf2; }
@@ -83,13 +83,13 @@
             width: 100%; 
             height: auto; 
             display: block; 
-            border-radius: 3px;
+            border-radius: 2px;
             position: relative;
             z-index: 1;
         }
 
         @media (max-width: 900px) {
-            .gallery-grid { grid-template-columns: 1fr; max-width: 450px; }
+            .gallery-grid { grid-template-columns: 1fr; max-width: 400px; }
         }
     </style>
 </head>
@@ -121,19 +121,19 @@
 
         <div class="gallery-item">
             <div class="sketchy-frame c-orange">
-                <img src="苹果 copy.png" alt="Apple">
+                <img src="apple.png" alt="Apple">
             </div>
         </div>
 
         <div class="gallery-item">
             <div class="sketchy-frame c-purple">
-                <img src="广州阿那亚.png" alt="Architecture">
+                <img src="aranya.png" alt="Architecture">
             </div>
         </div>
 
         <div class="gallery-item">
             <div class="sketchy-frame c-green">
-                <img src="2.png" alt="Friends">
+                <img src="friends.png" alt="Friends">
             </div>
         </div>
 
@@ -145,7 +145,7 @@
 
         <div class="gallery-item">
             <div class="sketchy-frame c-blue">
-                <img src="3.png" alt="Landscape">
+                <img src="landscape.png" alt="Landscape">
             </div>
         </div>
     </div>
