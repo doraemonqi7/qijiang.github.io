@@ -5,72 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visual Art & Illustration | Boring Still Life</title>
     <style>
-        /* 1. 强制应用圆润手写字体 */
         @import url('https://fonts.googleapis.com/css2?family=Gochi+Hand&display=swap');
 
-        * {
-            font-family: 'Gochi Hand', cursive !important;
-            box-sizing: border-box;
-        }
+        * { font-family: 'Gochi Hand', cursive !important; box-sizing: border-box; }
 
-        body {
-            background-color: #ffffff;
-            margin: 0;
-            padding: 50px;
-            overflow-x: hidden;
-        }
+        body { background-color: #ffffff; margin: 0; padding: 50px; overflow-x: hidden; }
 
-        /* 2. 标题区域 */
-        .gallery-header {
-            margin-bottom: 40px;
-            text-align: left;
-        }
-
+        .gallery-header { margin-bottom: 40px; text-align: left; }
         .gallery-header h1 { font-size: 3.5rem; margin: 0; color: #000; }
 
         .back-btn {
-            display: inline-block;
-            border: 3px solid #000;
-            border-radius: 12px;
-            padding: 10px 30px;
-            text-decoration: none;
-            color: #000;
-            font-weight: bold;
-            font-size: 1.3rem;
-            margin-top: 15px;
-            transition: 0.3s;
+            display: inline-block; border: 3px solid #000; border-radius: 12px;
+            padding: 10px 30px; text-decoration: none; color: #000;
+            font-weight: bold; font-size: 1.3rem; margin-top: 15px; transition: 0.3s;
         }
         .back-btn:hover { background: #000; color: #fff; transform: translateY(-3px); }
 
-        /* 3. 网格布局：锁定一行三个，单张图不超过 380px */
         .gallery-grid {
             display: grid;
-            grid-template-columns: repeat(3, minmax(200px, 380px)); 
+            grid-template-columns: repeat(3, minmax(250px, 380px)); 
             justify-content: center;
-            gap: 60px; /* 增加间距给边框留位置 */
+            gap: 80px; /* 增加间距防止边框重叠 */
             margin: 50px auto;
             max-width: 1400px;
-            align-items: start; /* 核心修复：不同高度的图片顶部对齐 */
+            align-items: start;
         }
 
-        /* 4. 图片项容器：消除多余外框 */
         .gallery-item {
-            padding: 0;
+            position: relative;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             animation: float 4s infinite ease-in-out;
             cursor: pointer;
             width: 100%;
-            /* 核心修复：确保容器高度被图片撑开，不露底色 */
-            height: fit-content; 
-            background: transparent !important;
+            padding: 15px; /* 给内部边框留位置 */
         }
 
-        /* 鼠标碰到变大逻辑 */
         .gallery-item:hover { 
             animation: none !important;
             transform: scale(1.1) translateY(-15px) !important; 
             z-index: 100; 
-            box-shadow: 0 30px 60px rgba(0,0,0,0.12); 
         }
 
         @keyframes float {
@@ -78,43 +51,44 @@
             50% { transform: translateY(-12px); }
         }
 
-        /* 核心修复：图片自适应，不留白缝 */
-        .gallery-item img { 
+        /* 核心修复：使用伪元素制作边框，不影响图片颜色 */
+        .sketchy-frame {
+            position: relative;
+            display: block;
+            width: 100%;
+            line-height: 0;
+        }
+
+        .sketchy-frame::before {
+            content: "";
+            position: absolute;
+            top: -15px; left: -15px; right: -15px; bottom: -15px;
+            border-style: solid;
+            border-width: 18px 20px 22px 18px;
+            /* 手写线条图片 */
+            border-image-source: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWCAMAAABy4R8bAAAAMFBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABvF97yAAAAD3RSTlMAAQIDBAUGBwgJCgsMDQ6Ior8NAAAA5ElEQVR4AezRoQ3AQAwEQSp9+m/aK6iPAn3G3M0OAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAW4N+Ad0456IeAAAAAElFTkSuQmCC');
+            border-image-slice: 40 fill;
+            border-image-repeat: repeat;
+            z-index: -1; /* 确保边框在图片下面 */
+            pointer-events: none;
+        }
+
+        /* 独立给边框上色，不影响图片 */
+        .item-pink::before { filter: drop-shadow(0 0 1px #ffb7b7) sepia(1) hue-rotate(300deg) saturate(5); }
+        .item-yellow::before { filter: drop-shadow(0 0 1px #ffeeba) sepia(1) hue-rotate(10deg) saturate(5); }
+        .item-blue::before { filter: drop-shadow(0 0 1px #b2ebf2) sepia(1) hue-rotate(150deg) saturate(5); }
+        .item-purple::before { filter: drop-shadow(0 0 1px #f3e5f5) sepia(1) hue-rotate(240deg) saturate(5); }
+        .item-green::before { filter: drop-shadow(0 0 1px #dcedc8) sepia(1) hue-rotate(60deg) saturate(5); }
+        .item-orange::before { filter: drop-shadow(0 0 1px #ffccbc) sepia(1) hue-rotate(340deg) saturate(5); }
+
+        .sketchy-frame img { 
             width: 100%; 
             height: auto; 
             display: block; 
             border-radius: 2px;
+            position: relative;
+            z-index: 1; /* 图片在最上层 */
         }
-
-        /* 5. 核心修改：真正的手写涂鸦抖动边框 (Sketchy Border) */
-        .sketchy-frame {
-            padding: 15px; /* 图片和手写边框之间的空隙 */
-            background: #fff; /* 模拟画纸底色 */
-            border-style: solid;
-            /* 边框粗细 */
-            border-width: 15px 18px 20px 15px; 
-            /* 核心：应用手写线条图片作为边框 */
-            border-image-source: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWCAMAAABy4R8bAAAAMFBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABvF97yAAAAD3RSTlMAAQIDBAUGBwgJCgsMDQ6Ior8NAAAA5ElEQVR4AezRoQ3AQAwEQSp9+m/aK6iPAn3G3M0OAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAW4N+Ad0456IeAAAAAElFTkSuQmCC'); 
-            /* 核心：将图片切割并平铺，实现抖动效果 */
-            border-image-slice: 40 fill;
-            border-image-repeat: repeat;
-        }
-
-        /* 按照你提供的文件名一一对应的手写边框颜色 */
-        .item-pink { --frame-color: #ffb7b7; border-image-outset: 5px; }
-        .item-yellow { --frame-color: #ffeeba; border-image-outset: 5px; }
-        .item-blue { --frame-color: #b2ebf2; border-image-outset: 5px; }
-        .item-purple { --frame-color: #f3e5f5; border-image-outset: 5px; }
-        .item-green { --frame-color: #dcedc8; border-image-outset: 5px; }
-        .item-orange { --frame-color: #ffccbc; border-image-outset: 5px; }
-
-        /* 利用 CSS 滤镜给抖动边框上色 */
-        .sketchy-frame.item-pink { filter: drop-shadow(0 0 1px var(--frame-color)) hue-rotate(330deg) saturate(1.5); }
-        .sketchy-frame.item-yellow { filter: drop-shadow(0 0 1px var(--frame-color)) hue-rotate(50deg) saturate(1.5); }
-        .sketchy-frame.item-blue { filter: drop-shadow(0 0 1px var(--frame-color)) hue-rotate(200deg) saturate(1.5); }
-        .sketchy-frame.item-purple { filter: drop-shadow(0 0 1px var(--frame-color)) hue-rotate(270deg) saturate(1.5); }
-        .sketchy-frame.item-green { filter: drop-shadow(0 0 1px var(--frame-color)) hue-rotate(100deg) saturate(1.5); }
-        .sketchy-frame.item-orange { filter: drop-shadow(0 0 1px var(--frame-color)) hue-rotate(20deg) saturate(1.5); }
 
         @media (max-width: 900px) {
             .gallery-grid { grid-template-columns: 1fr; max-width: 450px; }
@@ -167,7 +141,7 @@
 
         <div class="gallery-item">
             <div class="sketchy-frame item-pink">
-                <img src="cute.png" alt="Children Illustration">
+                <img src="cute.png" alt="Cute">
             </div>
         </div>
 
