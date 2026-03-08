@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Media Art & Installation</title>
+    <link rel="stylesheet" href="style-newmedia.css">
+</head>
+<body>
+
+<div class="gallery-header">
+    <h1>New Media Art & Installation</h1>
+    <a href="index.html" class="back-btn">Back to Home</a>
+</div>
+
+<div class="media-grid">
+    <div class="media-item item-pink" onclick="playVideo(this)">
+        <img src="chuchuang.png" class="poster">
+        <video class="video-player" loop playsinline muted>
+            <source src="chuchuang.mp4" type="video/mp4">
+        </video>
+        <div class="media-info">
+            <h2>WINDOW DESIGN</h2>
+            <p>New media art combined with window design for multi-sensory experience.</p>
+        </div>
+    </div>
+
+    <div class="media-item item-blue" onclick="playVideo(this)">
+        <img src="sichou.png" class="poster">
+        <video class="video-player" loop playsinline muted>
+            <source src="haishang.mp4" type="video/mp4">
+        </video>
+        <div class="media-info">
+            <h2>INSTALL PROJECTION ART YANG JIANG MUSEUM</h2>
+            <p>Functional and entertaining device to understand history at Yang Jiang Museum.</p>
+        </div>
+    </div>
+
+    <div class="media-item item-green" onclick="playVideo(this)">
+        <img src="game.png" class="poster">
+        <video class="video-player" loop playsinline muted>
+            <source src="game.mp4" type="video/mp4">
+        </video>
+        <div class="media-info">
+            <h2>DLAB Unreal Engine</h2>
+            <p>Game production workshop using Houdini and Unreal Engine interactions.</p>
+        </div>
+    </div>
+
+    <div class="media-item item-purple" onclick="playVideo(this)">
+        <img src="jianzhu.png" class="poster">
+        <video class="video-player" loop playsinline muted>
+            <source src="jianzhu.mp4" type="video/mp4">
+        </video>
+        <div class="media-info">
+            <h2>DLAB Architecture</h2>
+            <p>Digital scanning and 3D-printed reconstruction of Wright’s Imperial Hotel.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function playVideo(container) {
+        const poster = container.querySelector('.poster');
+        const video = container.querySelector('.video-player');
+        
+        // 隐藏封面，显示视频并播放
+        poster.style.display = 'none';
+        video.style.display = 'block';
+        video.play();
+        
+        // 停止容器的漂浮动画，防止点击后视频还在晃动
+        container.style.animation = 'none';
+    }
+</script>
+
+</body>
+</html>
