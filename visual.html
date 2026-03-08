@@ -25,7 +25,7 @@
             display: grid;
             grid-template-columns: repeat(3, minmax(250px, 380px)); 
             justify-content: center;
-            gap: 80px; /* 增加间距防止边框重叠 */
+            gap: 70px;
             margin: 50px auto;
             max-width: 1400px;
             align-items: start;
@@ -37,12 +37,12 @@
             animation: float 4s infinite ease-in-out;
             cursor: pointer;
             width: 100%;
-            padding: 15px; /* 给内部边框留位置 */
+            padding: 20px; /* 为手绘边框留出空间 */
         }
 
         .gallery-item:hover { 
             animation: none !important;
-            transform: scale(1.1) translateY(-15px) !important; 
+            transform: scale(1.08) translateY(-15px) !important; 
             z-index: 100; 
         }
 
@@ -51,43 +51,41 @@
             50% { transform: translateY(-12px); }
         }
 
-        /* 核心修复：使用伪元素制作边框，不影响图片颜色 */
+        /* 核心修改：彩色手绘边框逻辑 */
         .sketchy-frame {
             position: relative;
             display: block;
             width: 100%;
-            line-height: 0;
+            background: #fff;
         }
 
-        .sketchy-frame::before {
+        /* 使用 SVG 绘制不规则手绘边框，避免全黑线条 */
+        .sketchy-frame::after {
             content: "";
             position: absolute;
-            top: -15px; left: -15px; right: -15px; bottom: -15px;
-            border-style: solid;
-            border-width: 18px 20px 22px 18px;
-            /* 手写线条图片 */
-            border-image-source: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWCAMAAABy4R8bAAAAMFBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABvF97yAAAAD3RSTlMAAQIDBAUGBwgJCgsMDQ6Ior8NAAAA5ElEQVR4AezRoQ3AQAwEQSp9+m/aK6iPAn3G3M0OAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAW4N+Ad0456IeAAAAAElFTkSuQmCC');
-            border-image-slice: 40 fill;
-            border-image-repeat: repeat;
-            z-index: -1; /* 确保边框在图片下面 */
+            top: -12px; left: -12px; right: -12px; bottom: -12px;
+            border: 6px solid currentColor; /* 继承父级定义的颜色 */
+            /* 关键：使用 mask 实现手绘的毛糙感，而不是用黑色的图片 */
+            border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
             pointer-events: none;
+            z-index: -1;
         }
 
-        /* 独立给边框上色，不影响图片 */
-        .item-pink::before { filter: drop-shadow(0 0 1px #ffb7b7) sepia(1) hue-rotate(300deg) saturate(5); }
-        .item-yellow::before { filter: drop-shadow(0 0 1px #ffeeba) sepia(1) hue-rotate(10deg) saturate(5); }
-        .item-blue::before { filter: drop-shadow(0 0 1px #b2ebf2) sepia(1) hue-rotate(150deg) saturate(5); }
-        .item-purple::before { filter: drop-shadow(0 0 1px #f3e5f5) sepia(1) hue-rotate(240deg) saturate(5); }
-        .item-green::before { filter: drop-shadow(0 0 1px #dcedc8) sepia(1) hue-rotate(60deg) saturate(5); }
-        .item-orange::before { filter: drop-shadow(0 0 1px #ffccbc) sepia(1) hue-rotate(340deg) saturate(5); }
+        /* 莫兰迪/马卡龙配色方案 */
+        .c-pink { color: #ffb7b7; }
+        .c-yellow { color: #ffeeba; }
+        .c-blue { color: #b2ebf2; }
+        .c-purple { color: #e1bee7; }
+        .c-green { color: #c8e6c9; }
+        .c-orange { color: #ffccbc; }
 
         .sketchy-frame img { 
             width: 100%; 
             height: auto; 
             display: block; 
-            border-radius: 2px;
+            border-radius: 3px;
             position: relative;
-            z-index: 1; /* 图片在最上层 */
+            z-index: 1;
         }
 
         @media (max-width: 900px) {
@@ -104,49 +102,49 @@
 
     <div class="gallery-grid">
         <div class="gallery-item">
-            <div class="sketchy-frame item-pink">
+            <div class="sketchy-frame c-pink">
                 <img src="festival.png" alt="Festival">
             </div>
         </div>
         
         <div class="gallery-item">
-            <div class="sketchy-frame item-yellow">
+            <div class="sketchy-frame c-yellow">
                 <img src="tiger.png" alt="Tiger">
             </div>
         </div>
 
         <div class="gallery-item">
-            <div class="sketchy-frame item-blue">
+            <div class="sketchy-frame c-blue">
                 <img src="cat.png" alt="Cat">
             </div>
         </div>
 
         <div class="gallery-item">
-            <div class="sketchy-frame item-orange">
+            <div class="sketchy-frame c-orange">
                 <img src="苹果 copy.png" alt="Apple">
             </div>
         </div>
 
         <div class="gallery-item">
-            <div class="sketchy-frame item-purple">
+            <div class="sketchy-frame c-purple">
                 <img src="广州阿那亚.png" alt="Architecture">
             </div>
         </div>
 
         <div class="gallery-item">
-            <div class="sketchy-frame item-green">
+            <div class="sketchy-frame c-green">
                 <img src="2.png" alt="Friends">
             </div>
         </div>
 
         <div class="gallery-item">
-            <div class="sketchy-frame item-pink">
+            <div class="sketchy-frame c-pink">
                 <img src="cute.png" alt="Cute">
             </div>
         </div>
 
         <div class="gallery-item">
-            <div class="sketchy-frame item-blue">
+            <div class="sketchy-frame c-blue">
                 <img src="3.png" alt="Landscape">
             </div>
         </div>
