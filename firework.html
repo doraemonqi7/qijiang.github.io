@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyberpunk Fireworks - Pure Text & Shapes</title>
+    <style>
+        :root {
+            --panel-bg: rgba(10, 10, 15, 0.95);
+            --text-color: #e0e0e0;
+            --accent-purple: #8a2be2;
+            --accent-blue: #4d94ff;
+            --button-bg: #2a2a35;
+        }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: #000; overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-color);
+        }
+
+        canvas { display: block; width: 100%; height: 100%; }
+        video { display: none; }
+
+        #start-screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 50; background: radial-gradient(circle at center, #1a1a25 0%, #000 100%);
+        }
+
+        #start-btn {
+            padding: 15px 50px; font-size: 24px; color: #fff;
+            background: linear-gradient(45deg, var(--accent-purple), var(--accent-blue));
+            border: none; border-radius: 8px; cursor: pointer;
+            box-shadow: 0 0 20px rgba(77, 148, 255, 0.5); font-weight: bold;
+            transition: transform 0.2s; margin-bottom: 40px;
+        }
+        #start-btn:hover { transform: scale(1.05); }
+
+        .instruction-card {
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            padding: 20px 40px; border-radius: 12px; text-align: left; line-height: 2;
+        }
+        .instruction-card h3 { margin-top: 0; color: var(--accent-blue); text-align: center; }
+        .instruction-card span.icon { display: inline-block; width: 30px; text-align: center; }
+
+        /* --- 控制面板 --- */
+        #control-panel {
+            position: absolute; top: 0; right: 0; width: 340px; height: 100%;
+            background: var(--panel-bg); border-left: 1px solid #333;
+            overflow-y: auto; padding: 20px; box-sizing: border-box;
+            z-index: 10; display: none; backdrop-filter: blur(10px);
+            scrollbar-width: thin; scrollbar-color: var(--accent-purple) #222;
+        }
+        
+        #control-panel::-webkit-scrollbar { width: 6px; }
+        #control-panel::-webkit-scrollbar-thumb { background: var(--accent-purple); border-radius: 3px; }
+
+        .header { text-align: center; font-size: 16px; font-weight: bold; margin-bottom: 20px; letter-spacing: 2px; color: #fff; text-transform: uppercase; }
+        
+        .btn-group { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: nowrap; }
+        .btn {
+            padding: 8px 4px; background: var(--button-bg); color: #fff;
+            border: 1px solid #444; border-radius: 4px; cursor: pointer;
+            font-size: 13px; font-weight: bold; text-align: center; 
+        }
+        .btn.active { background: var(--accent-purple); border-color: var(--accent-purple); }
+        .btn.danger { border-color: #882222; }
+        .btn.danger:hover { background: #882222; }
+
+        /* --- 6宫格形状按钮 --- */
+        .shape-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .shape-grid .btn { padding: 12px 0; }
+
+        .control-group { margin-bottom: 15px; }
+        .control-header { display: flex; justify-content: space-between; font-size: 11px; font-weight: bold; margin-bottom: 8px; color: #aaa; text-transform: uppercase; }
+        .control-value { color: #fff; }
+        
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; height: 14px; width: 14px;
+            border-radius: 50%; background: var(--accent-blue);
+            cursor: pointer; margin-top: -5px; box-shadow: 0 0 8px var(--accent-blue);
+        }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; border-radius: 2px; }
+        #hue-slider::-webkit-slider-runnable-track { background: linear-gradient(90deg, red, yellow, lime, cyan, blue, magenta, red); }
+
+        /* --- 内容区域 --- */
+        #content-areas { margin-bottom: 20px; }
+        
+        #text-input { 
+            width: 100%; padding: 10px; background: rgba(0,0,0,0.5); color: #fff; 
+            border: 1px solid #555; border-radius: 6px; box-sizing: border-box; 
+            font-size: 16px; text-align: center; letter-spacing: 2px; resize: none; line-height: 1.5;
+        }
+        #text-input:focus { outline: none; border-color: var(--accent-purple); }
+        
+        #bottom-bar {
+            position: absolute; bottom: 0; left: 0; width: 100%; text-align: center;
+            background: rgba(0,0,0,0.6); padding: 10px 0;
+            color: rgba(255, 255, 255, 0.8); font-size: 14px; display: none; z-index: 5;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+    <div id="start-screen">
+        <button id="start-btn">开启摄像头体验</button>
+        <div class="instruction-card">
+            <h3>操作指南</h3>
+            <div><span class="icon">👆</span> <b>移动食指：</b> 屏幕上会出现发光的仙女棒拖尾</div>
+            <div><span class="icon">🤏</span> <b>捏合手指：</b> 捏住食指和拇指进行<b>蓄力</b></div>
+            <div><span class="icon">🖐️</span> <b>松开手指：</b> 发射烟花升空爆炸</div>
+        </div>
+    </div>
+
+    <div id="control-panel">
+        <div class="header">LUMI CONTROLS</div>
+        
+        <div class="btn-group">
+            <button class="btn danger" style="flex:1" onclick="clearCanvas()">CLEAR CANVAS</button>
+            <button class="btn" style="flex:1" onclick="triggerRandomFirework()">TEST LAUNCH</button>
+        </div>
+
+        <div class="control-header"><span>EXPLOSION SHAPE</span></div>
+        <div class="shape-grid" id="shape-buttons-container">
+            <button class="btn" onclick="setShape('sphere', this)">Sphere</button>
+            <button class="btn" onclick="setShape('ring', this)">Ring</button>
+            <button class="btn" onclick="setShape('star', this)">Star</button>
+            <button class="btn" onclick="setShape('heart', this)">Heart</button>
+            <button class="btn" onclick="setShape('burst', this)">Burst</button>
+            <button class="btn active" onclick="setShape('text', this)">Text</button>
+        </div>
+
+        <div id="content-areas">
+            <div id="text-content-area" style="display: block;">
+                <div class="control-header"><span>TEXT CONTENT</span></div>
+                <textarea id="text-input" rows="3" placeholder="输入爆炸文字&#10;按回车可换行">ドラえもん</textarea>
+                <div style="font-size: 12px; color: #888; text-align: center; margin-top: 5px;">输入文字后捏合手指发射</div>
+            </div>
+        </div>
+
+        <div id="sliders-container"></div>
+    </div>
+
+    <div id="bottom-bar">✨仙女棒拖尾 | ⚡️蓄力 | 🎆快速捏放即可发射 | ⚙️控制面板：调整效果和选择爆炸内容</div>
+
+    <video id="video-input" autoplay playsinline></video>
+    <canvas id="canvas"></canvas>
+
+<script>
+    const config = {
+        particles: 250, explosionSpeed: 12, gravity: 0.18, friction: 0.96,
+        fadeOut: 0.015, sparkle: 40, hue: 210, variance: 25, trail: 0.15,
+        explosionShape: 'text' 
+    };
+
+    const slidersConfig = [
+        { id: 'particles', label: 'PARTICLES', min: 50, max: 1500, step: 10 },
+        { id: 'explosionSpeed', label: 'EXPLOSION SPEED', min: 5, max: 30, step: 1 },
+        { id: 'gravity', label: 'GRAVITY', min: -0.05, max: 0.5, step: 0.01 },
+        { id: 'friction', label: 'FRICTION', min: 0.85, max: 1.00, step: 0.01 },
+        { id: 'fadeOut', label: 'FADE OUT', min: 0.005, max: 0.05, step: 0.005 },
+        { id: 'sparkle', label: 'SPARKLE (%)', min: 0, max: 100, step: 1 },
+        { id: 'hue', label: 'HUE', min: 0, max: 360, step: 1, isHue: true },
+        { id: 'variance', label: 'VARIANCE', min: 0, max: 180, step: 1 },
+        { id: 'trail', label: 'TRAIL (BLUR)', min: 0.05, max: 0.5, step: 0.01 }
+    ];
+
+    const container = document.getElementById('sliders-container');
+    slidersConfig.forEach(s => {
+        const div = document.createElement('div');
+        div.className = 'control-group';
+        div.innerHTML = `<div class="control-header"><span>${s.label}</span><span id="${s.id}-val" class="control-value">${config[s.id]}</span></div>
+                         <input type="range" id="${s.id}-slider" min="${s.min}" max="${s.max}" step="${s.step}" value="${config[s.id]}">`;
+        container.appendChild(div);
+        const slider = document.getElementById(`${s.id}-slider`);
+        slider.addEventListener('input', (e) => {
+            config[s.id] = parseFloat(e.target.value);
+            document.getElementById(`${s.id}-val`).innerText = config[s.id].toFixed(s.step % 1 !== 0 ? 3 : 0);
+            if(!s.isHue) e.target.style.background = `linear-gradient(90deg, var(--accent-purple) ${(e.target.value-s.min)/(s.max-s.min)*100}%, #444 0%)`;
+        });
+        if(!s.isHue) slider.dispatchEvent(new Event('input'));
+    });
+
+    // 形状切换逻辑
+    function setShape(shape, btnElement) {
+        config.explosionShape = shape;
+        document.querySelectorAll('#shape-buttons-container .btn').forEach(b => b.classList.remove('active'));
+        btnElement.classList.add('active');
+        
+        document.getElementById('text-content-area').style.display = shape === 'text' ? 'block' : 'none';
+    }
+
+    const canvas = document.getElementById('canvas'), ctx = canvas.getContext('2d');
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    window.addEventListener('resize', resize); resize();
+
+    const fireworks = [], particlesArray = [];
+    function clearCanvas() { particlesArray.length = 0; fireworks.length = 0; ctx.clearRect(0,0,canvas.width,canvas.height); }
+    function triggerRandomFirework() { fireworks.push(new Shell(canvas.width/2 + (Math.random()*200-100), canvas.height, 40)); }
+
+    // --- 离屏渲染与像素提取 (纯文本逻辑) ---
+    function getShapePixels(content) {
+        const offCanvas = document.createElement('canvas');
+        const offCtx = offCanvas.getContext('2d', { willReadFrequently: true });
+        offCanvas.width = 600;  
+        offCanvas.height = 400; 
+        const cx = 300, cy = 200; 
+
+        offCtx.font = "900 60px sans-serif"; 
+        offCtx.fillStyle = "white"; 
+        offCtx.textAlign = "center"; 
+        offCtx.textBaseline = "middle";
+        
+        const lines = content.split('\n');
+        const lineHeight = 70;
+        const totalHeight = (lines.length - 1) * lineHeight;
+        let startY = cy - (totalHeight / 2);
+
+        lines.forEach(line => {
+            offCtx.fillText(line, cx, startY);
+            startY += lineHeight;
+        });
+
+        const imgData = offCtx.getImageData(0, 0, offCanvas.width, offCanvas.height).data;
+        const pixels = [];
+        
+        for(let y=0; y<offCanvas.height; y+=2) {
+            for(let x=0; x<offCanvas.width; x+=2) {
+                const index = (y * offCanvas.width + x) * 4 + 3; // 获取 Alpha 通道
+                if (imgData[index] > 128) { 
+                    pixels.push({ dx: x - cx, dy: y - cy });
+                }
+            }
+        }
+        return pixels;
+    }
+
+    class Shell {
+        constructor(x, y, charge) {
+            this.x = x; this.y = y;
+            this.targetY = y - (charge * 12) - 150; 
+            if (this.targetY < 150) this.targetY = 150; 
+            this.hue = config.hue; this.exploded = false;
+        }
+        update() {
+            const dy = this.targetY - this.y; this.y += dy * 0.08;
+            particlesArray.push(new Sparkle(this.x, this.y, this.hue));
+            if (Math.abs(dy) < 5) { this.exploded = true; this.explode(); }
+        }
+        draw() { ctx.beginPath(); ctx.arc(this.x, this.y, 3, 0, Math.PI*2); ctx.fillStyle = `hsl(${this.hue}, 100%, 70%)`; ctx.fill(); }
+        
+        explode() {
+            let targetPixels = [];
+            if (config.explosionShape === 'text') {
+                targetPixels = getShapePixels(document.getElementById('text-input').value || "Boom");
+            }
+
+            let count = config.particles;
+            if (config.explosionShape === 'text' && targetPixels.length > 0) {
+                count = Math.min(targetPixels.length, 1500); 
+            }
+
+            for (let i = 0; i < count; i++) {
+                let vx = 0, vy = 0;
+                let speed = Math.random() * config.explosionSpeed + 2;
+                let angle = Math.random() * Math.PI * 2;
+
+                switch (config.explosionShape) {
+                    case 'ring':
+                        speed = config.explosionSpeed + (Math.random()*2-1); 
+                        vx = Math.cos(angle) * speed; vy = Math.sin(angle) * speed;
+                        break;
+                    case 'star':
+                        const points = 5;
+                        const baseAngle = (Math.floor(Math.random() * points) / points) * Math.PI * 2;
+                        angle = baseAngle + (Math.random() * 0.5 - 0.25); 
+                        vx = Math.cos(angle) * speed; vy = Math.sin(angle) * speed;
+                        break;
+                    case 'heart':
+                        const t = Math.random() * Math.PI * 2;
+                        const hx = 16 * Math.pow(Math.sin(t), 3);
+                        const hy = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+                        const scale = config.explosionSpeed / 15; 
+                        vx = hx * scale + (Math.random()-0.5); vy = hy * scale + (Math.random()-0.5);
+                        break;
+                    case 'burst':
+                        speed = Math.random() > 0.5 ? config.explosionSpeed : config.explosionSpeed * 0.3;
+                        vx = Math.cos(angle) * speed; vy = Math.sin(angle) * speed;
+                        break;
+                    case 'text':
+                        if (targetPixels.length > 0) {
+                            const pIndex = Math.floor((i / count) * targetPixels.length);
+                            const p = targetPixels[pIndex];
+                            
+                            const mapScale = config.explosionSpeed / 120;
+                            vx = p.dx * mapScale + (Math.random()-0.5) * 0.2;
+                            vy = p.dy * mapScale + (Math.random()-0.5) * 0.2;
+                            break;
+                        }
+                    default: 
+                        vx = Math.cos(angle) * speed; vy = Math.sin(angle) * speed;
+                }
+
+                const pHue = config.hue + (Math.random() * config.variance * 2 - config.variance);
+                particlesArray.push(new Particle(this.x, this.y, vx, vy, pHue));
+            }
+        }
+    }
+
+    class Particle {
+        constructor(x, y, vx, vy, hue) {
+            this.x = x; this.y = y; this.vx = vx; this.vy = vy;
+            this.hue = hue; this.alpha = 1; this.size = Math.random() * 2 + 1; 
+        }
+        update() {
+            this.vx *= config.friction; this.vy *= config.friction; this.vy += config.gravity;
+            this.x += this.vx; this.y += this.vy; this.alpha -= config.fadeOut;
+        }
+        draw() {
+            ctx.globalCompositeOperation = 'lighter';
+            ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            let currentAlpha = this.alpha;
+            if (Math.random() * 100 < config.sparkle && this.alpha < 0.6) currentAlpha = Math.random() > 0.5 ? this.alpha : 0;
+            ctx.fillStyle = `hsla(${this.hue}, 100%, 60%, ${currentAlpha})`;
+            ctx.fill();
+        }
+    }
+
+    class Sparkle {
+        constructor(x, y, hue) {
+            this.x = x + (Math.random()*10-5); this.y = y + (Math.random()*10-5);
+            this.alpha = 1; this.hue = hue; this.size = Math.random() * 2 + 1;
+        }
+        update() { this.alpha -= config.fadeOut * 2; }
+        draw() {
+            ctx.globalCompositeOperation = 'lighter';
+            ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
+            ctx.fillStyle = `hsla(${this.hue}, 100%, 70%, ${this.alpha})`; ctx.fill();
+        }
+    }
+
+    let handPos = { x: -100, y: -100 }, isPinching = false, chargeLevel = 0, isTracking = false;
+
+    function onResults(results) {
+        if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+            isTracking = true;
+            const indexF = results.multiHandLandmarks[0][8], thumbF = results.multiHandLandmarks[0][4];
+
+            handPos.x = (1 - indexF.x) * canvas.width; handPos.y = indexF.y * canvas.height;
+            const thumbX = (1 - thumbF.x) * canvas.width, thumbY = thumbF.y * canvas.height;
+
+            particlesArray.push(new Sparkle(handPos.x, handPos.y, config.hue));
+
+            // 【手势灵敏度优化】 放宽判定距离，加快蓄力，降低发射门槛
+            const dist = Math.sqrt(Math.pow(handPos.x - thumbX, 2) + Math.pow(handPos.y - thumbY, 2));
+            if (dist < 100) { // 从 80 提升到 100
+                isPinching = true;
+                if (chargeLevel < 50) chargeLevel += 5; // 从 3.5 提升到 5
+            } else {
+                // 只要稍微捏了一下 (大于 5 就可以发射)，无需等很久
+                if (isPinching && chargeLevel > 5) fireworks.push(new Shell(handPos.x, handPos.y, chargeLevel));
+                isPinching = false; chargeLevel = 0;
+            }
+        } else { isTracking = false; isPinching = false; chargeLevel = 0; }
+    }
+
+    function animate() {
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.fillStyle = `rgba(0, 0, 0, ${config.trail})`; ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        if (isPinching && isTracking) {
+            ctx.globalCompositeOperation = 'lighter';
+            ctx.beginPath(); ctx.arc(handPos.x, handPos.y, chargeLevel / 1.5, 0, Math.PI * 2);
+            ctx.fillStyle = `hsla(${config.hue}, 100%, 60%, 0.6)`; ctx.fill();
+        }
+
+        for (let i = fireworks.length-1; i>=0; i--) { fireworks[i].update(); fireworks[i].draw(); if (fireworks[i].exploded) fireworks.splice(i, 1); }
+        for (let i = particlesArray.length-1; i>=0; i--) { particlesArray[i].update(); particlesArray[i].draw(); if (particlesArray[i].alpha <= 0) particlesArray.splice(i, 1); }
+        requestAnimationFrame(animate);
+    }
+
+    const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
+    hands.setOptions({ maxNumHands: 1, modelComplexity: 1, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5 });
+    hands.onResults(onResults);
+
+    document.getElementById('start-btn').addEventListener('click', async () => {
+        document.getElementById('start-screen').style.display = 'none';
+        document.getElementById('control-panel').style.display = 'block';
+        document.getElementById('bottom-bar').style.display = 'block';
+        
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480, facingMode: "user" } });
+            document.getElementById('video-input').srcObject = stream;
+            const camera = new Camera(document.getElementById('video-input'), { onFrame: async () => { await hands.send({image: document.getElementById('video-input')}); }, width: 640, height: 480 });
+            camera.start().then(animate);
+        } catch (error) {
+            alert("摄像头启动失败。但你仍然可以使用 'TEST LAUNCH' 按钮测试面板！"); animate();
+        }
+    });
+</script>
+</body>
+</html>
