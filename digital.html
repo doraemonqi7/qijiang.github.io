@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Image & 3D Creation</title>
     <style>
-        /* 1. 引入并强制应用手写字体 */
-        @import url('https://fonts.googleapis.com/css2?family=Gochi+Hand&display=swap');
+        /* 核心修复 1：使用国内镜像字体，解决国内打开慢、依赖 VPN 的问题 */
+        @import url('https://fonts.font.im/css2?family=Gochi+Hand&display=swap');
         
         * { font-family: 'Gochi Hand', cursive !important; box-sizing: border-box; }
 
@@ -36,25 +36,23 @@
         /* 2. 核心布局修复：一行两个，显著放大 */
         .video-grid {
             display: grid;
-            /* 强制锁定为两列 */
             grid-template-columns: repeat(2, 1fr); 
             gap: 60px;
             justify-content: center;
             margin: 60px auto;
-            max-width: 1400px; /* 限制整体最大宽度，防止在大屏下太散 */
+            max-width: 1400px;
         }
 
         .video-item {
             background: #fff;
             transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            /* 默认漂浮动画，点击看视频时建议保留，或者hover时暂停 */
             animation: float 5s infinite ease-in-out;
             text-align: center;
             width: 100%;
         }
 
         .video-item:hover {
-            animation-play-state: paused; /* 鼠标悬停时暂停漂浮，方便操作进度条 */
+            animation-play-state: paused;
             transform: scale(1.03) translateY(-10px);
         }
 
@@ -70,7 +68,6 @@
             border-radius: 15px;
             display: block;
             background: #000;
-            /* 确保进度条等控件颜色可见 */
             outline: none;
         }
 
@@ -101,21 +98,21 @@
 <div class="video-grid">
     <div class="video-item v-blue">
         <video controls playsinline>
-            <source src="视频1.mp4" type="video/mp4">
+            <source src="video1.mp4" type="video/mp4">
         </video>
         <div class="video-label">3D Modeling - Computer</div>
     </div>
 
     <div class="video-item v-purple">
         <video controls playsinline>
-            <source src="视频2.mp4" type="video/mp4">
+            <source src="video2.mp4" type="video/mp4">
         </video>
         <div class="video-label">Character Animation</div>
     </div>
 
     <div class="video-item v-green">
         <video controls playsinline>
-            <source src="视频3.mp4" type="video/mp4">
+            <source src="video3.mp4" type="video/mp4">
         </video>
         <div class="video-label">Environment Render</div>
     </div>
