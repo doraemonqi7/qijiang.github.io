@@ -1,84 +1,95 @@
+/* 引入手写字体 */
 @import url('https://fonts.googleapis.com/css2?family=Gochi+Hand&display=swap');
 
 body {
     background-color: #ffffff;
     font-family: 'Gochi Hand', cursive !important;
     margin: 0;
-    padding: 5vw;
+    padding: 0;
+    overflow-x: hidden;
 }
 
-.gallery-header { margin-bottom: 50px; }
-.gallery-header h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); margin: 0; }
+/* 标题区域：固定在左上角，确保不被图片遮挡 */
+.gallery-header {
+    position: fixed;
+    top: 30px;
+    left: 40px;
+    z-index: 1000;
+    background: rgba(255,255,255,0.8); /* 半透明底色，防止背景太乱 */
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.gallery-header h1 { font-size: 2.5rem; margin: 0; }
 
 .back-btn {
     display: inline-block;
-    border: 3px solid #000;
-    border-radius: 12px;
-    padding: 10px 30px;
+    border: 2px solid #000;
+    border-radius: 10px;
+    padding: 5px 20px;
     text-decoration: none;
     color: #000;
     font-weight: bold;
-    margin-top: 15px;
+    margin-top: 10px;
     transition: 0.3s;
 }
-.back-btn:hover { background: #000; color: #fff; transform: translateY(-3px); }
+.back-btn:hover { background: #000; color: #fff; }
 
-/* 视频网格布局优化：显著放大尺寸 */
-.video-grid {
+/* 核心布局修复：三列居中，限制单张图最大宽度 */
+.gallery-grid {
     display: grid;
-    /* 这里的 400px 让每个视频框变得更大 */
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); 
-    gap: 50px;
-    align-items: start;
-    max-width: 1600px;
-    margin: 0 auto;
+    /* 强制锁定为三列，每列最大不超过 350px */
+    grid-template-columns: repeat(3, minmax(200px, 350px)); 
+    justify-content: center; /* 整个网格居中 */
+    gap: 40px;
+    padding: 200px 5vw 100px 5vw; /* 顶部留出足够空间给标题 */
+    max-width: 1200px;
+    margin: 0 auto; /* 容器居中 */
 }
 
-.video-item {
+.gallery-item {
     background: #fff;
-    padding: 20px;
-    border-radius: 25px;
-    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    animation: float 5s infinite ease-in-out;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-    text-align: center;
+    padding: 0;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    animation: float 4s infinite ease-in-out;
+    cursor: pointer;
+    position: relative;
     box-sizing: border-box;
+    width: 100%; /* 随网格宽度缩放 */
 }
 
-/* 悬停效果：更加显著的浮起与阴影 */
-.video-item:hover { 
+/* 鼠标悬停放大：增加 !important 确保覆盖动画 */
+.gallery-item:hover { 
     animation: none !important;
-    transform: scale(1.08) translateY(-20px) !important; 
+    transform: scale(1.1) translateY(-15px) !important; 
     z-index: 100; 
-    box-shadow: 0 30px 60px rgba(0,0,0,0.15); 
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1); 
 }
 
 @keyframes float {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-15px); }
+    50% { transform: translateY(-12px); }
 }
 
-.video-container {
-    width: 100%;
-    border-radius: 15px;
-    overflow: hidden;
-    background: #f9f9f9; /* 加载前的底色 */
+.gallery-item img { 
+    width: 100%; 
+    height: auto; 
+    display: block; 
+    border-radius: 5px;
 }
 
-video {
-    width: 100%;
-    height: auto;
-    display: block;
-    object-fit: contain; /* 确保不同比例的视频都能完整显示 */
-}
+/* 边框样式 */
+.item-pink { border: 6px solid #ffb7b7; }
+.item-yellow { border: 1px solid #ffeeba; } /* 根据你截图里的 tiger 边框细一点 */
+.item-blue { border: 6px solid #b2ebf2; }
+.item-purple { border: 6px solid #f3e5f5; }
+.item-red { border: 6px solid #ffccbc; }
+.item-cyan { border: 6px solid #e0f2f1; }
 
-.video-label {
-    margin-top: 20px;
-    font-size: 1.8rem;
-    font-weight: bold;
+/* 响应式：手机端改为一列 */
+@media (max-width: 800px) {
+    .gallery-grid {
+        grid-template-columns: repeat(1, 1fr);
+        padding-top: 150px;
+    }
 }
-
-/* 边框颜色 */
-.v-blue { border: 6px solid #b2ebf2; }
-.v-purple { border: 6px solid #f3e5f5; }
-.v-green { border: 6px solid #dcedc8; }
