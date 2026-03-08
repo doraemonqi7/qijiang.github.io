@@ -4,32 +4,117 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Image & 3D Creation</title>
-    <link rel="stylesheet" href="style-digital.css">
+    <style>
+        /* 1. 引入并强制应用手写字体 */
+        @import url('https://fonts.googleapis.com/css2?family=Gochi+Hand&display=swap');
+        
+        * { font-family: 'Gochi Hand', cursive !important; box-sizing: border-box; }
+
+        body {
+            background-color: #ffffff;
+            margin: 0;
+            padding: 4vw;
+            overflow-x: hidden;
+        }
+
+        .header { margin-bottom: 40px; }
+        .header h1 { font-size: 3.5rem; margin: 0; }
+
+        .back-btn {
+            display: inline-block;
+            border: 3px solid #000;
+            border-radius: 12px;
+            padding: 10px 30px;
+            text-decoration: none;
+            color: #000;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: 0.3s;
+        }
+        .back-btn:hover { background: #000; color: #fff; }
+
+        /* 2. 核心布局修复：一行两个，显著放大 */
+        .video-grid {
+            display: grid;
+            /* 强制锁定为两列 */
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 60px;
+            justify-content: center;
+            margin: 60px auto;
+            max-width: 1400px; /* 限制整体最大宽度，防止在大屏下太散 */
+        }
+
+        .video-item {
+            background: #fff;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            /* 默认漂浮动画，点击看视频时建议保留，或者hover时暂停 */
+            animation: float 5s infinite ease-in-out;
+            text-align: center;
+            width: 100%;
+        }
+
+        .video-item:hover {
+            animation-play-state: paused; /* 鼠标悬停时暂停漂浮，方便操作进度条 */
+            transform: scale(1.03) translateY(-10px);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        /* 3. 视频样式：支持控制条 */
+        video {
+            width: 100%;
+            height: auto;
+            border-radius: 15px;
+            display: block;
+            background: #000;
+            /* 确保进度条等控件颜色可见 */
+            outline: none;
+        }
+
+        .video-label {
+            margin-top: 20px;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        /* 4. 彩色边框增强 */
+        .v-blue { border: 8px solid #b2ebf2; border-radius: 25px; padding: 15px; }
+        .v-purple { border: 8px solid #f3e5f5; border-radius: 25px; padding: 15px; }
+        .v-green { border: 8px solid #dcedc8; border-radius: 25px; padding: 15px; }
+
+        /* 移动端自动变为一列 */
+        @media (max-width: 800px) {
+            .video-grid { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
 
-<div class="gallery-header">
+<div class="header">
     <h1>Digital Image & 3D Creation</h1>
     <a href="index.html" class="back-btn">Back to Home</a>
 </div>
 
 <div class="video-grid">
     <div class="video-item v-blue">
-        <video muted autoplay loop playsinline>
+        <video controls playsinline>
             <source src="视频1.mp4" type="video/mp4">
         </video>
         <div class="video-label">3D Modeling - Computer</div>
     </div>
 
     <div class="video-item v-purple">
-        <video muted autoplay loop playsinline>
+        <video controls playsinline>
             <source src="视频2.mp4" type="video/mp4">
         </video>
         <div class="video-label">Character Animation</div>
     </div>
 
     <div class="video-item v-green">
-        <video muted autoplay loop playsinline>
+        <video controls playsinline>
             <source src="视频3.mp4" type="video/mp4">
         </video>
         <div class="video-label">Environment Render</div>
