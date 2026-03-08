@@ -1,95 +1,53 @@
-/* 引入手写字体 */
+/* フォントを強制適用 */
 @import url('https://fonts.googleapis.com/css2?family=Gochi+Hand&display=swap');
 
-body {
-    background-color: #ffffff;
+* {
     font-family: 'Gochi Hand', cursive !important;
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
 }
 
-/* 标题区域：固定在左上角，确保不被图片遮挡 */
-.gallery-header {
-    position: fixed;
-    top: 30px;
-    left: 40px;
-    z-index: 1000;
-    background: rgba(255,255,255,0.8); /* 半透明底色，防止背景太乱 */
-    padding: 10px;
-    border-radius: 10px;
-}
-
-.gallery-header h1 { font-size: 2.5rem; margin: 0; }
-
-.back-btn {
-    display: inline-block;
-    border: 2px solid #000;
-    border-radius: 10px;
-    padding: 5px 20px;
-    text-decoration: none;
-    color: #000;
-    font-weight: bold;
-    margin-top: 10px;
-    transition: 0.3s;
-}
-.back-btn:hover { background: #000; color: #fff; }
-
-/* 核心布局修复：三列居中，限制单张图最大宽度 */
-.gallery-grid {
+/* グリッドレイアウトの修正 */
+.media-grid {
     display: grid;
-    /* 强制锁定为三列，每列最大不超过 350px */
-    grid-template-columns: repeat(3, minmax(200px, 350px)); 
-    justify-content: center; /* 整个网格居中 */
+    /* 1行3列を基本にし、1つあたりの幅を最大450pxに制限 */
+    grid-template-columns: repeat(3, minmax(300px, 450px));
     gap: 40px;
-    padding: 200px 5vw 100px 5vw; /* 顶部留出足够空间给标题 */
-    max-width: 1200px;
-    margin: 0 auto; /* 容器居中 */
+    justify-content: center;
+    padding: 50px 20px;
+    margin: 0 auto;
+    max-width: 1400px;
 }
 
-.gallery-item {
+.media-item {
     background: #fff;
-    padding: 0;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    animation: float 4s infinite ease-in-out;
+    border-radius: 15px;
+    overflow: hidden;
     cursor: pointer;
-    position: relative;
-    box-sizing: border-box;
-    width: 100%; /* 随网格宽度缩放 */
+    transition: all 0.3s ease;
+    /* 浮遊アニメーション */
+    animation: float 4s infinite ease-in-out;
 }
 
-/* 鼠标悬停放大：增加 !important 确保覆盖动画 */
-.gallery-item:hover { 
-    animation: none !important;
-    transform: scale(1.1) translateY(-15px) !important; 
-    z-index: 100; 
-    box-shadow: 0 20px 40px rgba(0,0,0,0.1); 
+/* 動画プレイヤーのサイズ固定 */
+.video-player {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9; /* 動画の比率に合わせて調整 */
+    background: #000;
+}
+
+.poster {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* ホバー時の挙動 */
+.media-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
 }
 
 @keyframes float {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-12px); }
-}
-
-.gallery-item img { 
-    width: 100%; 
-    height: auto; 
-    display: block; 
-    border-radius: 5px;
-}
-
-/* 边框样式 */
-.item-pink { border: 6px solid #ffb7b7; }
-.item-yellow { border: 1px solid #ffeeba; } /* 根据你截图里的 tiger 边框细一点 */
-.item-blue { border: 6px solid #b2ebf2; }
-.item-purple { border: 6px solid #f3e5f5; }
-.item-red { border: 6px solid #ffccbc; }
-.item-cyan { border: 6px solid #e0f2f1; }
-
-/* 响应式：手机端改为一列 */
-@media (max-width: 800px) {
-    .gallery-grid {
-        grid-template-columns: repeat(1, 1fr);
-        padding-top: 150px;
-    }
+    50% { transform: translateY(-10px); }
 }
