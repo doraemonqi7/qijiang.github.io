@@ -14,80 +14,110 @@
             margin: 0; padding: 0; 
             background-color: #ffffff;
             width: 100%; height: 100%;
-            overflow: hidden; /* 禁止滚动，保持全屏设计 */
+            overflow: hidden; /* 禁止滚动 */
         }
 
-        /* 1. 背景文字布局修复：整体大幅上移，避免覆盖长颈鹿身体 */
+        /* 1. 背景文字布局：核心修改 -> 营造倒三角形状，彻底避让右下角 */
         .wuhu-container {
             position: absolute;
-            left: 5%; 
-            /* 核心修改：从 top 定位改为 bottom 定位，并确保底部留出足够空间给长颈鹿 */
-            bottom: 45%; 
+            left: 3%; top: 5%; /* 靠左上 */
             z-index: 1;
             pointer-events: none;
-            opacity: 0.6;
+            opacity: 0.5; /* 稍微调淡一点，更像背景 */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* 靠左对齐 */
         }
 
-        .wuhu-line { display: block; line-height: 1.0; animation: drift 3s infinite ease-in-out; }
-        .s1 { font-size: 2.8rem; }
-        .s2 { font-size: 4rem; margin-left: 50px; animation-delay: 0.5s; }
-        .s3 { font-size: 2.5rem; margin-left: -20px; animation-delay: 1s; }
-        .s4 { font-size: 5rem; margin-left: 120px; animation-delay: 1.5s; font-weight: bold; }
-        .s5 { font-size: 3.2rem; margin-left: -40px; animation-delay: 0.2s; }
-        /* 最大的这行字现在完全漂浮在长颈鹿头顶上方 */
-        .s6 { font-size: 6.5rem; margin-left: 100px; animation-delay: 0.8s; letter-spacing: 4px; }
+        .wuhu-line { display: block; line-height: 0.9; animation: drift 4s infinite ease-in-out; }
+        
+        /* 倒三角 CSS 逻辑：第一行最长最粗，逐行变短变细并向右缩进 */
+        .s1 { font-size: 8rem; font-weight: bold; margin-left: 0; }
+        .s2 { font-size: 6.5rem; margin-left: 60px; animation-delay: 0.5s; }
+        .s3 { font-size: 5rem; margin-left: 120px; animation-delay: 1s; }
+        .s4 { font-size: 4rem; margin-left: 180px; animation-delay: 1.5s; }
+        .s5 { font-size: 3rem; margin-left: 240px; animation-delay: 0.2s; }
+        .s6 { font-size: 2.2rem; margin-left: 300px; animation-delay: 0.8s; opacity: 0.7; }
 
         @keyframes drift {
-            0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(5px, -5px); }
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(10px, -5px) rotate(1deg); }
         }
 
         /* 2. 主区域布局 */
         .main-content {
             position: relative;
             width: 100%; height: 100%;
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
+            display: flex; /* 使用 flex 重新规划文字和长颈鹿的位置 */
+            justify-content: flex-end; /* 整体靠右 */
+            align-items: flex-end; /* 整体靠下 */
             z-index: 10;
+            padding-right: 5%;
+            padding-bottom: 5%;
         }
 
+        /* 长颈鹿及其左侧文字容器 */
+        .content-aligner {
+            display: flex;
+            align-items: flex-end; /* 文字和长颈鹿底部对齐 */
+            gap: 30px; /* 文字和长颈鹿之间的间距 */
+        }
+
+        /* 3. 文字块：Portfolio 和 QI JIANG 移到左侧 */
+        .text-block {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end; /* 文字靠右对齐，指向长颈鹿 */
+            margin-bottom: 120px; /* 向上提一丢丢，靠近长颈鹿头部高度 */
+        }
+
+        .title-text {
+            font-size: 5.5rem; /* Portfolio 再大点 */
+            font-weight: bold; 
+            margin: 0;
+            color: #000;
+            line-height: 1;
+        }
+
+        .name-text {
+            font-size: 4rem; /* QI JIANG 大点 */
+            font-weight: bold;
+            margin: 10px 0 0 0;
+            color: #000;
+            line-height: 1;
+        }
+
+        /* 4. 长颈鹿：极致放大，面朝左，向上提 */
         .giraffe-wrap {
-            position: absolute;
-            /* 核心修改：整体稍微下移，给头顶文字留出空间 */
-            bottom: 5%; right: 5%; 
-            display: flex; flex-direction: column;
+            display: flex;
+            flex-direction: column;
             align-items: center;
         }
 
-        /* 3. 核心修改：长颈鹿极致放大，保持朝左 */
         .animal-img {
-            width: 650px; /* 大幅放大 */
+            width: 750px; /* 极致放大 */
             cursor: pointer;
-            /* 稍微减小旋转角度，使其在大尺寸下更稳当 */
+            /* 保持朝左scaleX(-1)，轻微旋转 */
             transform: rotate(1deg) scaleX(-1); 
             transition: transform 0.3s ease;
             -webkit-user-drag: none;
+            /* 核心修改：向上提一丢丢，避免 Portfolio 被压 */
+            margin-bottom: 20px; 
         }
 
-        /* 点击晃动动画：保留朝左的状态 */
+        /* 点击晃动动画 */
         .animal-img.active { animation: shakeLeft 0.4s ease-in-out; }
         @keyframes shakeLeft {
             0%, 100% { transform: scale(1) rotate(1deg) scaleX(-1); }
-            50% { transform: scale(1.03) rotate(-2deg) scaleX(-1); }
+            50% { transform: scale(1.03) rotate(-1.5deg) scaleX(-1); }
         }
 
-        /* 4. 标题：Portfolio */
-        .title-text {
-            font-size: 4.5rem; 
-            font-weight: bold; 
-            margin-bottom: 0px;
-            color: #000;
-        }
-
-        /* 5. 底部按钮 */
+        /* 5. 底部按钮：适配大长颈鹿布局 */
         .nav-tabs {
             position: absolute;
-            bottom: 4%;
+            bottom: 3%;
+            left: 50%;
+            transform: translateX(-50%); /* 居中显示 */
             display: flex; gap: 15px;
             z-index: 20;
         }
@@ -105,7 +135,7 @@
         }
         .tab:hover { background: #000; color: #fff; transform: translateY(-5px); }
 
-        /* 6. 星星闪烁样式：稍微放大以适应大长颈鹿 */
+        /* 6. 星星闪烁样式 */
         .sparkle {
             position: absolute;
             width: 40px; height: 40px;
@@ -134,10 +164,15 @@
     </div>
 
     <div class="main-content">
-        <div class="giraffe-wrap">
-            <div class="title-text">Portfolio</div>
-            <img id="giraffe" class="animal-img" onclick="clickGiraffe(event)" src="1.png">
-            <div style="font-size:3.5rem; font-weight:bold; margin-top:0px;">BY QI JIANG</div>
+        <div class="content-aligner">
+            <div class="text-block">
+                <div class="title-text">Portfolio</div>
+                <div class="name-text">BY QI JIANG</div>
+            </div>
+            
+            <div class="giraffe-wrap">
+                <img id="giraffe" class="animal-img" onclick="clickGiraffe(event)" src="1.png">
+            </div>
         </div>
 
         <div class="nav-tabs">
@@ -160,7 +195,7 @@
         const x = e.clientX || (e.touches && e.touches[0].clientX);
         const y = e.clientY || (e.touches && e.touches[0].clientY);
 
-        for(let i=0; i<10; i++) { // 增加到 10 颗星星，更热闹
+        for(let i=0; i<10; i++) { // 增加到 10 颗星星
             createStar(x, y);
         }
     }
@@ -169,7 +204,6 @@
         const star = document.createElement('div');
         star.className = 'sparkle';
         
-        // 扩大爆炸范围
         const dx = (Math.random() - 0.5) * 300 + 'px';
         const dy = (Math.random() - 0.5) * 300 + 'px';
         star.style.setProperty('--dx', dx);
