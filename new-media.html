@@ -5,20 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>New Media Art & Installation</title>
     <style>
-        /* 使用国内镜像加速字体，解决国内不点 VPN 无法显示字体的问题 */
+        /* 核心修复：使用国内镜像加速字体，解决国内不点 VPN 打不开的问题 */
         @import url('https://fonts.font.im/css2?family=Gochi+Hand&display=swap');
         
         * { font-family: 'Gochi Hand', cursive !important; box-sizing: border-box; }
 
-        body { background-color: #ffffff; margin: 0; padding: 4vw; overflow-x: hidden; }
+        body {
+            background-color: #ffffff;
+            margin: 0;
+            padding: 4vw;
+            overflow-x: hidden;
+        }
 
         .gallery-header { margin-bottom: 50px; }
         .gallery-header h1 { font-size: 3.5rem; margin: 0; color: #000; }
 
         .back-btn {
-            display: inline-block; border: 3px solid #000; border-radius: 12px;
-            padding: 10px 30px; text-decoration: none; color: #000;
-            font-weight: bold; font-size: 1.3rem; transition: 0.3s;
+            display: inline-block;
+            border: 3px solid #000;
+            border-radius: 12px;
+            padding: 10px 30px;
+            text-decoration: none;
+            color: #000;
+            font-weight: bold;
+            font-size: 1.3rem;
+            transition: 0.3s;
         }
         .back-btn:hover { background: #000; color: #fff; transform: translateY(-5px); }
 
@@ -57,7 +68,7 @@
         .video-player {
             width: 100%;
             height: auto;
-            display: none; /* 初始隐藏 */
+            display: none; 
             background: #000;
             border-radius: 15px;
         }
@@ -66,7 +77,7 @@
         .media-info h2 { margin: 0 0 12px 0; font-size: 2.2rem; }
         .media-info p { margin: 0; font-size: 1.3rem; line-height: 1.4; opacity: 0.8; }
 
-        /* 彩色边框 */
+        /* 彩色边框配色 */
         .item-pink { border: 8px solid #ffb7b7; }
         .item-blue { border: 8px solid #b2ebf2; }
         .item-green { border: 8px solid #dcedc8; }
@@ -108,25 +119,52 @@
         </div>
     </div>
 
+    <div class="media-item item-green" onclick="handleMediaPlay(this)">
+        <img src="game.png" class="poster">
+        <video class="video-player" controls playsinline>
+            <source src="game.mp4" type="video/mp4">
+        </video>
+        <div class="media-info">
+            <h2>DLAB UNREAL ENGINE</h2>
+            <p>Game production workshop at DLAB, using Houdini for node-based modeling and creating interactions in Unreal Engine.</p>
+        </div>
     </div>
 
+    <div class="media-item item-purple" onclick="handleMediaPlay(this)">
+        <img src="jianzhu.png" class="poster">
+        <video class="video-player" controls playsinline>
+            <source src="jianzhu.mp4" type="video/mp4">
+        </video>
+        <div class="media-info">
+            <h2>DLAB ARCHITECTURE</h2>
+            <p>Digital scanning and 3D-printed reconstruction of plaster models of Wright’s Imperial Hotel.</p>
+        </div>
+    </div>
+
+    <div class="media-item item-orange">
+        <a href="firework.html" style="text-decoration: none; color: inherit;">
+            <img src="yanhua.png" class="poster">
+            <div class="media-info">
+                <h2>INTERACTIVE FIREWORKS</h2>
+                <p>An interactive art installation using gesture recognition. Launch customized fireworks through hand motions.</p>
+                <div style="margin-top:10px; color:#ff6b6b; font-weight:bold;">✨ CLICK TO START INTERACTION</div>
+            </div>
+        </a>
+    </div>
+</div>
+
 <script>
-    // 核心修复函数：通过 container 查找内部元素，确保点击逻辑 100% 准确
     function handleMediaPlay(container) {
         const poster = container.querySelector('.poster');
         const video = container.querySelector('.video-player');
         
-        if (poster && video && poster.style.display !== 'none') {
-            poster.style.display = 'none'; // 隐藏封面
-            video.style.display = 'block'; // 显示视频
-            
-            // 解决国内网络加载延迟
+        if (poster && (poster.style.display !== 'none')) {
+            poster.style.display = 'none';
+            video.style.display = 'block';
             video.load(); 
             video.play().catch(error => {
-                console.log("浏览器自动播放限制，请手动点击播放按钮:", error);
+                console.log("Playback interaction required:", error);
             });
-
-            // 停止晃动动画以方便操作控制条
             container.style.animation = 'none';
             container.style.transform = 'scale(1)';
         }
