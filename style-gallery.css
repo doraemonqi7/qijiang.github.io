@@ -1,98 +1,95 @@
-/* 引入最具马克笔粗笔触感的涂鸦字体 Permanent Marker */
-@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+/* 引入手写字体 */
+@import url('https://fonts.googleapis.com/css2?family=Gochi+Hand&display=swap');
 
-body, html {
+body {
+    background-color: #ffffff;
+    font-family: 'Gochi Hand', cursive !important;
     margin: 0;
     padding: 0;
-    overflow-y: scroll;
     overflow-x: hidden;
-    /* 核心：强制全局使用 Permanent Marker */
-    font-family: 'Permanent Marker', cursive !important;
-    background-color: #ffffff;
 }
 
-/* 左上角标题区域保持不变 */
-.header-nav-stack {
+/* 标题区域：固定在左上角，确保不被图片遮挡 */
+.gallery-header {
     position: fixed;
-    top: 45px;
-    left: 45px;
-    display: flex;
-    flex-direction: column; 
-    align-items: flex-start;
-    gap: 15px; 
-    z-index: 100;
+    top: 30px;
+    left: 40px;
+    z-index: 1000;
+    background: rgba(255,255,255,0.8); /* 半透明底色，防止背景太乱 */
+    padding: 10px;
+    border-radius: 10px;
 }
 
-.gallery-header-text {
-    font-size: 2.2rem !important;
-    color: #000;
-    margin: 0;
-}
+.gallery-header h1 { font-size: 2.5rem; margin: 0; }
 
-.back-btn-handdrawn {
+.back-btn {
+    display: inline-block;
+    border: 2px solid #000;
+    border-radius: 10px;
+    padding: 5px 20px;
     text-decoration: none;
     color: #000;
-    border: 5px solid #000; 
-    padding: 10px 25px;
-    border-radius: 15px; 
-    font-size: 1.2rem !important;
-    background: white;
-    transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    font-weight: bold;
+    margin-top: 10px;
+    transition: 0.3s;
 }
+.back-btn:hover { background: #000; color: #fff; }
 
-.back-btn-handdrawn:hover {
-    background: #000;
-    color: #fff;
-    transform: scale(1.05) rotate(-2deg);
-}
-
-/* 核心修复：强制三列且水平居中，解决图片过大问题 */
+/* 核心布局修复：三列居中，限制单张图最大宽度 */
 .gallery-grid {
     display: grid;
-    /* 定义三列，每列固定宽度 280px */
-    grid-template-columns: repeat(3, 280px); 
-    /* 核心锁定：确保内容在 Cargo 页面内真正水平居中 */
-    justify-content: center; 
-    justify-items: center;
-    gap: 60px 80px; 
-    
-    /* 布局微调：增加顶部内边距适配大图 */
-    padding: 220px 20px 200px 20px; 
-    margin: 0 auto !important; /* 强制水平居中 */
-    width: fit-content; /* 根据内容自动调整宽度 */
-    
-    position: relative;
-    z-index: 10;
+    /* 强制锁定为三列，每列最大不超过 350px */
+    grid-template-columns: repeat(3, minmax(200px, 350px)); 
+    justify-content: center; /* 整个网格居中 */
+    gap: 40px;
+    padding: 200px 5vw 100px 5vw; /* 顶部留出足够空间给标题 */
+    max-width: 1200px;
+    margin: 0 auto; /* 容器居中 */
 }
 
 .gallery-item {
-    transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    cursor: zoom-in;
-}
-
-/* 错落感：中间列（第2, 5, 8...个）下移 */
-.gallery-item:nth-child(3n-1) { margin-top: 60px; }
-
-.img-frame {
-    border: 9px solid var(--frame-color, #000); 
-    border-radius: 5px;
-    overflow: hidden;
     background: #fff;
-    transition: all 0.3s ease;
+    padding: 0;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    animation: float 4s infinite ease-in-out;
+    cursor: pointer;
+    position: relative;
+    box-sizing: border-box;
+    width: 100%; /* 随网格宽度缩放 */
 }
 
-.gallery-item img {
-    width: 100%; /* 图片宽度跟随 280px 的容器 */
-    height: auto;
-    display: block;
-}
-
-/* 核心修复：恢复鼠标悬停时的放大动画 */
+/* 鼠标悬停放大：增加 !important 确保覆盖动画 */
 .gallery-item:hover { 
-    transform: scale(1.35) rotate(2deg); 
-    z-index: 50; 
+    animation: none !important;
+    transform: scale(1.1) translateY(-15px) !important; 
+    z-index: 100; 
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1); 
 }
 
-.gallery-item:hover .img-frame {
-    box-shadow: 0 15px 50px var(--frame-color);
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+}
+
+.gallery-item img { 
+    width: 100%; 
+    height: auto; 
+    display: block; 
+    border-radius: 5px;
+}
+
+/* 边框样式 */
+.item-pink { border: 6px solid #ffb7b7; }
+.item-yellow { border: 1px solid #ffeeba; } /* 根据你截图里的 tiger 边框细一点 */
+.item-blue { border: 6px solid #b2ebf2; }
+.item-purple { border: 6px solid #f3e5f5; }
+.item-red { border: 6px solid #ffccbc; }
+.item-cyan { border: 6px solid #e0f2f1; }
+
+/* 响应式：手机端改为一列 */
+@media (max-width: 800px) {
+    .gallery-grid {
+        grid-template-columns: repeat(1, 1fr);
+        padding-top: 150px;
+    }
 }
