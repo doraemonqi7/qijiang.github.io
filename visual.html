@@ -26,48 +26,51 @@
             text-align: left;
         }
 
-        .gallery-header h1 { font-size: 3.5rem; margin: 0; }
+        .gallery-header h1 { font-size: 3.5rem; margin: 0; color: #000; }
 
         .back-btn {
             display: inline-block;
-            border: 2px solid #000;
-            border-radius: 10px;
-            padding: 8px 25px;
+            border: 3px solid #000;
+            border-radius: 12px;
+            padding: 10px 30px;
             text-decoration: none;
             color: #000;
             font-weight: bold;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             margin-top: 15px;
             transition: 0.3s;
         }
-        .back-btn:hover { background: #000; color: #fff; }
+        .back-btn:hover { background: #000; color: #fff; transform: translateY(-3px); }
 
         /* 3. 网格布局：锁定一行三个，单张图不超过 380px */
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(3, minmax(200px, 380px)); 
             justify-content: center;
-            gap: 50px;
-            margin: 40px auto;
-            max-width: 1300px;
+            gap: 60px; /* 增加间距给边框留位置 */
+            margin: 50px auto;
+            max-width: 1400px;
+            align-items: start; /* 核心修复：不同高度的图片顶部对齐 */
         }
 
-        /* 4. 图片项、边框与动画 */
+        /* 4. 图片项容器：消除多余外框 */
         .gallery-item {
-            background: #fff;
             padding: 0;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             animation: float 4s infinite ease-in-out;
             cursor: pointer;
             width: 100%;
+            /* 核心修复：确保容器高度被图片撑开，不露底色 */
+            height: fit-content; 
+            background: transparent !important;
         }
 
         /* 鼠标碰到变大逻辑 */
         .gallery-item:hover { 
             animation: none !important;
-            transform: scale(1.15) translateY(-20px) !important; 
+            transform: scale(1.1) translateY(-15px) !important; 
             z-index: 100; 
-            box-shadow: 0 25px 50px rgba(0,0,0,0.1); 
+            box-shadow: 0 30px 60px rgba(0,0,0,0.12); 
         }
 
         @keyframes float {
@@ -75,23 +78,46 @@
             50% { transform: translateY(-12px); }
         }
 
+        /* 核心修复：图片自适应，不留白缝 */
         .gallery-item img { 
             width: 100%; 
             height: auto; 
             display: block; 
-            border-radius: 5px;
+            border-radius: 2px;
         }
 
-        /* 5. 按照你提供的文件名一一对应的边框 */
-        .item-pink { border: 8px solid #ffb7b7; }
-        .item-yellow { border: 8px solid #ffeeba; }
-        .item-blue { border: 8px solid #b2ebf2; }
-        .item-purple { border: 8px solid #f3e5f5; }
-        .item-green { border: 8px solid #dcedc8; }
-        .item-orange { border: 8px solid #ffccbc; }
+        /* 5. 核心修改：真正的手写涂鸦抖动边框 (Sketchy Border) */
+        .sketchy-frame {
+            padding: 15px; /* 图片和手写边框之间的空隙 */
+            background: #fff; /* 模拟画纸底色 */
+            border-style: solid;
+            /* 边框粗细 */
+            border-width: 15px 18px 20px 15px; 
+            /* 核心：应用手写线条图片作为边框 */
+            border-image-source: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWCAMAAABy4R8bAAAAMFBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABvF97yAAAAD3RSTlMAAQIDBAUGBwgJCgsMDQ6Ior8NAAAA5ElEQVR4AezRoQ3AQAwEQSp9+m/aK6iPAn3G3M0OAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAW4N+Ad0456IeAAAAAElFTkSuQmCC'); 
+            /* 核心：将图片切割并平铺，实现抖动效果 */
+            border-image-slice: 40 fill;
+            border-image-repeat: repeat;
+        }
 
-        @media (max-width: 850px) {
-            .gallery-grid { grid-template-columns: 1fr; max-width: 400px; }
+        /* 按照你提供的文件名一一对应的手写边框颜色 */
+        .item-pink { --frame-color: #ffb7b7; border-image-outset: 5px; }
+        .item-yellow { --frame-color: #ffeeba; border-image-outset: 5px; }
+        .item-blue { --frame-color: #b2ebf2; border-image-outset: 5px; }
+        .item-purple { --frame-color: #f3e5f5; border-image-outset: 5px; }
+        .item-green { --frame-color: #dcedc8; border-image-outset: 5px; }
+        .item-orange { --frame-color: #ffccbc; border-image-outset: 5px; }
+
+        /* 利用 CSS 滤镜给抖动边框上色 */
+        .sketchy-frame.item-pink { filter: drop-shadow(0 0 1px var(--frame-color)) hue-rotate(330deg) saturate(1.5); }
+        .sketchy-frame.item-yellow { filter: drop-shadow(0 0 1px var(--frame-color)) hue-rotate(50deg) saturate(1.5); }
+        .sketchy-frame.item-blue { filter: drop-shadow(0 0 1px var(--frame-color)) hue-rotate(200deg) saturate(1.5); }
+        .sketchy-frame.item-purple { filter: drop-shadow(0 0 1px var(--frame-color)) hue-rotate(270deg) saturate(1.5); }
+        .sketchy-frame.item-green { filter: drop-shadow(0 0 1px var(--frame-color)) hue-rotate(100deg) saturate(1.5); }
+        .sketchy-frame.item-orange { filter: drop-shadow(0 0 1px var(--frame-color)) hue-rotate(20deg) saturate(1.5); }
+
+        @media (max-width: 900px) {
+            .gallery-grid { grid-template-columns: 1fr; max-width: 450px; }
         }
     </style>
 </head>
@@ -103,36 +129,52 @@
     </div>
 
     <div class="gallery-grid">
-        <div class="gallery-item item-pink">
-            <img src="festival.png" alt="Festival">
+        <div class="gallery-item">
+            <div class="sketchy-frame item-pink">
+                <img src="festival.png" alt="Festival">
+            </div>
         </div>
         
-        <div class="gallery-item item-yellow">
-            <img src="tiger.png" alt="Tiger">
+        <div class="gallery-item">
+            <div class="sketchy-frame item-yellow">
+                <img src="tiger.png" alt="Tiger">
+            </div>
         </div>
 
-        <div class="gallery-item item-blue">
-            <img src="cat.png" alt="Cat">
+        <div class="gallery-item">
+            <div class="sketchy-frame item-blue">
+                <img src="cat.png" alt="Cat">
+            </div>
         </div>
 
-        <div class="gallery-item item-orange">
-            <img src="苹果 copy.png" alt="Apple">
+        <div class="gallery-item">
+            <div class="sketchy-frame item-orange">
+                <img src="苹果 copy.png" alt="Apple">
+            </div>
         </div>
 
-        <div class="gallery-item item-purple">
-            <img src="广州阿那亚.png" alt="Architecture">
+        <div class="gallery-item">
+            <div class="sketchy-frame item-purple">
+                <img src="广州阿那亚.png" alt="Architecture">
+            </div>
         </div>
 
-        <div class="gallery-item item-green">
-            <img src="2.png" alt="Friends">
+        <div class="gallery-item">
+            <div class="sketchy-frame item-green">
+                <img src="2.png" alt="Friends">
+            </div>
         </div>
 
-        <div class="gallery-item item-pink">
-            <img src="cute.png" alt="Children Illustration">
+        <div class="gallery-item">
+            <div class="sketchy-frame item-pink">
+                <img src="cute.png" alt="Children Illustration">
+            </div>
         </div>
 
-        <div class="gallery-item item-blue">
-            <img src="3.png" alt="Landscape">
+        <div class="gallery-item">
+            <div class="sketchy-frame item-blue">
+                <img src="3.png" alt="Landscape">
+            </div>
         </div>
     </div>
 
