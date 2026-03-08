@@ -1,40 +1,164 @@
-<div class="gallery-grid">
-    <div class="gallery-item">
-        <div class="sketchy-frame c-pink">
-            <img src="festival.png" alt="Festival">
-        </div>
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Art & Illustration | Boring Still Life</title>
+    <style>
+        /* 1. 核心修复：使用国内秒开镜像，确保手写体生效 */
+        @import url('https://fonts.font.im/css2?family=Gochi+Hand&display=swap');
+
+        * { 
+            font-family: 'Gochi Hand', cursive !important; 
+            box-sizing: border-box; 
+        }
+
+        body { 
+            background-color: #ffffff; 
+            margin: 0; 
+            padding: 40px; 
+            overflow-x: hidden; 
+        }
+
+        .gallery-header { margin-bottom: 40px; text-align: left; }
+        .gallery-header h1 { font-size: 3.5rem; margin: 0; color: #000; }
+
+        .back-btn {
+            display: inline-block; border: 3px solid #000; border-radius: 12px;
+            padding: 10px 30px; text-decoration: none; color: #000;
+            font-weight: bold; font-size: 1.3rem; margin-top: 15px; transition: 0.3s;
+        }
+        .back-btn:hover { background: #000; color: #fff; transform: translateY(-3px); }
+
+        /* 2. 核心布局：强制锁定一行三个 */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(200px, 1fr)); 
+            justify-content: center;
+            gap: 60px;
+            margin: 50px auto;
+            max-width: 1400px;
+            align-items: start;
+        }
+
+        /* 3. 浮动动画与点击放大逻辑 */
+        .gallery-item {
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: float 4s infinite ease-in-out; /* 持续浮动动画 */
+            cursor: pointer;
+            width: 100%;
+            padding: 15px; 
+        }
+
+        /* 鼠标悬停/点击放大 */
+        .gallery-item:hover { 
+            animation-play-state: paused; /* 悬停时停止浮动，方便观看 */
+            transform: scale(1.1) translateY(-15px) !important; 
+            z-index: 100; 
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        /* 4. 莫兰迪色手绘边框 */
+        .sketchy-frame {
+            position: relative;
+            display: block;
+            width: 100%;
+            background: #fff;
+        }
+
+        .sketchy-frame::after {
+            content: "";
+            position: absolute;
+            top: -10px; left: -10px; right: -10px; bottom: -10px;
+            border: 6px solid currentColor;
+            border-radius: 255px 25px 225px 25px/25px 225px 25px 255px; /* 不规则手绘感 */
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* 配色方案 */
+        .c-pink { color: #ffb7b7; }
+        .c-yellow { color: #ffeeba; }
+        .c-blue { color: #b2ebf2; }
+        .c-purple { color: #e1bee7; }
+        .c-green { color: #c8e6c9; }
+        .c-orange { color: #ffccbc; }
+
+        .sketchy-frame img { 
+            width: 100%; 
+            height: auto; 
+            display: block; 
+            border-radius: 2px;
+            z-index: 1;
+        }
+
+        /* 手机端自动变一列 */
+        @media (max-width: 900px) {
+            .gallery-grid { grid-template-columns: 1fr; max-width: 450px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="gallery-header">
+        <h1>Boring Still Life</h1>
+        <a href="index.html" class="back-btn">Back to Home</a>
     </div>
-    <div class="gallery-item">
-        <div class="sketchy-frame c-yellow">
-            <img src="tiger.png" alt="Tiger">
+
+    <div class="gallery-grid">
+        <div class="gallery-item">
+            <div class="sketchy-frame c-pink">
+                <img src="festival.png" alt="Festival">
+            </div>
         </div>
-    </div>
-    <div class="gallery-item">
-        <div class="sketchy-frame c-blue">
-            <img src="cat.png" alt="Cat">
+        
+        <div class="gallery-item">
+            <div class="sketchy-frame c-yellow">
+                <img src="tiger.png" alt="Tiger">
+            </div>
+        </div>
+
+        <div class="gallery-item">
+            <div class="sketchy-frame c-blue">
+                <img src="cat.png" alt="Cat">
+            </div>
+        </div>
+
+        <div class="gallery-item">
+            <div class="sketchy-frame c-orange">
+                <img src="apple.png" alt="Apple">
+            </div>
+        </div>
+
+        <div class="gallery-item">
+            <div class="sketchy-frame c-purple">
+                <img src="aranya.png" alt="Architecture">
+            </div>
+        </div>
+
+        <div class="gallery-item">
+            <div class="sketchy-frame c-green">
+                <img src="friends.png" alt="Friends">
+            </div>
+        </div>
+
+        <div class="gallery-item">
+            <div class="sketchy-frame c-pink">
+                <img src="cute.png" alt="Cute">
+            </div>
+        </div>
+
+        <div class="gallery-item">
+            <div class="sketchy-frame c-blue">
+                <img src="landscape.png" alt="Landscape">
+            </div>
         </div>
     </div>
 
-    <div class="gallery-item">
-        <div class="sketchy-frame c-orange">
-            <img src="apple.png" alt="Apple"> </div>
-    </div>
-    <div class="gallery-item">
-        <div class="sketchy-frame c-purple">
-            <img src="aranya.png" alt="Architecture"> </div>
-    </div>
-    <div class="gallery-item">
-        <div class="sketchy-frame c-green">
-            <img src="friends.png" alt="Friends"> </div>
-    </div>
-
-    <div class="gallery-item">
-        <div class="sketchy-frame c-pink">
-            <img src="cute.png" alt="Cute">
-        </div>
-    </div>
-    <div class="gallery-item">
-        <div class="sketchy-frame c-blue">
-            <img src="landscape.png" alt="Landscape"> </div>
-    </div>
-</div>
+</body>
+</html>
