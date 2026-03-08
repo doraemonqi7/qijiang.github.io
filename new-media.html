@@ -4,7 +4,98 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>New Media Art & Installation</title>
-    <link rel="stylesheet" href="style-newmedia.css">
+    <style>
+        /* 1. 强制应用圆润手写字体 */
+        @import url('https://fonts.googleapis.com/css2?family=Gochi+Hand&display=swap');
+        
+        * { font-family: 'Gochi Hand', cursive !important; box-sizing: border-box; }
+
+        body {
+            background-color: #ffffff;
+            margin: 0;
+            padding: 40px;
+            overflow-x: hidden;
+        }
+
+        .gallery-header { margin-bottom: 40px; }
+        .gallery-header h1 { font-size: 3.5rem; margin: 0; }
+
+        .back-btn {
+            display: inline-block;
+            border: 2px solid #000;
+            border-radius: 12px;
+            padding: 10px 30px;
+            text-decoration: none;
+            color: #000;
+            font-weight: bold;
+            font-size: 1.3rem;
+            margin-top: 15px;
+            transition: 0.3s;
+        }
+        .back-btn:hover { background: #000; color: #fff; transform: translateY(-5px); }
+
+        /* 2. 核心布局：一行两个，显著放大 */
+        .media-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 60px;
+            justify-content: center;
+            margin: 50px auto;
+            max-width: 1400px;
+        }
+
+        .media-item {
+            background: #fff;
+            padding: 15px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: float 5s infinite ease-in-out;
+            cursor: pointer;
+            text-align: center;
+            border-radius: 25px;
+            position: relative;
+        }
+
+        /* 鼠标悬停时停止晃动，方便操作 */
+        .media-item:hover {
+            animation-play-state: paused;
+            transform: scale(1.02) translateY(-10px);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        /* 3. 图片与视频样式 */
+        .poster {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 15px;
+        }
+
+        .video-player {
+            width: 100%;
+            height: auto;
+            display: none; /* 初始隐藏 */
+            border-radius: 15px;
+            background: #000;
+        }
+
+        .media-info { padding: 20px; text-align: left; }
+        .media-info h2 { margin: 0 0 10px 0; font-size: 2rem; }
+        .media-info p { margin: 0; font-size: 1.2rem; line-height: 1.4; opacity: 0.8; }
+
+        /* 彩色边框 */
+        .item-pink { border: 8px solid #ffb7b7; }
+        .item-blue { border: 8px solid #b2ebf2; }
+        .item-green { border: 8px solid #dcedc8; }
+        .item-purple { border: 8px solid #f3e5f5; }
+
+        @media (max-width: 900px) {
+            .media-grid { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
 
@@ -14,9 +105,9 @@
 </div>
 
 <div class="media-grid">
-    <div class="media-item item-pink" onclick="playVideo(this)">
+    <div class="media-item item-pink" onclick="playMedia(this)">
         <img src="chuchuang.png" class="poster">
-        <video class="video-player" loop playsinline muted>
+        <video class="video-player" controls playsinline>
             <source src="chuchuang.mp4" type="video/mp4">
         </video>
         <div class="media-info">
@@ -25,9 +116,9 @@
         </div>
     </div>
 
-    <div class="media-item item-blue" onclick="playVideo(this)">
+    <div class="media-item item-blue" onclick="playMedia(this)">
         <img src="sichou.png" class="poster">
-        <video class="video-player" loop playsinline muted>
+        <video class="video-player" controls playsinline>
             <source src="haishang.mp4" type="video/mp4">
         </video>
         <div class="media-info">
@@ -36,9 +127,9 @@
         </div>
     </div>
 
-    <div class="media-item item-green" onclick="playVideo(this)">
+    <div class="media-item item-green" onclick="playMedia(this)">
         <img src="game.png" class="poster">
-        <video class="video-player" loop playsinline muted>
+        <video class="video-player" controls playsinline>
             <source src="game.mp4" type="video/mp4">
         </video>
         <div class="media-info">
@@ -47,9 +138,9 @@
         </div>
     </div>
 
-    <div class="media-item item-purple" onclick="playVideo(this)">
+    <div class="media-item item-purple" onclick="playMedia(this)">
         <img src="jianzhu.png" class="poster">
-        <video class="video-player" loop playsinline muted>
+        <video class="video-player" controls playsinline>
             <source src="jianzhu.mp4" type="video/mp4">
         </video>
         <div class="media-info">
@@ -60,17 +151,19 @@
 </div>
 
 <script>
-    function playVideo(container) {
+    function playMedia(container) {
         const poster = container.querySelector('.poster');
         const video = container.querySelector('.video-player');
         
-        // 隐藏封面，显示视频并播放
-        poster.style.display = 'none';
-        video.style.display = 'block';
-        video.play();
-        
-        // 停止容器的漂浮动画，防止点击后视频还在晃动
-        container.style.animation = 'none';
+        // 核心修复：点击后隐藏图片，显示视频并播放
+        if (poster.style.display !== 'none') {
+            poster.style.display = 'none';
+            video.style.display = 'block';
+            video.play();
+            
+            // 点击后停止晃动，方便拖拽进度条
+            container.style.animation = 'none';
+        }
     }
 </script>
 
