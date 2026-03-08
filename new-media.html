@@ -18,7 +18,6 @@
         <img src="chuchuang.png" class="poster">
         <video class="video-player" controls playsinline>
             <source src="chuchuang.mp4" type="video/mp4">
-            您的浏览器不支持 HTML5 视频。
         </video>
         <div class="media-info">
             <h2>WINDOW DESIGN</h2>
@@ -61,9 +60,9 @@
 
     <div class="media-item item-orange">
         <a href="firework.html" style="text-decoration: none; color: inherit;">
-            <img src="fireworks.png" class="poster">
+            <img src="yanhua.png" class="poster">
             <div class="media-info">
-                <h2>LUMI - INTERACTIVE FIREWORKS</h2>
+                <h2>INTERACTIVE FIREWORKS</h2>
                 <p>An interactive art installation using gesture recognition. Launch customized fireworks through hand motions.</p>
                 <div style="margin-top:10px; color:#ff6b6b; font-weight:bold;">✨ CLICK TO START INTERACTION</div>
             </div>
@@ -72,23 +71,17 @@
 </div>
 
 <script>
-    // 核心修复函数：确保点击后封面消失，视频显示并播放
     function handleMediaPlay(container) {
         const poster = container.querySelector('.poster');
         const video = container.querySelector('.video-player');
         
-        // 如果图片还在显示，则切换状态
         if (poster && poster.style.display !== 'none') {
             poster.style.display = 'none';
             video.style.display = 'block';
-            
-            // 确保视频从头播放并激活控件
             video.load(); 
             video.play().catch(error => {
-                console.log("自动播放被拦截，已显示控件供手动点击:", error);
+                console.log("Playback interaction required:", error);
             });
-
-            // 停止外层晃动动画，方便操作进度条
             container.style.animation = 'none';
             container.style.transform = 'scale(1)';
         }
