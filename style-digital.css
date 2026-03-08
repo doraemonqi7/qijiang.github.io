@@ -1,53 +1,106 @@
-/* フォントを強制適用 */
+/* 1. 强制引入并应用 Gochi Hand 字体 */
 @import url('https://fonts.googleapis.com/css2?family=Gochi+Hand&display=swap');
 
 * {
+    /* 核心修复：确保所有元素都使用手写体 */
     font-family: 'Gochi Hand', cursive !important;
 }
 
-/* グリッドレイアウトの修正 */
-.media-grid {
+body {
+    background-color: #ffffff;
+    margin: 0;
+    padding: 3vw;
+    overflow-x: hidden;
+}
+
+/* 2. 标题与按钮区域 */
+.gallery-header {
+    margin-bottom: 40px;
+    text-align: left;
+}
+
+.gallery-header h1 {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.back-btn {
+    display: inline-block;
+    border: 2px solid #000;
+    border-radius: 12px;
+    padding: 10px 30px;
+    text-decoration: none;
+    color: #000;
+    font-weight: bold;
+    font-size: 1.2rem;
+    transition: 0.3s;
+}
+
+.back-btn:hover { 
+    background: #000; 
+    color: #fff; 
+    transform: translateY(-3px);
+}
+
+/* 3. 核心布局修复：锁定三列，不再无限变大 */
+.video-grid {
     display: grid;
-    /* 1行3列を基本にし、1つあたりの幅を最大450pxに制限 */
-    grid-template-columns: repeat(3, minmax(300px, 450px));
+    /* 强制一行三个，每列宽度限制在 250px 到 400px 之间 */
+    grid-template-columns: repeat(3, minmax(250px, 400px));
     gap: 40px;
-    justify-content: center;
-    padding: 50px 20px;
-    margin: 0 auto;
+    justify-content: center; /* 整体居中 */
+    align-items: start;
+    margin: 50px auto;
     max-width: 1400px;
 }
 
-.media-item {
+/* 4. 视频容器与动画 */
+.video-item {
+    width: 100%;
     background: #fff;
-    border-radius: 15px;
-    overflow: hidden;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    /* 浮遊アニメーション */
-    animation: float 4s infinite ease-in-out;
+    padding: 0;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    animation: float 5s infinite ease-in-out;
+    position: relative;
+    box-sizing: border-box;
 }
 
-/* 動画プレイヤーのサイズ固定 */
-.video-player {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 16 / 9; /* 動画の比率に合わせて調整 */
-    background: #000;
-}
-
-.poster {
-    width: 100%;
-    height: auto;
-    display: block;
-}
-
-/* ホバー時の挙動 */
-.media-item:hover {
-    transform: scale(1.05);
-    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+/* 悬停放大：必须关掉 float 动画，放大倍数才稳定 */
+.video-item:hover {
+    animation: none !important;
+    transform: scale(1.1) translateY(-15px) !important;
+    z-index: 100;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
 }
 
 @keyframes float {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+    50% { transform: translateY(-12px); }
+}
+
+/* 强制视频自适应容器宽度 */
+video {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 15px;
+}
+
+.video-label {
+    margin-top: 15px;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* 5. 视频专属彩色边框 */
+.v-blue { border: 6px solid #b2ebf2; border-radius: 20px; padding: 10px; }
+.v-purple { border: 6px solid #f3e5f5; border-radius: 20px; padding: 10px; }
+.v-green { border: 6px solid #dcedc8; border-radius: 20px; padding: 10px; }
+
+/* 响应式：屏幕太小时自动变一列 */
+@media (max-width: 900px) {
+    .video-grid {
+        grid-template-columns: 1fr;
+        max-width: 450px;
+    }
 }
