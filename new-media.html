@@ -14,10 +14,11 @@
 </div>
 
 <div class="media-grid">
-    <div class="media-item item-pink" onclick="playMedia(this)">
+    <div class="media-item item-pink" onclick="handleMediaPlay(this)">
         <img src="chuchuang.png" class="poster">
         <video class="video-player" controls playsinline>
             <source src="chuchuang.mp4" type="video/mp4">
+            您的浏览器不支持 HTML5 视频。
         </video>
         <div class="media-info">
             <h2>WINDOW DESIGN</h2>
@@ -25,7 +26,7 @@
         </div>
     </div>
 
-    <div class="media-item item-blue" onclick="playMedia(this)">
+    <div class="media-item item-blue" onclick="handleMediaPlay(this)">
         <img src="sichou.png" class="poster">
         <video class="video-player" controls playsinline>
             <source src="haishang.mp4" type="video/mp4">
@@ -36,7 +37,7 @@
         </div>
     </div>
 
-    <div class="media-item item-green" onclick="playMedia(this)">
+    <div class="media-item item-green" onclick="handleMediaPlay(this)">
         <img src="game.png" class="poster">
         <video class="video-player" controls playsinline>
             <source src="game.mp4" type="video/mp4">
@@ -47,7 +48,7 @@
         </div>
     </div>
 
-    <div class="media-item item-purple" onclick="playMedia(this)">
+    <div class="media-item item-purple" onclick="handleMediaPlay(this)">
         <img src="jianzhu.png" class="poster">
         <video class="video-player" controls playsinline>
             <source src="jianzhu.mp4" type="video/mp4">
@@ -60,7 +61,8 @@
 
     <div class="media-item item-orange">
         <a href="firework.html" style="text-decoration: none; color: inherit;">
-            <img src="fireworks.png" class="poster"> <div class="media-info">
+            <img src="fireworks.png" class="poster">
+            <div class="media-info">
                 <h2>LUMI - INTERACTIVE FIREWORKS</h2>
                 <p>An interactive art installation using gesture recognition. Launch customized fireworks through hand motions.</p>
                 <div style="margin-top:10px; color:#ff6b6b; font-weight:bold;">✨ CLICK TO START INTERACTION</div>
@@ -70,17 +72,25 @@
 </div>
 
 <script>
-    function playMedia(container) {
+    // 核心修复函数：确保点击后封面消失，视频显示并播放
+    function handleMediaPlay(container) {
         const poster = container.querySelector('.poster');
         const video = container.querySelector('.video-player');
         
-        // 只有在没点击过的情况下触发
+        // 如果图片还在显示，则切换状态
         if (poster && poster.style.display !== 'none') {
             poster.style.display = 'none';
             video.style.display = 'block';
-            video.play();
-            // 播放视频时停止晃动，方便操作进度条
+            
+            // 确保视频从头播放并激活控件
+            video.load(); 
+            video.play().catch(error => {
+                console.log("自动播放被拦截，已显示控件供手动点击:", error);
+            });
+
+            // 停止外层晃动动画，方便操作进度条
             container.style.animation = 'none';
+            container.style.transform = 'scale(1)';
         }
     }
 </script>
