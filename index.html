@@ -5,215 +5,164 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visual Portfolio | QI JIANG</title>
     <style>
-        /* 1. 强制应用圆润手写字体 Gochi Hand */
         @import url('https://fonts.googleapis.com/css2?family=Gochi+Hand&display=swap');
 
-        * {
-            font-family: 'Gochi Hand', cursive !important;
-            box-sizing: border-box;
-        }
+        * { font-family: 'Gochi Hand', cursive !important; box-sizing: border-box; }
 
         body, html {
-            margin: 0 !important;
-            padding: 0 !important;
-            overflow: hidden !important;
+            margin: 0; padding: 0; 
             background-color: #ffffff;
-            width: 100vw;
-            height: 100vh;
+            width: 100%; height: 100%;
+            overflow: hidden;
         }
 
-        /* 主画布布局 */
-        .cargo-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 999;
-        }
-
-        /* 2. 背景文字散射动画 */
-        .wuhu-scatter {
+        /* 1. 背景文字布局：恢复原本大小 */
+        .wuhu-container {
             position: absolute;
-            left: 10% !important;
-            top: 15% !important;
+            left: 8%; top: 12%;
+            z-index: 1;
             pointer-events: none;
-            opacity: 0.6;
+            opacity: 0.7;
         }
 
-        .wuhu-scatter div {
-            display: block !important;
-            animation: delicateTwinkle 2.5s infinite ease-in-out !important;
-        }
+        .wuhu-line { display: block; line-height: 1.1; animation: drift 3s infinite ease-in-out; }
+        .s1 { font-size: 2.8rem; }
+        .s2 { font-size: 4rem; margin-left: 100px; animation-delay: 0.5s; }
+        .s3 { font-size: 2.5rem; margin-left: 20px; animation-delay: 1s; }
+        .s4 { font-size: 5rem; margin-left: 180px; animation-delay: 1.5s; font-weight: bold; }
+        .s5 { font-size: 3.2rem; margin-left: -20px; animation-delay: 0.2s; }
+        .s6 { font-size: 7rem; margin-left: 220px; animation-delay: 0.8s; letter-spacing: 4px; }
 
-        @keyframes delicateTwinkle {
+        @keyframes drift {
             0%, 100% { transform: translate(0, 0); }
-            25% { transform: translate(1.5px, -1px); }
-            50% { transform: translate(-1px, 1.5px); }
+            50% { transform: translate(3px, -3px); }
         }
 
-        /* 不同行文字的尺寸和位置偏离 */
-        .line-1 { font-size: 3.2rem; transform: translate(10px, 0); animation-duration: 2s !important; }
-        .line-2 { font-size: 4.8rem; transform: translate(140px, -20px); animation-duration: 2.8s !important; }
-        .line-3 { font-size: 2.8rem; transform: translate(30px, 10px); animation-duration: 2.3s !important; opacity: 0.7; }
-        .line-4 { font-size: 5.8rem; transform: translate(220px, 25px); animation-duration: 3.2s !important; font-weight: bold; }
-        .line-5 { font-size: 3.8rem; transform: translate(-10px, 50px); animation-duration: 2.6s !important; }
-        .line-6 { font-size: 8.5rem; transform: translate(260px, 70px); animation-duration: 3.8s !important; letter-spacing: 6px; }
+        /* 2. 长颈鹿区域修复：确保它可见且位置正确 */
+        .main-content {
+            position: relative;
+            width: 100%; height: 100%;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            z-index: 10;
+        }
 
-        /* 3. 长颈鹿容器：作为星星产生时的定位锚点 */
-        .signature-wrap {
+        .giraffe-wrap {
             position: absolute;
-            bottom: 20%;
-            right: 12% !important;
-            display: flex;
-            flex-direction: column;
+            bottom: 22%; right: 10%;
+            display: flex; flex-direction: column;
             align-items: center;
         }
 
-        /* 长颈鹿图片样式与点击晃动动画 */
         .animal-img {
-            width: 420px;
+            width: 380px; /* 恢复原本适中大小 */
             cursor: pointer;
             transform: rotate(2deg);
-            transition: transform 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            -webkit-user-drag: none; /* 防止图片被拖拽 */
+            transition: transform 0.3s ease;
         }
 
-        @keyframes bounceOnce {
-            0% { transform: scale(1) rotate(2deg); }
-            30% { transform: scale(1.08) rotate(-3deg); }
-            100% { transform: scale(1) rotate(2deg); }
+        /* 点击晃动动画 */
+        .animal-img.active { animation: shakeOnce 0.4s ease-in-out; }
+        @keyframes shakeOnce {
+            0%, 100% { transform: scale(1) rotate(2deg); }
+            50% { transform: scale(1.05) rotate(-3deg); }
         }
-        
-        /* 当长颈鹿拥有 .active 类时执行点击晃动动画 */
-        .animal-img.active { animation: bounceOnce 0.45s !important; }
 
-        /* 4. 底部导航标签风格 */
-        .tab-container {
+        /* 3. 底部按钮 */
+        .nav-tabs {
             position: absolute;
-            bottom: 6%;
-            display: flex;
-            gap: 25px;
+            bottom: 8%;
+            display: flex; gap: 20px;
+            z-index: 20;
         }
 
-        .tab-link {
-            border: 3.5px solid #000;
-            border-radius: 90px;
-            padding: 15px 40px;
+        .tab {
+            border: 3px solid #000;
+            border-radius: 50px;
+            padding: 12px 35px;
             text-decoration: none;
             color: #000;
             font-weight: bold;
-            font-size: 1.6rem;
-            text-transform: uppercase;
-            background: white;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-size: 1.4rem;
+            background: #fff;
+            transition: 0.3s;
         }
 
-        /* 底部按钮悬停效果 */
-        .tab-link:hover {
-            background: #000;
-            color: #fff;
-            transform: translateY(-5px) scale(1.03);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
+        .tab:hover { background: #000; color: #fff; transform: translateY(-5px); }
 
-        /* 5. 核心修改：闪闪星星 (Sparkles) 样式与动画 */
-        .sparkle-container {
-            position: absolute;
-            pointer-events: none; /* 不会遮挡点击 */
-            z-index: 1000;
-        }
-
+        /* 4. 星星闪烁样式 */
         .sparkle {
             position: absolute;
-            background-color: transparent;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.8 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z" fill="%23ffd700"/></svg>'); /* 使用金色 SVG 星星图片 */
-            background-size: contain;
-            background-repeat: no-repeat;
-            /* 漂浮与渐隐动画 */
-            animation: sparkleFloat 1.2s ease-out forwards;
+            width: 30px; height: 30px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.8 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z" fill="%23FFD700"/></svg>') no-repeat center/contain;
+            pointer-events: none;
+            animation: burst 0.8s ease-out forwards;
+            z-index: 100;
         }
 
-        @keyframes sparkleFloat {
-            0% { transform: scale(0) rotate(0deg); opacity: 0; }
-            30% { transform: scale(1) rotate(10deg); opacity: 1; }
-            100% { transform: scale(0) rotate(20deg); opacity: 0; }
+        @keyframes burst {
+            0% { transform: scale(0) translate(0,0) rotate(0deg); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: scale(1) translate(var(--dx), var(--dy)) rotate(45deg); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
-<div class="cargo-canvas">
-    <div class="wuhu-scatter">
-        <div class="line-1">wuhuwuhuwuhu</div>
-        <div class="line-2">wuhuwuhuwuhu</div>
-        <div class="line-3">wuhuwuhuwuhu</div>
-        <div class="line-4">wuhuwuhuwuhu</div>
-        <div class="line-5">wuhuwuhuwuhu</div>
-        <div class="line-6">wuhuhulalaaal</div>
+    <div class="wuhu-container">
+        <span class="wuhu-line s1">wuhuwuhuwuhu</span>
+        <span class="wuhu-line s2">wuhuwuhuwuhu</span>
+        <span class="wuhu-line s3">wuhuwuhuwuhu</span>
+        <span class="wuhu-line s4">wuhuwuhuwuhu</span>
+        <span class="wuhu-line s5">wuhuwuhuwuhu</span>
+        <span class="wuhu-line s6">wuhuhulalaaal</span>
     </div>
 
-    <div class="signature-wrap">
-        <div style="font-size:3.8rem; font-weight:bold; margin-bottom:15px; color:#000;">Portfolio</div>
-        <img class="animal-img" id="giraffe" onclick="giraffeClicked()" src="https://freight.cargo.site/t/original/i/R2827857287254243483226718341063/1.png" alt="Interactive Giraffe Illustration">
-        <div style="font-size:3.8rem; font-weight:bold; margin-top:15px; color:#000;">BY QI JIANG</div>
-        
-        <div id="head-anchor" style="position:absolute; top:80px; left:210px; width:1px; height:1px;"></div>
-    </div>
+    <div class="main-content">
+        <div class="giraffe-wrap">
+            <div style="font-size:3.5rem; font-weight:bold; margin-bottom:10px;">Portfolio</div>
+            <img id="giraffe" class="animal-img" onclick="clickGiraffe(event)" src="https://freight.cargo.site/t/original/i/R2827857287254243483226718341063/1.png">
+            <div style="font-size:3.5rem; font-weight:bold; margin-top:10px;">BY QI JIANG</div>
+        </div>
 
-    <div class="tab-container">
-        <a class="tab-link" href="visual.html">Visual Art & Illustration</a>
-        <a class="tab-link" href="digital.html">Digital Image & 3D Creation</a>
-        <a class="tab-link" href="new-media.html">New Media Art & Installation</a>
+        <div class="nav-tabs">
+            <a href="visual.html" class="tab">Visual Art & Illustration</a>
+            <a href="digital.html" class="tab">Digital Image & 3D Creation</a>
+            <a href="new-media.html" class="tab">New Media Art & Installation</a>
+        </div>
     </div>
-</div>
 
 <script>
-    function giraffeClicked() {
-        // 1. 触发点击晃动动画
-        const el = document.getElementById('giraffe');
-        el.classList.remove('active');
-        void el.offsetWidth; // 触发重绘
-        el.classList.add('active');
+    function clickGiraffe(e) {
+        const img = document.getElementById('giraffe');
         
-        // 2. 触发星星闪烁效果
-        createSparkles();
+        // 1. 晃动动画
+        img.classList.remove('active');
+        void img.offsetWidth;
+        img.classList.add('active');
+
+        // 2. 在点击位置产生星星
+        for(let i=0; i<6; i++) {
+            createStar(e.pageX, e.pageY);
+        }
     }
 
-    function createSparkles() {
-        // 定位长颈鹿头部的锚点
-        const anchor = document.getElementById('head-anchor');
+    function createStar(x, y) {
+        const star = document.createElement('div');
+        star.className = 'sparkle';
         
-        // 每次点击产生 8 颗星星
-        const sparkleCount = 8;
+        // 随机爆炸方向
+        const dx = (Math.random() - 0.5) * 200 + 'px';
+        const dy = (Math.random() - 0.5) * 200 + 'px';
+        star.style.setProperty('--dx', dx);
+        star.style.setProperty('--dy', dy);
         
-        for (let i = 0; i < sparkleCount; i++) {
-            const sparkle = document.createElement('div');
-            sparkle.classList.add('sparkle');
-            
-            // 核心修改：设置星星的随机尺寸和位置偏离 (在头部周围)
-            const size = Math.random() * 25 + 15; // 15px - 40px
-            const offsetLeft = (Math.random() - 0.5) * 120; // -60px 到 +60px 之间随机偏离
-            const offsetTop = (Math.random() - 0.5) * 80;   // -40px 到 +40px 之间随机偏离
-            const delay = Math.random() * 0.2; // 0s 到 0.2s 延迟产生
-            
-            sparkle.style.width = size + 'px';
-            sparkle.style.height = size + 'px';
-            sparkle.style.left = offsetLeft + 'px';
-            sparkle.style.top = offsetTop + 'px';
-            sparkle.style.animationDelay = delay + 's';
-            
-            // 将星星加入长颈鹿头部的定位容器中
-            anchor.appendChild(sparkle);
-            
-            // 动画结束后（1.2s后）自动移除星星，防止页面元素过多
-            setTimeout(() => {
-                sparkle.remove();
-            }, 1200);
-        }
+        // 星星起始位置（鼠标点击处）
+        star.style.left = (x - 15) + 'px';
+        star.style.top = (y - 15) + 'px';
+        
+        document.body.appendChild(star);
+        setTimeout(() => star.remove(), 800);
     }
 </script>
 
