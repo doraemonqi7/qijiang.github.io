@@ -20,7 +20,6 @@
             color: #fff;
         }
 
-        /* 顶部导航层 */
         .top-nav {
             position: absolute; top: 0; left: 0; width: 100%;
             padding: 15px; display: flex; justify-content: space-between;
@@ -37,7 +36,6 @@
 
         .back-btn { background: #ff9f43; border: none; font-weight: bold; }
 
-        /* 侧边设置栏 */
         #control-panel {
             position: fixed; top: 0; right: 0; width: 320px; height: 100%;
             background: var(--panel); border-left: 1px solid #333;
@@ -82,6 +80,7 @@
 
     <div id="start-screen">
         <button class="start-btn" id="start-btn">开启互动烟花</button>
+        <p style="margin-top: 20px; color: #666; font-size: 12px;">需要摄像头权限以实现手势互动</p>
     </div>
 
     <div class="top-nav">
@@ -115,7 +114,7 @@
         <button onclick="clearCanvas()" style="width:100%; margin-top:10px; padding:10px; background:none; border:1px solid #ff453a; color:#ff453a; border-radius:10px; cursor:pointer;">清空画布</button>
     </div>
 
-    <video id="video-input" playsinline></video>
+    <video id="video-input" playsinline muted autoplay></video>
     <canvas id="canvas"></canvas>
 
 <script>
@@ -160,7 +159,6 @@
 
     function clearCanvas() { fireworks = []; particles = []; }
 
-    // 形状粒子生成
     function getPts(text) {
         const off = document.createElement('canvas'); const octx = off.getContext('2d');
         off.width = 300; off.height = 100; octx.font = "bold 40px sans-serif"; octx.fillStyle = "white"; octx.textAlign = "center";
@@ -188,7 +186,6 @@
                 this.done = true;
                 let pts = [];
                 if(config.shape === 'text') pts = getPts(document.getElementById('text-input').value);
-                // 这里可扩展其他形状逻辑...
                 const count = pts.length > 0 ? Math.min(pts.length, config.particles) : config.particles;
                 for(let i=0; i<count; i++) {
                     let vx, vy;
@@ -206,7 +203,7 @@
         draw() { ctx.fillStyle=`hsl(${this.h},100%,70%)`; ctx.beginPath(); ctx.arc(this.x,this.y,3,0,7); ctx.fill(); }
     }
 
-    // --- WebGL 环境自修复逻辑 ---
+    // --- WebGL 容错改进 ---
     const hands = new Hands({ locateFile: (f) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
     hands.setOptions({ maxNumHands: 1, modelComplexity: 0, minDetectionConfidence: 0.5 });
 
@@ -224,20 +221,27 @@
     const video = document.getElementById('video-input');
     const cam = new Camera(video, {
         onFrame: async () => { 
+            // 优化：仅在视频准备就绪且没有 WebGL 错误时运行
             if(video.readyState >= 2) {
                 try {
                     await hands.send({image: video});
                 } catch(e) {
-                    console.warn("WebGL Processing Skip.");
+                    // 如果发生 WebGL 上下文丢失，静默处理不弹框
+                    console.error("Hands processing error:", e);
                 }
             }
         },
-        width: 480, height: 360, facingMode: 'user' 
+        width: 480, height: 360
     });
 
     document.getElementById('start-btn').onclick = () => {
         document.getElementById('start-screen').style.display = 'none';
-        cam.start().catch(err => alert("摄像头开启失败！请确保使用 HTTPS 并授予权限。"));
+        
+        // 启动摄像头
+        cam.start().catch(err => {
+            console.error(err);
+            alert("摄像头启动失败。请确保：\n1. 使用 HTTPS 访问\n2. 已授予摄像头权限\n3. 没有其他应用占用摄像头");
+        });
         
         const loop = () => {
             ctx.globalCompositeOperation = 'source-over';
@@ -245,7 +249,13 @@
             ctx.fillRect(0,0,canvas.width,canvas.height);
             fireworks.forEach((f,i) => { f.update(); f.draw(); if(f.done) fireworks.splice(i,1); });
             particles.forEach((p,i) => { p.update(); p.draw(); if(p.alpha <= 0) particles.splice(i,1); });
-            if(isP) { ctx.strokeStyle=`hsl(${config.hue},100%,60%)`; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(hPos.x,hPos.y,charge,0,7); ctx.stroke(); }
+            if(isP) { 
+                ctx.strokeStyle=`hsl(${config.hue},100%,60%)`; 
+                ctx.lineWidth=2; 
+                ctx.beginPath(); 
+                ctx.arc(hPos.x,hPos.y,charge,0,7); 
+                ctx.stroke(); 
+            }
             requestAnimationFrame(loop);
         };
         loop();
