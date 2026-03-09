@@ -14,14 +14,23 @@
             background-color: #ffffff;
             width: 100%; height: 100%;
             overflow: hidden;
+            display: flex; justify-content: center; align-items: center;
         }
 
-        /* 1. wuhuwuhulala：极端零散分布，消除整齐感 */
+        .viewport-wrapper {
+            position: relative;
+            width: 100vw; height: 100vh;
+            max-width: 1920px;
+            margin: 0 auto;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+        }
+
+        /* 1. 背景文字：层级设为 1，确保在底层 */
         .wuhu-bg-layer {
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            z-index: 1;
+            z-index: 1; 
             pointer-events: none;
         }
 
@@ -32,28 +41,26 @@
             animation: drift 5s infinite ease-in-out;
         }
 
-        /* 随机分布位置与角度 */
         .t1 { top: 12vh; left: 8vw; font-size: 6vw; transform: rotate(-12deg); }
         .t2 { top: 30vh; left: 25vw; font-size: 4vw; transform: rotate(8deg); opacity: 0.5; }
         .t3 { top: 65vh; left: 6vw; font-size: 9vw; transform: rotate(-5deg); font-weight: bold; }
         .t4 { top: 18vh; left: 45vw; font-size: 3.5vw; transform: rotate(15deg); }
         .t5 { top: 80vh; left: 12vw; font-size: 5vw; transform: rotate(-10deg); }
-        .t6 { top: 45vh; left: 40vw; font-size: 3vw; transform: rotate(20deg); opacity: 0.6; }
 
         @keyframes drift {
             0%, 100% { transform: translate(0, 0); }
             50% { transform: translate(10px, -10px); }
         }
 
-        /* 2. 主内容区域：锁定靠右 */
+        /* 2. 主内容区域：层级设为 15，置于文字之上 */
         .main-content {
             position: absolute;
             right: 5vw; 
-            bottom: 18vh; /* 为变大的按钮留出更多空间 */
+            bottom: 18vh; 
             display: flex;
             flex-direction: column;
             align-items: center; 
-            z-index: 10;
+            z-index: 15; /* 核心修改：高于背景层 */
         }
 
         .animal-container {
@@ -63,10 +70,9 @@
             align-items: flex-end;
         }
 
-        /* 核心修改：调大长颈鹿尺寸 */
         .animal-img {
             width: 45vw; 
-            max-width: 700px; /* 提升上限 */
+            max-width: 700px;
             min-width: 320px;
             cursor: pointer;
             transform: scaleX(-1);
@@ -80,7 +86,7 @@
             width: 8vw; 
             max-width: 120px;
             transform: rotate(12deg);
-            z-index: 11;
+            z-index: 16; /* 香蕉在长颈鹿脚边更上一层 */
         }
 
         .animal-img.active { animation: shake 0.4s ease-in-out; }
@@ -101,7 +107,7 @@
             text-transform: uppercase;
         }
 
-        /* 3. 底部导航：调大 Tab 尺寸 */
+        /* 3. 底部导航：层级最高 */
         .nav-tabs {
             position: absolute;
             bottom: 5vh;
@@ -114,21 +120,19 @@
         .tab {
             border: 3px solid #000;
             border-radius: 60px; 
-            padding: 15px 45px; /* 显著增加内边距 */
+            padding: 15px 45px;
             text-decoration: none;
             color: #000;
             font-weight: bold;
-            font-size: 1.8vw; /* 调大字体 */
-            min-font-size: 1.2rem;
+            font-size: 1.8vw;
             background: #fff;
             transition: 0.2s;
             text-transform: uppercase;
-            white-space: nowrap;
-            box-shadow: 0 5px 0 #000; /* 增加厚重感 */
+            box-shadow: 0 5px 0 #000;
         }
-        .tab:hover { background: #000; color: #fff; transform: translateY(-5px); box-shadow: 0 8px 0 #000; }
+        .tab:hover { background: #000; color: #fff; transform: translateY(-5px); }
 
-        /* 星星特效 */
+        /* 星星特效样式 */
         .sparkle {
             position: absolute; width: 40px; height: 40px;
             background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.8 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z" fill="%23FFD700"/></svg>') no-repeat center/contain;
@@ -136,15 +140,12 @@
         }
         @keyframes burst {
             0% { transform: scale(0); opacity: 0; }
-            50% { opacity: 1; }
             100% { transform: scale(1.5) translate(var(--dx), var(--dy)) rotate(45deg); opacity: 0; }
         }
 
-        /* 手机端适配 */
         @media (max-width: 850px) {
             .main-content { right: 0; left: 0; bottom: 30vh; }
             .animal-img { width: 85vw; }
-            .name-text { font-size: 6vw; }
             .nav-tabs { flex-direction: column; width: 80%; bottom: 4vh; }
             .tab { font-size: 1.4rem; width: 100%; text-align: center; }
         }
@@ -159,7 +160,6 @@
             <span class="wuhu-item t3">wuhulala</span>
             <span class="wuhu-item t4">wuhuwuhu</span>
             <span class="wuhu-item t5">wuhu!</span>
-            <span class="wuhu-item t6">lalala</span>
         </div>
 
         <div class="main-content">
@@ -193,8 +193,8 @@
     function createStar(x, y) {
         const star = document.createElement('div');
         star.className = 'sparkle';
-        const dx = (Math.random() - 0.5) * 250 + 'px';
-        const dy = (Math.random() - 0.5) * 250 + 'px';
+        const dx = (Math.random() - 0.5) * 200 + 'px';
+        const dy = (Math.random() - 0.5) * 200 + 'px';
         star.style.setProperty('--dx', dx);
         star.style.setProperty('--dy', dy);
         star.style.left = (x - 20) + 'px';
@@ -202,6 +202,14 @@
         document.body.appendChild(star);
         setTimeout(() => star.remove(), 800);
     }
+
+    // 全屏 ESC 退出逻辑
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const exit = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
+            if (exit) exit.call(document);
+        }
+    });
 </script>
 </body>
 </html>
