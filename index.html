@@ -87,15 +87,15 @@
             50% { transform: scaleX(-1) rotate(-3deg); }
         }
 
-        /* 核心修改：香蕉及其提示语容器 (锁定左中靠下) */
+        /* 核心修改：香蕉及其提示语容器 (位置上提，层级最高) */
         .draggable-banana-wrap {
             position: fixed;
-            left: 15vw; /* 左侧 */
-            top: 55vh;  /* 中部靠下 */
+            left: 15vw; 
+            top: 45vh;  /* --- 位置往上挪了一点 --- */
             display: flex;
             flex-direction: column;
             align-items: center;
-            z-index: 50; 
+            z-index: 100; /* --- 核心修改：确保在所有元素（包括文字）之上 --- */
             cursor: grab;
             touch-action: none;
             user-select: none;
@@ -109,13 +109,14 @@
             -webkit-user-drag: none;
         }
 
-        /* 拖拽提示文字 */
         .drag-hint {
-            font-size: 1.5rem;
+            font-size: 1.4rem; /* 微调字体大小 */
             color: #000;
-            margin-top: 5px;
+            margin-top: 2px;
             white-space: nowrap;
-            pointer-events: none; /* 防止点击文字干扰拖拽 */
+            pointer-events: none; 
+            background: rgba(255,255,255,0.6); /* 增加一点微弱背光，确保在深色背景下也清晰 */
+            border-radius: 5px;
         }
 
         .signature-block {
@@ -161,7 +162,7 @@
             position: absolute; width: 40px; height: 40px;
             background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.8 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z" fill="%23FFD700"/></svg>') no-repeat center/contain;
             pointer-events: none; animation: burst 0.8s ease-out forwards; 
-            z-index: 100; 
+            z-index: 2000; /* 星星在最最顶层爆裂 */
         }
         @keyframes burst {
             0% { transform: scale(0); opacity: 0; }
@@ -169,7 +170,7 @@
         }
 
         @media (max-width: 850px) {
-            .draggable-banana-wrap { left: 10vw; top: 20vh; }
+            .draggable-banana-wrap { left: 10vw; top: 15vh; }
             .main-content { right: 0; left: 0; bottom: 30vh; }
             .animal-img { width: 85vw; }
             .nav-tabs { flex-direction: column; width: 80%; bottom: 4vh; }
@@ -233,7 +234,7 @@
         setTimeout(() => star.remove(), 800);
     }
 
-    // 香蕉拖拽逻辑 (文字同步拖动)
+    // 香蕉拖拽逻辑 (保持置顶)
     let isDragging = false;
     let offset = { x: 0, y: 0 };
     const bananaWrap = document.getElementById('banana-module');
