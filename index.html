@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visual Portfolio | QI JIANG</title>
     <style>
+        /* 使用国内镜像字体加速加载 */
         @import url('https://fonts.font.im/css2?family=Gochi+Hand&display=swap');
 
         * { font-family: 'Gochi Hand', cursive !important; box-sizing: border-box; }
@@ -17,30 +18,31 @@
             display: flex; justify-content: center; align-items: center;
         }
 
+        /* 核心：大容器锁定比例 */
         .viewport-wrapper {
             position: relative;
             width: 100vw; height: 100vh;
             max-width: 1920px; margin: 0 auto;
         }
 
-        /* 1. 核心修复：花线条动态背景（替代原 wuhu 文字） */
+        /* 1. 核心修复：花线条动态背景（彻底替换 wuhu 文字） */
         .flower-bg-layer {
             position: absolute;
             top: 0; left: 0;
-            width: 40vw; /* 占据左侧空间 */
+            width: 35vw; /* 占据左侧视口区域 */
             height: 100vh;
-            z-index: 1;
+            z-index: 1; /* 放在底层 */
             pointer-events: none;
         }
 
         .flower-svg {
             width: 100%; height: 100%;
-            opacity: 0.5;
+            opacity: 0.5; /* 保持半透明，不抢戏 */
         }
 
         .flower-path {
             fill: none;
-            stroke: #ffb7b7; /* 经典的莫兰迪粉 */
+            stroke: #ffb7b7; /* 莫兰迪粉，与你边框一致 */
             stroke-width: 3;
             stroke-linecap: round;
             stroke-dasharray: 1200;
@@ -56,10 +58,10 @@
 
         @keyframes sway {
             0%, 100% { transform: rotate(0deg) scale(1); }
-            50% { transform: rotate(2deg) scale(1.02) translateX(10px); }
+            50% { transform: rotate(2deg) scale(1.02) translateX(1vw); }
         }
 
-        /* 2. 主内容区域：保持原有的自适应设置 */
+        /* 2. 主内容区域：长颈鹿与文字作为整体缩放 */
         .main-content {
             position: absolute;
             right: 5vw; top: 45%;
@@ -69,8 +71,8 @@
         }
 
         .text-block { text-align: right; margin-bottom: 5vh; }
-        .title-text { font-size: 6vw; font-weight: bold; margin: 0; line-height: 1; }
-        .name-text { font-size: 4vw; font-weight: bold; margin: 1vh 0 0 0; line-height: 1; }
+        .title-text { font-size: 6vw; font-weight: bold; margin: 0; line-height: 1; color: #000; }
+        .name-text { font-size: 4vw; font-weight: bold; margin: 1vh 0 0 0; line-height: 1; color: #000; }
 
         .animal-img {
             width: 45vw; max-width: 800px;
@@ -88,7 +90,7 @@
             50% { transform: scaleX(-1) scale(1.05) rotate(-3deg); }
         }
 
-        /* 3. 底部导航：保持原有的加大效果 */
+        /* 3. 底部导航：加大且保持响应式 */
         .nav-tabs {
             position: absolute; bottom: 8vh; left: 50%;
             transform: translateX(-50%);
@@ -116,12 +118,12 @@
             100% { transform: scale(1.5) translate(var(--dx), var(--dy)) rotate(45deg); opacity: 0; }
         }
 
-        /* 手机端专项适配 */
+        /* 手机端专项适配：纵向堆叠防止重叠 */
         @media (max-width: 768px) {
             .flower-bg-layer { width: 100vw; opacity: 0.3; }
             .main-content { flex-direction: column; align-items: center; right: 0; left: 0; top: 40%; gap: 5vh; }
             .text-block { text-align: center; }
-            .animal-img { width: 80vw; }
+            .animal-img { width: 85vw; }
             .title-text { font-size: 15vw; }
             .name-text { font-size: 8vw; }
             .nav-tabs { flex-direction: column; bottom: 5vh; gap: 12px; width: 80%; }
@@ -134,7 +136,7 @@
     <div class="viewport-wrapper">
         <div class="flower-bg-layer">
             <svg class="flower-svg" viewBox="0 0 400 1000" preserveAspectRatio="xMinYMax meet">
-                <path class="flower-path" d="M50,1000 Q150,700 50,450 T100,100 M50,450 Q20,420 10,450 M50,450 Q80,420 90,450 M100,250 Q70,220 60,250 M100,250 Q130,220 140,250" />
+                <path class="flower-path" d="M100,1000 Q250,700 100,450 T150,100 M100,450 Q60,400 40,450 M100,450 Q140,400 160,450 M150,250 Q110,200 90,250 M150,250 Q190,200 210,250" />
             </svg>
         </div>
 
@@ -159,7 +161,7 @@
     function clickGiraffe(e) {
         const img = document.getElementById('giraffe');
         img.classList.remove('active');
-        void img.offsetWidth;
+        void img.offsetWidth; // 触发重绘
         img.classList.add('active');
         const x = e.clientX || (e.touches && e.touches[0].clientX);
         const y = e.clientY || (e.touches && e.touches[0].clientY);
