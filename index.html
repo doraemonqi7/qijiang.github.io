@@ -25,7 +25,7 @@
             display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
 
-        /* 1. 背景文字：层级设为最低 (z-index: 1) */
+        /* 1. 背景文字层 (z-index: 1) */
         .wuhu-bg-layer {
             position: absolute;
             top: 0; left: 0;
@@ -52,7 +52,7 @@
             50% { transform: translate(15px, -15px); }
         }
 
-        /* 2. 主内容区域：层级设为最高 (z-index: 10) */
+        /* 2. 主内容区域 (z-index: 10) */
         .main-content {
             position: absolute;
             right: 5vw; 
@@ -60,7 +60,6 @@
             display: flex;
             flex-direction: column;
             align-items: center; 
-            /* 核心修改：确保整个长颈鹿模块在文字之上 */
             z-index: 10; 
         }
 
@@ -69,7 +68,6 @@
             display: flex;
             justify-content: center;
             align-items: flex-end;
-            background: transparent;
         }
 
         .animal-img {
@@ -80,19 +78,23 @@
             transform: scaleX(-1);
             transition: 0.3s;
             -webkit-user-drag: none;
-            /* 确保图片层级在容器内最高 */
-            z-index: 11; 
+            z-index: 11;
         }
 
+        /* 核心修改：香蕉设为绝对定位，cursor 为抓取手势 */
         .banana-img {
             position: absolute;
             bottom: 2vh; right: -3vw;
             width: 8vw; 
             max-width: 120px;
             transform: rotate(12deg);
-            /* 香蕉也在文字之上 */
-            z-index: 12; 
+            z-index: 50; /* 置于顶层 */
+            cursor: grab;
+            user-select: none;
+            -webkit-user-drag: none;
+            touch-action: none; /* 禁用系统默认触摸行为 */
         }
+        .banana-img:active { cursor: grabbing; }
 
         .animal-img.active { animation: shake 0.4s ease-in-out; }
         @keyframes shake {
@@ -103,7 +105,6 @@
         .signature-block {
             margin-top: 15px;
             text-align: center;
-            /* 签名文字也设为高层级 */
             z-index: 13; 
         }
 
@@ -114,7 +115,7 @@
             text-transform: uppercase;
         }
 
-        /* 3. 底部导航：层级最高 (z-index: 20) */
+        /* 3. 底部导航 (z-index: 20) */
         .nav-tabs {
             position: absolute;
             bottom: 5vh;
@@ -139,12 +140,11 @@
         }
         .tab:hover { background: #000; color: #fff; transform: translateY(-5px); }
 
-        /* 星星特效样式 */
+        /* 星星特效 */
         .sparkle {
             position: absolute; width: 40px; height: 40px;
             background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.8 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z" fill="%23FFD700"/></svg>') no-repeat center/contain;
             pointer-events: none; animation: burst 0.8s ease-out forwards; 
-            /* 星星要在最顶层爆发 */
             z-index: 100; 
         }
         @keyframes burst {
@@ -174,7 +174,7 @@
         <div class="main-content">
             <div class="animal-container">
                 <img id="giraffe" class="animal-img" onclick="clickGiraffe(event)" src="1.png">
-                <img src="banana.png" class="banana-img">
+                <img id="banana" src="banana.png" class="banana-img" onmousedown="startDrag(event)" ontouchstart="startDrag(event)">
             </div>
             <div class="signature-block">
                 <p class="name-text">Portfolio BY QI JIANG</p>
@@ -189,6 +189,7 @@
     </div>
 
 <script>
+    // 1. 长颈鹿交互
     function clickGiraffe(e) {
         const img = document.getElementById('giraffe');
         img.classList.remove('active');
@@ -212,7 +213,54 @@
         setTimeout(() => star.remove(), 800);
     }
 
-    // 全屏 ESC 退出逻辑修复
+    // 2. 香蕉拖拽逻辑 (适配 PC 和 手机)
+    let isDragging = false;
+    let offset = { x: 0, y: 0 };
+    const banana = document.getElementById('banana');
+
+    function startDrag(e) {
+        isDragging = true;
+        const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+        const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+        
+        // 获取香蕉当前相对于页面的位置，并记录偏移量
+        const rect = banana.getBoundingClientRect();
+        offset.x = clientX - rect.left;
+        offset.y = clientY - rect.top;
+
+        // 拖动时临时切换为绝对定位以跳出原父级约束
+        banana.style.position = 'fixed'; 
+        banana.style.left = rect.left + 'px';
+        banana.style.top = rect.top + 'px';
+        banana.style.bottom = 'auto';
+        banana.style.right = 'auto';
+
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('mouseup', stopDrag);
+        document.addEventListener('touchmove', drag, { passive: false });
+        document.addEventListener('touchend', stopDrag);
+    }
+
+    function drag(e) {
+        if (!isDragging) return;
+        if (e.type === 'touchmove') e.preventDefault(); // 防止手机端滑动导致页面滚动
+
+        const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+        const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+
+        banana.style.left = (clientX - offset.x) + 'px';
+        banana.style.top = (clientY - offset.y) + 'px';
+    }
+
+    function stopDrag() {
+        isDragging = false;
+        document.removeEventListener('mousemove', drag);
+        document.removeEventListener('mouseup', stopDrag);
+        document.removeEventListener('touchmove', drag);
+        document.removeEventListener('touchend', stopDrag);
+    }
+
+    // 3. 全屏 ESC 退出逻辑
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             const exit = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
