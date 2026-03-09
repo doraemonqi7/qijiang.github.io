@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visual Art & Illustration | Boring Still Life</title>
     <style>
-        /* 核心修复：使用国内秒开镜像字体 */
+        /* 1. 核心修复：使用国内秒开镜像，确保手写体生效 */
         @import url('https://fonts.font.im/css2?family=Gochi+Hand&display=swap');
 
         * { font-family: 'Gochi Hand', cursive !important; box-sizing: border-box; }
@@ -26,21 +26,19 @@
             display: grid;
             grid-template-columns: repeat(3, minmax(250px, 380px)); 
             justify-content: center;
-            gap: 70px;
-            margin: 50px auto;
-            max-width: 1400px;
-            align-items: start;
+            gap: 70px; margin: 50px auto;
+            max-width: 1400px; align-items: start;
         }
 
         .gallery-item {
             position: relative;
+            /* 保持原有的浮动动画和放大逻辑 */
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             animation: float 4s infinite ease-in-out;
-            cursor: pointer;
-            width: 100%;
-            padding: 15px;
+            cursor: pointer; width: 100%; padding: 15px;
         }
 
+        /* 2. 悬停状态：停止浮动，放大 */
         .gallery-item:hover { 
             animation-play-state: paused;
             transform: scale(1.08) translateY(-15px) !important; 
@@ -52,11 +50,13 @@
             50% { transform: translateY(-10px); }
         }
 
+        /* 3. 手绘边框样式 */
         .sketchy-frame {
             position: relative;
-            display: block;
-            width: 100%;
+            display: block; width: 100%;
             background: #fff;
+            border-radius: 5px; /* 图片本身留一点圆角 */
+            overflow: hidden; /* 确保模糊不溢出 */
         }
 
         .sketchy-frame::after {
@@ -64,12 +64,11 @@
             position: absolute;
             top: -10px; left: -10px; right: -10px; bottom: -10px;
             border: 5px solid currentColor;
-            border-radius: 255px 25px 225px 25px/25px 225px 25px 255px;
-            pointer-events: none;
-            z-index: -1;
+            border-radius: 255px 25px 225px 25px/25px 225px 25px 255px; /* 不规则手绘感 */
+            pointer-events: none; z-index: 2; /* 确保在最上层 */
         }
 
-        /* 莫兰迪配色 */
+        /* 莫兰迪配色方案 */
         .c-pink { color: #ffb7b7; }
         .c-yellow { color: #ffeeba; }
         .c-blue { color: #b2ebf2; }
@@ -77,14 +76,30 @@
         .c-green { color: #c8e6c9; }
         .c-orange { color: #ffccbc; }
 
+        /* 4. 核心图片处理：平时低像素点画风 */
         .sketchy-frame img { 
-            width: 100%; 
-            height: auto; 
-            display: block; 
-            border-radius: 2px;
+            width: 100%; height: auto; 
+            display: block; border-radius: 2px;
+            
+            /* --- 模拟点画/杂色质感的 CSS 滤镜组合 --- */
+            /* filter: blur(2px) contrast(1.5) grayscale(0.2); 柔和模糊，提高对比度 */
+            /* 或者你可以尝试这个更像素化的质感： */
+            image-rendering: pixelated; /* 强制像素化渲染 (现代浏览器支持) */
+            filter: grayscale(0.3) opacity(0.8) contrast(1.2); /* 淡淡的黑白灰色调，模拟提供的图 */
+
+            transition: filter 0.5s ease, opacity 0.5s ease; /* 丝滑切换 */
+            will-change: filter; /* 性能优化 */
             z-index: 1;
         }
 
+        /* 5. 悬停状态：图片变清晰 */
+        .gallery-item:hover .sketchy-frame img { 
+            filter: none; /* 清除所有滤镜 */
+            image-rendering: auto; /* 恢复正常渲染 */
+            opacity: 1; /* 恢复满透明度 */
+        }
+
+        /* 手机端适配：保持原样不用变 */
         @media (max-width: 900px) {
             .gallery-grid { grid-template-columns: 1fr; max-width: 450px; }
         }
@@ -103,11 +118,13 @@
                 <img src="festival.png" alt="Festival">
             </div>
         </div>
+        
         <div class="gallery-item">
             <div class="sketchy-frame c-yellow">
                 <img src="tiger.png" alt="Tiger">
             </div>
         </div>
+
         <div class="gallery-item">
             <div class="sketchy-frame c-blue">
                 <img src="cat.png" alt="Cat">
@@ -119,21 +136,25 @@
                 <img src="apple.png" alt="Apple">
             </div>
         </div>
+
         <div class="gallery-item">
             <div class="sketchy-frame c-purple">
                 <img src="aranya.png" alt="Architecture">
             </div>
         </div>
+
         <div class="gallery-item">
             <div class="sketchy-frame c-green">
                 <img src="friends.png" alt="Friends">
             </div>
         </div>
+
         <div class="gallery-item">
             <div class="sketchy-frame c-pink">
                 <img src="cute.png" alt="Cute">
             </div>
         </div>
+
         <div class="gallery-item">
             <div class="sketchy-frame c-blue">
                 <img src="landscape.png" alt="Landscape">
