@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cyberpunk Fireworks | QI JIANG</title>
+    <title>Interactive Fireworks | QJ</title>
     <style>
         :root {
             --accent: #bf5af2;
@@ -20,7 +20,7 @@
             color: #fff;
         }
 
-        /* 顶部按钮层 */
+        /* 顶部导航层 */
         .top-nav {
             position: absolute; top: 0; left: 0; width: 100%;
             padding: 15px; display: flex; justify-content: space-between;
@@ -35,7 +35,6 @@
             pointer-events: auto; display: flex; align-items: center; gap: 6px;
         }
 
-        /* 返回菜单按钮 */
         .back-btn { background: #ff9f43; border: none; font-weight: bold; }
 
         /* 侧边设置栏 */
@@ -43,17 +42,15 @@
             position: fixed; top: 0; right: 0; width: 320px; height: 100%;
             background: var(--panel); border-left: 1px solid #333;
             z-index: 3000; padding: 30px 20px; box-sizing: border-box;
-            transform: translateX(100%); transition: transform 0.3s ease;
+            transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             overflow-y: auto;
         }
         
-        /* 网页端默认展示设置栏 */
         @media (min-width: 1024px) {
             #control-panel { transform: translateX(0); }
             #settings-toggle { display: none; }
         }
 
-        /* 手机端适配：滑出式面板 */
         @media (max-width: 1023px) {
             #control-panel { width: 85%; }
             #control-panel.active { transform: translateX(0); }
@@ -67,21 +64,16 @@
         input[type=text] { width: 100%; padding: 12px; background: #1a1a25; border: 1px solid #444; color: #fff; border-radius: 8px; box-sizing: border-box; }
 
         .shape-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-        .shape-btn { padding: 10px; background: #222; border: 1px solid #444; color: #fff; border-radius: 6px; cursor: pointer; font-size: 12px; }
+        .shape-btn { padding: 10px; background: #222; border: 1px solid #444; color: #fff; border-radius: 6px; cursor: pointer; font-size: 12px; transition: 0.2s; }
         .shape-btn.active { background: var(--accent); border-color: var(--accent); font-weight: bold; }
+
+        .apply-btn { width: 100%; padding: 15px; background: var(--accent); color: white; border: none; border-radius: 10px; margin-top: 20px; font-weight: bold; cursor: pointer; }
 
         canvas { display: block; width: 100%; height: 100%; }
         #video-input { display: none; }
 
-        #start-screen { 
-            position: fixed; inset: 0; z-index: 4000; background: #000; 
-            display: flex; flex-direction: column; justify-content: center; align-items: center; 
-        }
-        .start-btn { 
-            padding: 20px 60px; font-size: 22px; background: var(--accent); 
-            border: none; border-radius: 50px; color: #fff; font-weight: bold; 
-            cursor: pointer; box-shadow: 0 0 30px rgba(191,90,242,0.5); 
-        }
+        #start-screen { position: fixed; inset: 0; z-index: 4000; background: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .start-btn { padding: 20px 60px; font-size: 22px; background: var(--accent); border: none; border-radius: 50px; color: #fff; font-weight: bold; cursor: pointer; }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
@@ -90,10 +82,6 @@
 
     <div id="start-screen">
         <button class="start-btn" id="start-btn">开启互动烟花</button>
-        <p style="color:#444; margin-top:25px; font-size:13px; text-align:center;">
-            网页端请确保 HTTPS 环境并允许摄像头<br>
-            若遇到 WebGL 报错，程序会自动尝试重置
-        </p>
     </div>
 
     <div class="top-nav">
@@ -103,7 +91,7 @@
 
     <div id="control-panel">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <span style="font-weight: bold; color: var(--accent);">LUMI CONTROLS</span>
+            <span style="font-weight: bold; color: var(--accent); letter-spacing: 2px;">QJ CONTROLS</span>
             <button onclick="togglePanel()" style="background:none; border:none; color:#fff; font-size:28px; cursor:pointer;">&times;</button>
         </div>
 
@@ -117,19 +105,20 @@
             <button class="shape-btn" onclick="setShape('burst', this)">Burst</button>
         </div>
 
-        <div class="section-title">文字内容 (Text Content)</div>
+        <div class="section-title">文字内容 (Text)</div>
         <input type="text" id="text-input" value="ドラえもん">
 
         <div class="section-title">物理参数 (Physics)</div>
         <div id="sliders"></div>
-        <button onclick="clearCanvas()" style="width:100%; margin-top:20px; padding:12px; background:none; border:1px solid #ff453a; color:#ff453a; border-radius:10px; cursor:pointer;">清空画布</button>
+
+        <button class="apply-btn" onclick="togglePanel()">确认并应用参数</button>
+        <button onclick="clearCanvas()" style="width:100%; margin-top:10px; padding:10px; background:none; border:1px solid #ff453a; color:#ff453a; border-radius:10px; cursor:pointer;">清空画布</button>
     </div>
 
     <video id="video-input" playsinline></video>
     <canvas id="canvas"></canvas>
 
 <script>
-    // 动态高度处理
     const setVH = () => document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
     window.addEventListener('resize', setVH); setVH();
 
@@ -171,6 +160,7 @@
 
     function clearCanvas() { fireworks = []; particles = []; }
 
+    // 形状粒子生成
     function getPts(text) {
         const off = document.createElement('canvas'); const octx = off.getContext('2d');
         off.width = 300; off.height = 100; octx.font = "bold 40px sans-serif"; octx.fillStyle = "white"; octx.textAlign = "center";
@@ -196,7 +186,9 @@
             this.y += (this.ty - this.y) * 0.1;
             if(Math.abs(this.ty - this.y) < 5) {
                 this.done = true;
-                const pts = config.shape === 'text' ? getPts(document.getElementById('text-input').value) : [];
+                let pts = [];
+                if(config.shape === 'text') pts = getPts(document.getElementById('text-input').value);
+                // 这里可扩展其他形状逻辑...
                 const count = pts.length > 0 ? Math.min(pts.length, config.particles) : config.particles;
                 for(let i=0; i<count; i++) {
                     let vx, vy;
@@ -214,14 +206,9 @@
         draw() { ctx.fillStyle=`hsl(${this.h},100%,70%)`; ctx.beginPath(); ctx.arc(this.x,this.y,3,0,7); ctx.fill(); }
     }
 
-    // 重点：修复 WebGL 崩溃的 AI 配置
+    // --- WebGL 环境自修复逻辑 ---
     const hands = new Hands({ locateFile: (f) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
-    hands.setOptions({ 
-        maxNumHands: 1, 
-        modelComplexity: 0, // 降低复杂度，网页端更稳
-        minDetectionConfidence: 0.5,
-        minTrackingConfidence: 0.5
-    });
+    hands.setOptions({ maxNumHands: 1, modelComplexity: 0, minDetectionConfidence: 0.5 });
 
     let hPos = {x:-100, y:-100}, isP = false, charge = 0;
     hands.onResults(res => {
@@ -235,14 +222,12 @@
     });
 
     const video = document.getElementById('video-input');
-    // 重点：强制请求前置摄像头
     const cam = new Camera(video, {
         onFrame: async () => { 
             if(video.readyState >= 2) {
                 try {
                     await hands.send({image: video});
                 } catch(e) {
-                    // 自动降级与静默重试
                     console.warn("WebGL Processing Skip.");
                 }
             }
@@ -252,9 +237,7 @@
 
     document.getElementById('start-btn').onclick = () => {
         document.getElementById('start-screen').style.display = 'none';
-        cam.start().catch(err => {
-            alert("摄像头开启失败！请确保是 HTTPS 访问，并已授予权限。");
-        });
+        cam.start().catch(err => alert("摄像头开启失败！请确保使用 HTTPS 并授予权限。"));
         
         const loop = () => {
             ctx.globalCompositeOperation = 'source-over';
