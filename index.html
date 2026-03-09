@@ -25,7 +25,7 @@
             display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
 
-        /* 1. 背景文字：层级设为 1，确保在底层 */
+        /* 1. 背景文字：层级设为最低 (z-index: 1) */
         .wuhu-bg-layer {
             position: absolute;
             top: 0; left: 0;
@@ -49,10 +49,10 @@
 
         @keyframes drift {
             0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(10px, -10px); }
+            50% { transform: translate(15px, -15px); }
         }
 
-        /* 2. 主内容区域：层级设为 15，置于文字之上 */
+        /* 2. 主内容区域：层级设为最高 (z-index: 10) */
         .main-content {
             position: absolute;
             right: 5vw; 
@@ -60,7 +60,8 @@
             display: flex;
             flex-direction: column;
             align-items: center; 
-            z-index: 15; /* 核心修改：高于背景层 */
+            /* 核心修改：确保整个长颈鹿模块在文字之上 */
+            z-index: 10; 
         }
 
         .animal-container {
@@ -68,6 +69,7 @@
             display: flex;
             justify-content: center;
             align-items: flex-end;
+            background: transparent;
         }
 
         .animal-img {
@@ -78,6 +80,8 @@
             transform: scaleX(-1);
             transition: 0.3s;
             -webkit-user-drag: none;
+            /* 确保图片层级在容器内最高 */
+            z-index: 11; 
         }
 
         .banana-img {
@@ -86,7 +90,8 @@
             width: 8vw; 
             max-width: 120px;
             transform: rotate(12deg);
-            z-index: 16; /* 香蕉在长颈鹿脚边更上一层 */
+            /* 香蕉也在文字之上 */
+            z-index: 12; 
         }
 
         .animal-img.active { animation: shake 0.4s ease-in-out; }
@@ -98,6 +103,8 @@
         .signature-block {
             margin-top: 15px;
             text-align: center;
+            /* 签名文字也设为高层级 */
+            z-index: 13; 
         }
 
         .name-text { 
@@ -107,14 +114,14 @@
             text-transform: uppercase;
         }
 
-        /* 3. 底部导航：层级最高 */
+        /* 3. 底部导航：层级最高 (z-index: 20) */
         .nav-tabs {
             position: absolute;
             bottom: 5vh;
             left: 50%;
             transform: translateX(-50%);
             display: flex; gap: 3vw;
-            z-index: 30;
+            z-index: 20;
         }
 
         .tab {
@@ -136,7 +143,9 @@
         .sparkle {
             position: absolute; width: 40px; height: 40px;
             background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.8 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z" fill="%23FFD700"/></svg>') no-repeat center/contain;
-            pointer-events: none; animation: burst 0.8s ease-out forwards; z-index: 2000;
+            pointer-events: none; animation: burst 0.8s ease-out forwards; 
+            /* 星星要在最顶层爆发 */
+            z-index: 100; 
         }
         @keyframes burst {
             0% { transform: scale(0); opacity: 0; }
@@ -203,7 +212,7 @@
         setTimeout(() => star.remove(), 800);
     }
 
-    // 全屏 ESC 退出逻辑
+    // 全屏 ESC 退出逻辑修复
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             const exit = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
