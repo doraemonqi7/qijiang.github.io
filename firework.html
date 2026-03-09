@@ -3,83 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mobile Interactive Fireworks</title>
+    <title>手机交互烟花 - 修复WebGL版</title>
     <style>
         :root {
-            --panel-bg: rgba(10, 10, 15, 0.9);
             --accent-orange: #ff9f43;
-            --vh: 1vh; /* 动态高度单位 */
+            --vh: 1vh;
         }
 
         body, html {
-            margin: 0; padding: 0; 
-            width: 100%; height: 100%;
+            margin: 0; padding: 0; width: 100%; height: 100%;
             height: calc(var(--vh, 1vh) * 100);
             background-color: #000; overflow: hidden;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica;
-            position: fixed; /* 防止橡皮筋回弹 */
+            font-family: -apple-system, system-ui, sans-serif;
+            position: fixed;
         }
 
-        /* 退出按钮 - 手机端缩小一点 */
+        /* 退出按钮 */
         .exit-btn {
-            position: absolute; top: 15px; left: 15px;
-            z-index: 1000; padding: 8px 15px;
-            font-size: 14px; font-weight: bold;
-            color: #fff; background: var(--accent-orange);
-            border-radius: 20px; text-decoration: none;
-            display: flex; align-items: center; gap: 5px;
+            position: absolute; top: 15px; left: 15px; z-index: 1000;
+            padding: 8px 15px; font-size: 14px; color: #fff;
+            background: var(--accent-orange); border-radius: 20px;
+            text-decoration: none; display: flex; align-items: center;
         }
 
-        /* 手机端控制面板切换按钮 */
+        /* 移动端设置切换 */
         #toggle-panel {
-            position: absolute; top: 15px; right: 15px;
-            z-index: 1000; padding: 8px;
-            background: rgba(255,255,255,0.2); border-radius: 5px;
-            color: white; border: none; display: none;
+            position: absolute; top: 15px; right: 15px; z-index: 1000;
+            padding: 8px 12px; background: rgba(255,255,255,0.2);
+            color: white; border: none; border-radius: 5px; display: none;
         }
+
+        @media (max-width: 768px) { #toggle-panel { display: block; } }
 
         #start-screen {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            position: absolute; inset: 0; z-index: 50;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 50; background: radial-gradient(circle at center, #1a1a25 0%, #000 100%);
-            padding: 20px; box-sizing: border-box;
+            background: radial-gradient(circle at center, #1a1a25 0%, #000 100%);
+            padding: 20px; text-align: center;
         }
 
         #start-btn {
             padding: 15px 40px; font-size: 20px; color: #fff;
             background: linear-gradient(45deg, var(--accent-orange), #8a2be2);
             border: none; border-radius: 50px; font-weight: bold; margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(255,159,67,0.4);
         }
 
         .instruction-card {
             background: rgba(255,255,255,0.05); padding: 15px;
-            border-radius: 12px; font-size: 14px; line-height: 1.6;
+            border-radius: 12px; font-size: 14px; line-height: 1.8; color: #ccc;
         }
 
         #control-panel {
             position: absolute; top: 0; right: 0; width: 280px; height: 100%;
-            background: var(--panel-bg); border-left: 1px solid #333;
-            overflow-y: auto; padding: 20px; box-sizing: border-box;
-            z-index: 10; display: none; backdrop-filter: blur(10px);
-            transition: transform 0.3s ease;
+            background: rgba(10, 10, 15, 0.9); border-left: 1px solid #333;
+            padding: 20px; box-sizing: border-box; z-index: 10;
+            display: none; backdrop-filter: blur(10px);
+            transition: transform 0.3s ease; overflow-y: auto;
         }
 
-        /* 手机端面板隐藏状态 */
+        #control-panel.mobile-open { transform: translateX(0) !important; display: block !important; }
+
         @media (max-width: 768px) {
-            #control-panel { width: 70%; transform: translateX(100%); }
-            #control-panel.open { transform: translateX(0); }
-            #toggle-panel { display: block; }
+            #control-panel { width: 75%; transform: translateX(100%); display: block; }
         }
 
-        .control-group { margin-bottom: 15px; }
-        input[type=range] { width: 100%; }
-        #video-input { display: none; }
-        canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+        .control-group { margin-bottom: 20px; color: #eee; }
+        input[type=range] { width: 100%; margin-top: 10px; }
+        input[type=text] { width: 100%; padding: 8px; background: #222; border: 1px solid #444; color: #fff; border-radius: 4px; }
         
-        #bottom-bar { 
-            position: absolute; bottom: 0; width: 100%; 
-            background: rgba(0,0,0,0.5); font-size: 12px; 
-            padding: 8px; text-align: center; color: #ccc; pointer-events: none;
+        canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+        #video-input { display: none; }
+        
+        #status-bar {
+            position: absolute; bottom: 10px; width: 100%;
+            text-align: center; font-size: 11px; color: rgba(255,255,255,0.4); pointer-events: none;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
@@ -93,79 +91,76 @@
     <div id="start-screen">
         <button id="start-btn">开启互动烟花</button>
         <div class="instruction-card">
-            <h3 style="margin-top:0; color:var(--accent-orange)">操作指南 (请正对前置摄像头)</h3>
-            <div>👆 <b>移动食指：</b> 屏幕绘图</div>
-            <div>🤏 <b>捏合手指：</b> 蓄力 (拇指+食指)</div>
-            <div>🖐️ <b>松开手指：</b> 发射烟花</div>
+            <h3 style="margin:0 0 10px 0; color:var(--accent-orange)">手机操作指南</h3>
+            <div>1. 请确保在<b>光线充足</b>环境下使用</div>
+            <div>2. <b>移动食指：</b> 绘制轨迹</div>
+            <div>3. <b>捏合双指：</b> 蓄力 (拇指+食指)</div>
+            <div>4. <b>松开手指：</b> 发射烟花</div>
         </div>
     </div>
 
     <div id="control-panel">
-        <div style="text-align:center; margin-bottom:20px; font-weight:bold">参数调节</div>
-        <button class="btn" style="width:100%; padding:10px; margin-bottom:10px;" onclick="clearCanvas()">清空屏幕</button>
-        
+        <h3 style="text-align:center; color:var(--accent-orange)">效果调节</h3>
         <div class="control-group">
-            <label>文字烟花内容:</label>
-            <input type="text" id="text-input" value="HAPPY" style="width:100%; padding:8px; box-sizing:border-box">
+            <label>烟花文字内容:</label>
+            <input type="text" id="text-input" value="HAPPY" maxlength="8">
         </div>
-
-        <div id="sliders-container"></div>
+        <div id="sliders"></div>
+        <button onclick="clearCanvas()" style="width:100%; padding:10px; background:#333; color:white; border:1px solid #555; border-radius:5px;">清空画面</button>
     </div>
 
-    <div id="bottom-bar">前置摄像头交互 | 建议在光线充足处使用</div>
+    <div id="status-bar">若报错，请尝试在系统浏览器（Safari/Chrome）中打开</div>
 
     <video id="video-input" playsinline></video>
     <canvas id="canvas"></canvas>
 
 <script>
-    // 动态高度处理
-    const setVH = () => {
-        let vh = window.innerHeight * 0.01;
-        document.documentElement.style.setProperty('--vh', `${vh}px`);
+    // 适配移动端高度
+    const fixVH = () => {
+        document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
     };
-    window.addEventListener('resize', setVH);
-    setVH();
+    window.addEventListener('resize', fixVH);
+    fixVH();
 
-    const config = { particles: 150, explosionSpeed: 10, hue: 30, trail: 0.2, explosionShape: 'text' };
-    
-    // 初始化滑块
+    // 配置参数
+    const config = { particles: 120, explosionSpeed: 8, hue: 30, trail: 0.25 };
     const sliders = [
-        { id: 'particles', label: '粒子数量', min: 50, max: 500 },
-        { id: 'explosionSpeed', label: '爆炸力', min: 5, max: 20 },
-        { id: 'hue', label: '颜色', min: 0, max: 360 }
+        { id: 'particles', label: '粒子密度', min: 40, max: 400 },
+        { id: 'explosionSpeed', label: '爆炸力度', min: 5, max: 20 },
+        { id: 'hue', label: '颜色色调', min: 0, max: 360 }
     ];
-    const container = document.getElementById('sliders-container');
+
+    const sliderCont = document.getElementById('sliders');
     sliders.forEach(s => {
         const div = document.createElement('div');
         div.className = 'control-group';
-        div.innerHTML = `<small>${s.label}</small><input type="range" id="${s.id}-slider" min="${s.min}" max="${s.max}" value="${config[s.id]}">`;
-        container.appendChild(div);
+        div.innerHTML = `<label>${s.label}</label><input type="range" id="${s.id}-slider" min="${s.min}" max="${s.max}" value="${config[s.id]}">`;
+        sliderCont.appendChild(div);
         document.getElementById(`${s.id}-slider`).oninput = (e) => config[s.id] = parseInt(e.target.value);
     });
 
-    // 手机端侧边栏切换
     document.getElementById('toggle-panel').onclick = () => {
-        document.getElementById('control-panel').classList.toggle('open');
+        document.getElementById('control-panel').classList.toggle('mobile-open');
     };
 
     const canvas = document.getElementById('canvas'), ctx = canvas.getContext('2d');
+    const fireworks = [], particlesArray = [];
     function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
     window.addEventListener('resize', resize); resize();
 
-    const fireworks = [], particlesArray = [];
-    function clearCanvas() { particlesArray.length = 0; fireworks.length = 0; }
+    function clearCanvas() { fireworks.length = 0; particlesArray.length = 0; }
 
-    // 核心逻辑：获取文字像素点 (优化手机性能)
+    // 文字像素点生成 (适配移动端性能)
     function getShapePixels(content) {
         const off = document.createElement('canvas');
         const octx = off.getContext('2d');
-        off.width = 300; off.height = 150;
-        octx.font = "900 40px sans-serif"; octx.fillStyle = "white"; octx.textAlign = "center";
-        octx.fillText(content, 150, 75);
-        const data = octx.getImageData(0,0,300,150).data;
+        off.width = 240; off.height = 100;
+        octx.font = "bold 35px Arial"; octx.fillStyle = "white"; octx.textAlign = "center";
+        octx.fillText(content, 120, 60);
+        const data = octx.getImageData(0,0,240,100).data;
         const pts = [];
-        for(let y=0; y<150; y+=4) for(let x=0; x<300; x+=4) {
-            if(data[(y*300+x)*4+3]>128) pts.push({dx:x-150, dy:y-75});
+        for(let y=0; y<100; y+=4) for(let x=0; x<240; x+=4) {
+            if(data[(y*240+x)*4+3]>128) pts.push({dx:x-120, dy:y-60});
         }
         return pts;
     }
@@ -173,7 +168,7 @@
     class Shell {
         constructor(x, y, charge) {
             this.x = x; this.y = y;
-            this.targetY = y - (charge * 8) - 100;
+            this.targetY = y - (charge * 7) - 80;
             this.hue = config.hue; this.exploded = false;
         }
         update() {
@@ -189,7 +184,7 @@
             const count = Math.min(pts.length, config.particles);
             for(let i=0; i<count; i++) {
                 const p = pts[Math.floor(Math.random()*pts.length)];
-                particlesArray.push(new Particle(this.x, this.y, p.dx*(config.explosionSpeed/40), p.dy*(config.explosionSpeed/40), this.hue));
+                particlesArray.push(new Particle(this.x, this.y, p.dx*(config.explosionSpeed/35), p.dy*(config.explosionSpeed/35), this.hue));
             }
         }
     }
@@ -197,7 +192,7 @@
     class Particle {
         constructor(x,y,vx,vy,h) { this.x=x; this.y=y; this.vx=vx; this.vy=vy; this.hue=h; this.alpha=1; }
         update() { 
-            this.vx *= 0.95; this.vy *= 0.95; this.vy += 0.15; 
+            this.vx *= 0.96; this.vy *= 0.96; this.vy += 0.12; 
             this.x += this.vx; this.y += this.vy; this.alpha -= 0.02; 
         }
         draw() {
@@ -207,19 +202,19 @@
     }
 
     let handPos = {x:-100, y:-100}, isPinching = false, charge = 0;
-    
+
     function onResults(res) {
         if(res.multiHandLandmarks && res.multiHandLandmarks[0]) {
             const h = res.multiHandLandmarks[0];
-            // 重点：镜像处理 (1-x)
-            handPos.x = (1-h[8].x) * canvas.width; 
+            // 关键：移动端镜像翻转坐标
+            handPos.x = (1 - h[8].x) * canvas.width;
             handPos.y = h[8].y * canvas.height;
             
             const dist = Math.sqrt(Math.pow(h[8].x-h[4].x,2)+Math.pow(h[8].y-h[4].y,2));
-            if(dist < 0.06) { 
-                isPinching = true; charge = Math.min(charge+1.5, 50);
-                // 充电视觉反馈
-                ctx.strokeStyle = 'white'; ctx.beginPath();
+            if(dist < 0.07) { 
+                isPinching = true; charge = Math.min(charge + 1.2, 45);
+                ctx.strokeStyle = `hsl(${config.hue}, 100%, 70%)`;
+                ctx.lineWidth = 2; ctx.beginPath();
                 ctx.arc(handPos.x, handPos.y, charge, 0, Math.PI*2); ctx.stroke();
             } else {
                 if(isPinching && charge > 8) fireworks.push(new Shell(handPos.x, handPos.y, charge));
@@ -228,30 +223,49 @@
         }
     }
 
-    const hands = new Hands({locateFile: (f) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`});
-    hands.setOptions({ maxNumHands: 1, modelComplexity: 0, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5 });
+    // 初始化 MediaPipe 手势
+    const hands = new Hands({
+        locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+    });
+
+    hands.setOptions({
+        maxNumHands: 1,
+        modelComplexity: 0, // 最低复杂度，防止 WebGL 崩溃
+        minDetectionConfidence: 0.5,
+        minTrackingConfidence: 0.5
+    });
     hands.onResults(onResults);
 
-    // 重点：强制调用前置摄像头
-    const camera = new Camera(document.getElementById('video-input'), {
-        onFrame: async () => { await hands.send({image: document.getElementById('video-input')}); },
+    const videoElement = document.getElementById('video-input');
+    const camera = new Camera(videoElement, {
+        onFrame: async () => {
+            // 安全检查：确保视频帧可用
+            if (videoElement.readyState >= 2) {
+                try {
+                    await hands.send({ image: videoElement });
+                } catch (e) {
+                    console.warn("手势帧丢失:", e);
+                }
+            }
+        },
         width: 480, height: 360,
-        facingMode: 'user' // 强制前置
+        facingMode: 'user' // 强制前置摄像头
     });
 
     document.getElementById('start-btn').onclick = () => {
         document.getElementById('start-screen').style.display = 'none';
         document.getElementById('control-panel').style.display = 'block';
-        camera.start().catch(err => alert("无法打开摄像头，请确保授权并使用HTTPS访问"));
         
+        camera.start().catch(err => {
+            alert("摄像头权限遭拒或环境不支持。请确保使用 HTTPS 并授予权限。");
+        });
+
         requestAnimationFrame(function loop(){
             ctx.fillStyle = `rgba(0,0,0,${config.trail})`;
             ctx.fillRect(0,0,canvas.width,canvas.height);
-            
             fireworks.forEach((f,i) => { f.update(); f.draw(); if(f.exploded) fireworks.splice(i,1); });
             particlesArray.forEach((p,i) => { 
-                p.update(); p.draw(); 
-                if(p.alpha <= 0) particlesArray.splice(i,1); 
+                p.update(); p.draw(); if(p.alpha <= 0) particlesArray.splice(i,1); 
             });
             requestAnimationFrame(loop);
         });
