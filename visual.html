@@ -10,7 +10,14 @@
 
         * { font-family: 'Gochi Hand', cursive !important; box-sizing: border-box; }
 
-        body { background-color: #ffffff; margin: 0; padding: 50px; overflow-x: hidden; }
+        body { 
+            background-color: #ffffff; 
+            margin: 0; 
+            padding: 50px; 
+            overflow-x: hidden; 
+            /* 模拟蜡笔画纸张的极淡纹理（可选） */
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="4" height="4" viewBox="0 0 4 4"><rect width="4" height="4" fill="white"/><circle cx="1" cy="1" r="0.5" fill="%23f0f0f0"/></svg>');
+        }
 
         .gallery-header { margin-bottom: 40px; text-align: left; }
         .gallery-header h1 { font-size: 3.5rem; margin: 0; color: #000; }
@@ -38,7 +45,7 @@
             cursor: pointer; width: 100%; padding: 15px;
         }
 
-        /* 2. 悬停状态：停止浮动，放大 */
+        /* 悬停状态：停止浮动，放大 */
         .gallery-item:hover { 
             animation-play-state: paused;
             transform: scale(1.08) translateY(-15px) !important; 
@@ -50,13 +57,14 @@
             50% { transform: translateY(-10px); }
         }
 
-        /* 3. 手绘边框样式 */
+        /* 手绘边框样式 */
         .sketchy-frame {
             position: relative;
             display: block; width: 100%;
             background: #fff;
-            border-radius: 5px; /* 图片本身留一点圆角 */
-            overflow: hidden; /* 确保模糊不溢出 */
+            border-radius: 5px;
+            overflow: hidden; /* 确保像素化边缘不溢出 */
+            z-index: 1;
         }
 
         .sketchy-frame::after {
@@ -64,8 +72,8 @@
             position: absolute;
             top: -10px; left: -10px; right: -10px; bottom: -10px;
             border: 5px solid currentColor;
-            border-radius: 255px 25px 225px 25px/25px 225px 25px 255px; /* 不规则手绘感 */
-            pointer-events: none; z-index: 2; /* 确保在最上层 */
+            border-radius: 255px 25px 225px 25px/25px 225px 25px 255px;
+            pointer-events: none; z-index: 3; /* 在最上层 */
         }
 
         /* 莫兰迪配色方案 */
@@ -76,30 +84,39 @@
         .c-green { color: #c8e6c9; }
         .c-orange { color: #ffccbc; }
 
-        /* 4. 核心图片处理：平时低像素点画风 */
+        /* 5. 强力图片处理：模拟强烈蜡笔点画质感 */
         .sketchy-frame img { 
             width: 100%; height: auto; 
             display: block; border-radius: 2px;
             
-            /* --- 模拟点画/杂色质感的 CSS 滤镜组合 --- */
-            /* filter: blur(2px) contrast(1.5) grayscale(0.2); 柔和模糊，提高对比度 */
-            /* 或者你可以尝试这个更像素化的质感： */
-            image-rendering: pixelated; /* 强制像素化渲染 (现代浏览器支持) */
-            filter: grayscale(0.3) opacity(0.8) contrast(1.2); /* 淡淡的黑白灰色调，模拟提供的图 */
+            /* --- 核心：攻克“褪色感”，还原“点画感” --- */
+            
+            /* A. 像素化渲染：生成可爱的像素颗粒 */
+            image-rendering: pixelated; 
 
-            transition: filter 0.5s ease, opacity 0.5s ease; /* 丝滑切换 */
-            will-change: filter; /* 性能优化 */
-            z-index: 1;
+            /* B. 滤镜组合：推极限 */
+            filter: 
+                /* 1. 先轻微模糊，融化大色块 */
+                blur(1.5px) 
+                /* 2. 极大提高对比度，将边缘“拉”成锯齿状像素点 */
+                contrast(3.5) 
+                /* 3. 稍微调暗，增强大色块的厚重感 */
+                brightness(0.9) 
+                /* 4. 保留淡淡的灰度，模拟蜡笔画纸张的陈旧感 */
+                grayscale(0.1); 
+
+            transition: filter 0.6s ease, image-rendering 0.6s ease, transform 0.6s ease;
+            will-change: filter; z-index: 1;
         }
 
-        /* 5. 悬停状态：图片变清晰 */
+        /* 6. 悬停状态：图片变清晰 */
         .gallery-item:hover .sketchy-frame img { 
             filter: none; /* 清除所有滤镜 */
             image-rendering: auto; /* 恢复正常渲染 */
-            opacity: 1; /* 恢复满透明度 */
+            transform: scale(1.01); /* 配合整体放大，微调图片自身比例 */
         }
 
-        /* 手机端适配：保持原样不用变 */
+        /* 手机端适配：保持原样 */
         @media (max-width: 900px) {
             .gallery-grid { grid-template-columns: 1fr; max-width: 450px; }
         }
