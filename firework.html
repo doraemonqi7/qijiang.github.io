@@ -5,30 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Cyberpunk Fireworks | QI JIANG</title>
     <style>
-        :root { --accent: #bf5af2; --bg: #0a0a0f; --vh: 1vh; }
+        :root { --accent: #bf5af2; --bg: #050508; --vh: 1vh; }
         body, html { 
             margin: 0; padding: 0; width: 100%; height: 100%; 
             height: calc(var(--vh, 1vh) * 100); background: var(--bg); 
-            overflow: hidden; font-family: system-ui, -apple-system, sans-serif; color: #fff;
+            overflow: hidden; font-family: -apple-system, system-ui, sans-serif; color: #fff;
         }
 
-        /* 顶部导航 */
+        /* 统一导航栏 */
         .ui-header {
             position: absolute; top: 0; left: 0; width: 100%; padding: 15px;
-            display: flex; justify-content: space-between; z-index: 2000; box-sizing: border-box;
+            display: flex; justify-content: space-between; z-index: 100; box-sizing: border-box;
+            pointer-events: none;
         }
         .btn-ui {
             background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
             color: #fff; padding: 10px 18px; border-radius: 12px; font-size: 14px;
             backdrop-filter: blur(10px); cursor: pointer; text-decoration: none;
+            pointer-events: auto; -webkit-tap-highlight-color: transparent;
         }
 
-        /* 侧边设置栏适配 */
+        /* 侧边设置栏：全平台适配 */
         #control-panel {
             position: fixed; top: 0; right: 0; width: 320px; height: 100%;
-            background: rgba(16, 16, 22, 0.98); border-left: 1px solid #333;
-            z-index: 3000; padding: 30px 20px; box-sizing: border-box;
-            transform: translateX(100%); transition: transform 0.3s ease; overflow-y: auto;
+            background: rgba(10, 10, 15, 0.98); border-left: 1px solid #333;
+            z-index: 2000; padding: 30px 20px; box-sizing: border-box;
+            transform: translateX(100%); transition: transform 0.3s ease;
+            overflow-y: auto;
         }
         #control-panel.active { transform: translateX(0); }
         @media (max-width: 768px) { #control-panel { width: 85%; } }
@@ -40,23 +43,33 @@
 
         .control-group { margin-bottom: 15px; }
         .label-row { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px; }
-        input[type=range] { width: 100%; accent-color: var(--accent); }
-        input[type=text] { width: 100%; padding: 10px; background: #1a1a25; border: 1px solid #444; color: #fff; border-radius: 8px; box-sizing: border-box; }
+        input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; }
+        input[type=text] { width: 100%; padding: 12px; background: #1a1a25; border: 1px solid #444; color: #fff; border-radius: 8px; box-sizing: border-box; }
 
         canvas { display: block; width: 100%; height: 100%; }
-        #video-input { display: none; }
+        #video-input { display: none; visibility: hidden; }
 
-        #start-screen { position: fixed; inset: 0; z-index: 4000; background: var(--bg); display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .start-btn { padding: 18px 50px; font-size: 20px; background: var(--accent); border: none; border-radius: 50px; color: #fff; font-weight: bold; cursor: pointer; box-shadow: 0 0 20px rgba(191,90,242,0.4); }
+        /* 启动屏幕 */
+        #start-screen { 
+            position: fixed; inset: 0; z-index: 3000; background: var(--bg); 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; 
+        }
+        .start-btn { 
+            padding: 20px 60px; font-size: 22px; background: var(--accent); 
+            border: none; border-radius: 50px; color: #fff; font-weight: bold; 
+            cursor: pointer; box-shadow: 0 0 30px rgba(191,90,242,0.4); 
+        }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 </head>
 <body>
 
     <div id="start-screen">
         <button class="start-btn" id="start-btn">开启互动烟花</button>
-        <p style="color:#555; margin-top:20px; font-size:12px;">若 WebGL 报错，请确保使用 HTTPS 并授予摄像头权限</p>
+        <p style="color:#444; margin-top:25px; font-size:13px; text-align:center;">
+            建议在 Safari / Chrome 中打开<br>请确保允许摄像头权限
+        </p>
     </div>
 
     <div class="ui-header">
@@ -65,9 +78,9 @@
     </div>
 
     <div id="control-panel">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-weight: bold;">LUMI CONTROLS</span>
-            <button onclick="togglePanel()" style="background:none; border:none; color:#fff; font-size:24px;">×</button>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <span style="font-weight: bold; color: var(--accent);">LUMI CONTROLS</span>
+            <button onclick="togglePanel()" style="background:none; border:none; color:#fff; font-size:28px; cursor:pointer;">&times;</button>
         </div>
 
         <div class="section-title">爆炸形状 (Shape)</div>
@@ -80,12 +93,12 @@
             <button class="shape-btn" onclick="setShape('burst', this)">Burst</button>
         </div>
 
-        <div class="section-title">文字内容 (Text)</div>
+        <div class="section-title">文字内容 (Text Content)</div>
         <input type="text" id="text-input" value="ドラえもん">
 
-        <div class="section-title">物理参数 (Physics)</div>
+        <div class="section-title">物理与视觉 (Visuals)</div>
         <div id="sliders"></div>
-        <button onclick="clearCanvas()" style="width:100%; margin-top:20px; padding:10px; background:none; border:1px solid #ff453a; color:#ff453a; border-radius:8px;">清空画布</button>
+        <button onclick="clearCanvas()" style="width:100%; margin-top:20px; padding:12px; background:none; border:1px solid #ff453a; color:#ff453a; border-radius:10px; cursor:pointer;">清空画布内容</button>
     </div>
 
     <video id="video-input" playsinline></video>
@@ -95,13 +108,13 @@
     const setVH = () => document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
     window.addEventListener('resize', setVH); setVH();
 
-    const config = { particles: 200, speed: 12, gravity: 0.15, friction: 0.96, fade: 0.015, hue: 210, trail: 0.15, shape: 'text' };
+    const config = { particles: 200, speed: 12, gravity: 0.15, friction: 0.96, fade: 0.015, hue: 210, trail: 0.18, shape: 'text' };
     const togglePanel = () => document.getElementById('control-panel').classList.toggle('active');
 
     const sliderDefs = [
-        { id: 'particles', label: '粒子数', min: 50, max: 800 },
-        { id: 'speed', label: '爆炸速度', min: 5, max: 25 },
-        { id: 'gravity', label: '重力', min: 0, max: 0.4, step: 0.01 },
+        { id: 'particles', label: '粒子密度', min: 50, max: 600 },
+        { id: 'speed', label: '爆炸力度', min: 5, max: 25 },
+        { id: 'gravity', label: '重力感', min: 0, max: 0.4, step: 0.01 },
         { id: 'hue', label: '颜色色调', min: 0, max: 360 }
     ];
 
@@ -134,7 +147,7 @@
         off.width = 300; off.height = 100; octx.font = "bold 40px sans-serif"; octx.fillStyle = "white"; octx.textAlign = "center";
         octx.fillText(text, 150, 60);
         const data = octx.getImageData(0,0,300,100).data; const pts = [];
-        for(let y=0; y<100; y+=3) for(let x=0; x<300; x+=3) if(data[(y*300+x)*4+3]>128) pts.push({dx:x-150, dy:y-60});
+        for(let y=0; y<100; y+=4) for(let x=0; x<300; x+=4) if(data[(y*300+x)*4+3]>128) pts.push({dx:x-150, dy:y-60});
         return pts;
     }
 
@@ -172,8 +185,14 @@
         draw() { ctx.fillStyle=`hsl(${this.h},100%,70%)`; ctx.beginPath(); ctx.arc(this.x,this.y,3,0,7); ctx.fill(); }
     }
 
+    // 修复 WebGL 报错的核心配置
     const hands = new Hands({ locateFile: (f) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
-    hands.setOptions({ maxNumHands: 1, modelComplexity: 0, minDetectionConfidence: 0.5 });
+    hands.setOptions({ 
+        maxNumHands: 1, 
+        modelComplexity: 0, 
+        minDetectionConfidence: 0.5,
+        useCpuInference: false // 默认先用 GPU
+    });
 
     let hPos = {x:-100, y:-100}, isP = false, charge = 0;
     hands.onResults(res => {
@@ -188,20 +207,31 @@
 
     const video = document.getElementById('video-input');
     const cam = new Camera(video, {
-        onFrame: async () => { if(video.readyState >= 2) try { await hands.send({image: video}); } catch(e) {} },
+        onFrame: async () => { 
+            if(video.readyState >= 2) {
+                try {
+                    await hands.send({image: video});
+                } catch(e) {
+                    console.error("WebGL Error, falling back...");
+                    // 尝试在报错时切换到 CPU 推理
+                    hands.setOptions({ useCpuInference: true });
+                }
+            }
+        },
         width: 480, height: 360, facingMode: 'user'
     });
 
     document.getElementById('start-btn').onclick = () => {
         document.getElementById('start-screen').style.display = 'none';
-        cam.start();
+        cam.start().catch(err => alert("摄像头开启失败，请使用 HTTPS 访问并授权。"));
+        
         const loop = () => {
             ctx.globalCompositeOperation = 'source-over';
-            ctx.fillStyle = `rgba(10, 10, 15, ${config.trail})`;
+            ctx.fillStyle = `rgba(5, 5, 8, ${config.trail})`;
             ctx.fillRect(0,0,canvas.width,canvas.height);
             fireworks.forEach((f,i) => { f.update(); f.draw(); if(f.done) fireworks.splice(i,1); });
             particles.forEach((p,i) => { p.update(); p.draw(); if(p.alpha <= 0) particles.splice(i,1); });
-            if(isP) { ctx.strokeStyle=`hsl(${config.hue},100%,60%)`; ctx.beginPath(); ctx.arc(hPos.x,hPos.y,charge,0,7); ctx.stroke(); }
+            if(isP) { ctx.strokeStyle=`hsl(${config.hue},100%,60%)`; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(hPos.x,hPos.y,charge,0,7); ctx.stroke(); }
             requestAnimationFrame(loop);
         };
         loop();
