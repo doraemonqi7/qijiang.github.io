@@ -14,19 +14,20 @@
             background-color: #ffffff;
             width: 100%; height: 100%;
             overflow: hidden;
+            /* 确保整体在网页端绝对居中 */
             display: flex; justify-content: center; align-items: center;
         }
 
-        /* 核心响应式容器 */
+        /* 核心响应式容器：锁定 100% 视口，消除边缘空白 */
         .viewport-wrapper {
             position: relative;
             width: 100vw; height: 100vh;
-            max-width: 1920px;
-            margin: 0 auto;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            display: flex; flex-direction: column; 
+            justify-content: center; align-items: center;
+            overflow: hidden;
         }
 
-        /* 1. 背景文字：随视口比例浮动 */
+        /* 1. 背景文字：按视口百分比散布，填充空间 */
         .wuhu-bg-layer {
             position: absolute;
             top: 0; left: 0;
@@ -42,23 +43,27 @@
             animation: drift 5s infinite ease-in-out;
         }
 
-        .t1 { top: 10vh; left: 8vw; font-size: 5vw; transform: rotate(-8deg); }
-        .t2 { top: 25vh; left: 22vw; font-size: 3vw; transform: rotate(5deg); opacity: 0.5; }
-        .t3 { top: 60vh; left: 5vw; font-size: 8vw; transform: rotate(-3deg); font-weight: bold; }
-        .t4 { top: 15vh; left: 50vw; font-size: 3vw; transform: rotate(12deg); }
-        .t5 { top: 78vh; left: 18vw; font-size: 4vw; transform: rotate(-5deg); }
+        /* 使用 vw/vh 确保文字随窗口拉伸而自动拉开间距 */
+        .t1 { top: 15vh; left: 10vw; font-size: 5vw; transform: rotate(-8deg); }
+        .t2 { top: 30vh; left: 25vw; font-size: 3vw; transform: rotate(5deg); opacity: 0.5; }
+        .t3 { top: 65vh; left: 8vw; font-size: 7vw; transform: rotate(-3deg); font-weight: bold; }
+        .t4 { top: 12vh; left: 55vw; font-size: 3.5vw; transform: rotate(12deg); }
+        .t5 { top: 80vh; left: 15vw; font-size: 4.5vw; transform: rotate(-5deg); }
 
         @keyframes drift {
             0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(0.5vw, -0.5vh); }
+            50% { transform: translate(1vw, -1vh); }
         }
 
-        /* 2. 核心模块：比例锁定 */
+        /* 2. 核心视觉模块：长颈鹿、香蕉、签名 */
         .main-center-module {
+            position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
             z-index: 10;
+            /* 向上微调，平衡视觉重心 */
+            margin-top: -5vh; 
         }
 
         .animal-container {
@@ -69,7 +74,8 @@
         }
 
         .animal-img {
-            width: 35vw;
+            /* 宽度随视口变化，在大屏下会自动变大 */
+            width: 32vw; 
             max-width: 550px;
             min-width: 280px;
             cursor: pointer;
@@ -81,7 +87,7 @@
         .banana-img {
             position: absolute;
             bottom: 1vh; right: -2vw;
-            width: 6vw;
+            width: 6vw; 
             max-width: 90px;
             transform: rotate(12deg);
             z-index: 11;
@@ -94,12 +100,13 @@
         }
 
         .signature-block {
-            margin-top: 2vh;
+            margin-top: 1.5vh;
             text-align: center;
         }
 
         .name-text { 
-            font-size: 2.2vw;
+            font-size: 2vw; /* 字体大小随视口缩放 */
+            min-font-size: 1.2rem;
             font-weight: bold; 
             color: #000; 
             text-transform: uppercase;
@@ -107,7 +114,7 @@
 
         /* 3. 底部大尺寸胶囊按钮 */
         .nav-tabs {
-            margin-top: 5vh;
+            margin-top: 6vh;
             display: flex; gap: 2vw;
             z-index: 30;
         }
@@ -115,11 +122,11 @@
         .tab {
             border: 2px solid #000;
             border-radius: 50px; 
-            padding: 1vh 3vw;
+            padding: 1.2vh 3.5vw;
             text-decoration: none;
             color: #000;
             font-weight: bold;
-            font-size: 1.4vw;
+            font-size: 1.3vw; 
             background: #fff;
             transition: 0.2s;
             text-transform: uppercase;
@@ -127,25 +134,25 @@
         }
         .tab:hover { background: #000; color: #fff; }
 
-        /* 星星特效样式 */
+        /* 星星特效（修复层级） */
         .sparkle {
-            position: absolute;
-            width: 30px; height: 30px;
+            position: absolute; width: 35px; height: 35px;
             background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.8 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z" fill="%23FFD700"/></svg>') no-repeat center/contain;
-            pointer-events: none;
-            animation: burst 0.8s ease-out forwards;
-            z-index: 2000; /* 确保在最上层 */
+            pointer-events: none; animation: burst 0.8s ease-out forwards; z-index: 2000;
         }
         @keyframes burst {
             0% { transform: scale(0); opacity: 0; }
             50% { opacity: 1; }
-            100% { transform: scale(1.5) translate(var(--dx), var(--dy)) rotate(45deg); opacity: 0; }
+            100% { transform: scale(1.5) translate(var(--dx), var(--dy)); opacity: 0; }
         }
 
+        /* 手机端适配：垂直重排 */
         @media (max-width: 768px) {
-            .animal-img { width: 70vw; }
+            .wuhu-bg-layer { opacity: 0.3; }
+            .animal-img { width: 75vw; }
+            .banana-img { width: 15vw; }
             .name-text { font-size: 5vw; }
-            .nav-tabs { flex-direction: column; width: 70%; gap: 1.5vh; }
+            .nav-tabs { flex-direction: column; gap: 1.5vh; width: 75%; }
             .tab { font-size: 1.2rem; width: 100%; text-align: center; }
         }
     </style>
@@ -157,8 +164,8 @@
             <span class="wuhu-item t1">wuhuwuhulala</span>
             <span class="wuhu-item t2">wuhuwuhu</span>
             <span class="wuhu-item t3">wuhulala</span>
-            <span class="wuhu-item t4">wuhu!</span>
-            <span class="wuhu-item t5">wuhuwuhu</span>
+            <span class="wuhu-item t4">wuhuwuhu</span>
+            <span class="wuhu-item t5">wuhu!</span>
         </div>
 
         <div class="main-center-module">
@@ -181,17 +188,13 @@
 <script>
     function clickGiraffe(e) {
         const img = document.getElementById('giraffe');
-        
-        // 1. 强制重绘，确保连续点击动画生效
         img.classList.remove('active');
-        void img.offsetWidth; 
+        void img.offsetWidth; // 触发重绘
         img.classList.add('active');
 
-        // 2. 获取精准点击位置
         const x = e.clientX || (e.touches && e.touches[0].clientX);
         const y = e.clientY || (e.touches && e.touches[0].clientY);
 
-        // 3. 生成闪动星星
         for(let i=0; i<10; i++) {
             createStar(x, y);
         }
@@ -210,7 +213,7 @@
         setTimeout(() => star.remove(), 800);
     }
 
-    // 全屏退出修复
+    // 全屏 ESC 退出修复
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             if (document.fullscreenElement || document.webkitFullscreenElement) {
