@@ -61,7 +61,6 @@
 
     function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
     window.addEventListener('resize', resize); resize();
-    function clearCanvas() { fireworks = []; particles = []; }
 
     const sliderDefs = [
         { id: 'particles', label: '密度', min: 50, max: 800 },
@@ -90,32 +89,44 @@
     });
 
     class Particle {
-        constructor(x, y, vx, vy, h) {
+        constructor(x, y, vx, vy, h, isTrail = false) {
             this.x = x; this.y = y; this.vx = vx; this.vy = vy;
             this.h = h + (Math.random() * config.variance * 2 - config.variance);
             this.alpha = 1;
+            this.isTrail = isTrail; // 是否为升空尾迹
         }
         update() {
             this.vx *= 0.96; this.vy *= 0.96; this.vy += config.gravity;
-            this.x += this.vx; this.y += this.vy; this.alpha -= 0.015;
+            this.x += this.vx; this.y += this.vy; 
+            this.alpha -= this.isTrail ? 0.04 : 0.015; // 尾迹消失更快
         }
         draw() {
             if(this.alpha <= 0) return;
-            ctx.fillStyle = `hsla(${this.h}, 100%, 70%, ${this.alpha})`;
-            ctx.fillRect(this.x, this.y, 2, 2);
+            ctx.fillStyle = `hsla(${this.h}, 100%, 75%, ${this.alpha})`;
+            ctx.fillRect(this.x, this.y, this.isTrail ? 1.5 : 2, this.isTrail ? 1.5 : 2);
         }
     }
 
     class Shell {
         constructor(x, y, charge) {
             this.x = x; this.y = y;
-            // 修复：确保目标爆炸高度不会跑出画面顶部 (Math.max 50)
             this.targetY = Math.max(50, y - (charge * 12) - 100);
             this.done = false; this.lockedShape = config.shape;
+            this.hue = config.hue;
         }
         update() {
+            // 升空过程产生尾迹粒子
+            if (Math.random() > 0.3) {
+                particles.push(new Particle(this.x, this.y, (Math.random()-0.5)*2, (Math.random())*2, this.hue, true));
+            }
             this.y += (this.targetY - this.y) * 0.1;
             if (Math.abs(this.targetY - this.y) < 5) { this.done = true; this.explode(); }
+        }
+        draw() {
+            ctx.fillStyle = `hsl(${this.hue}, 100%, 70%)`;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, 2.5, 0, Math.PI*2);
+            ctx.fill();
         }
         explode() {
             let pts = [];
@@ -152,7 +163,7 @@
                     const ang = Math.random() * Math.PI * 2, spd = Math.random() * config.speed;
                     vx = Math.cos(ang) * spd; vy = Math.sin(ang) * spd;
                 }
-                particles.push(new Particle(this.x, this.y, vx, vy, config.hue));
+                particles.push(new Particle(this.x, this.y, vx, vy, this.hue));
             }
         }
     }
@@ -165,7 +176,6 @@
         if(res.multiHandLandmarks && res.multiHandLandmarks[0]) {
             const h = res.multiHandLandmarks[0];
             hPos.x = (1 - h[8].x) * canvas.width; hPos.y = h[8].y * canvas.height;
-            // 灵敏度优化：大幅增加捏合距离阈值至 0.18
             const dist = Math.sqrt(Math.pow(h[8].x-h[4].x,2)+Math.pow(h[8].y-h[4].y,2));
             if(dist < 0.18) { isP = true; charge = Math.min(charge + 2.5, 65); } 
             else { if(isP && charge > 5) fireworks.push(new Shell(hPos.x, hPos.y, charge)); isP = false; charge = 0; }
@@ -186,10 +196,10 @@
             ctx.fillStyle = `rgba(5, 5, 8, ${config.trail})`;
             ctx.fillRect(0,0,canvas.width,canvas.height);
             ctx.globalCompositeOperation = 'lighter';
-            fireworks.forEach((f,i) => { f.update(); if(f.done) fireworks.splice(i,1); });
+            fireworks.forEach((f,i) => { f.update(); f.draw(); if(f.done) fireworks.splice(i,1); });
             particles.forEach((p,i) => { p.update(); p.draw(); if(p.alpha <= 0) particles.splice(i,1); });
             if(isP) { 
-                ctx.strokeStyle=`hsl(${config.hue},100%,65%)`; ctx.lineWidth=3; ctx.beginPath(); 
+                ctx.strokeStyle=`hsl(${config.hue}, 100%, 65%)`; ctx.lineWidth=3; ctx.beginPath(); 
                 ctx.arc(hPos.x,hPos.y,charge,0,Math.PI*2); ctx.stroke(); 
             }
             requestAnimationFrame(loop);
