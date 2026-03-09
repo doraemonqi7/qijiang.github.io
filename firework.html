@@ -3,23 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Interactive Fireworks Ultimate | QJ</title>
+    <title>Interactive Fireworks Masterpiece | QJ</title>
     <style>
-        :root { --accent: #bf5af2; --bg: #050508; --panel: rgba(16, 16, 22, 0.98); }
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--bg); overflow: hidden; font-family: system-ui, sans-serif; color: #fff; }
+        :root { --accent: #bf5af2; --bg: #030305; --panel: rgba(10, 10, 15, 0.98); }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--bg); overflow: hidden; font-family: -apple-system, sans-serif; color: #fff; }
         canvas { display: block; width: 100%; height: 100%; position: absolute; z-index: 1; }
         .top-nav { position: absolute; top: 0; left: 0; width: 100%; padding: 15px; display: flex; justify-content: space-between; z-index: 100; box-sizing: border-box; pointer-events: none; }
-        .btn-ui { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 10px 18px; border-radius: 12px; font-size: 14px; backdrop-filter: blur(10px); cursor: pointer; pointer-events: auto; text-decoration: none; }
-        #control-panel { position: fixed; top: 0; right: 0; width: 320px; height: 100%; background: var(--panel); border-left: 1px solid #333; z-index: 200; padding: 30px 20px; box-sizing: border-box; transform: translateX(100%); transition: 0.3s; overflow-y: auto; }
+        .btn-ui { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 10px 18px; border-radius: 12px; font-size: 14px; backdrop-filter: blur(15px); cursor: pointer; pointer-events: auto; text-decoration: none; }
+        #control-panel { position: fixed; top: 0; right: 0; width: 320px; height: 100%; background: var(--panel); border-left: 1px solid #333; z-index: 200; padding: 30px 20px; box-sizing: border-box; transform: translateX(100%); transition: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); overflow-y: auto; }
         #control-panel.active { transform: translateX(0); }
-        .shape-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
-        .shape-btn { padding: 12px 5px; background: #222; border: 1px solid #444; color: #fff; border-radius: 8px; cursor: pointer; font-size: 12px; }
-        .shape-btn.active { background: var(--accent); border-color: var(--accent); font-weight: bold; }
-        input[type=range] { width: 100%; accent-color: var(--accent); margin: 10px 0; cursor: pointer; }
-        input[type=text] { width: 100%; padding: 12px; background: #1a1a25; border: 1px solid #444; color: #fff; border-radius: 8px; box-sizing: border-box; width: 100%; }
+        .shape-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 15px; }
+        .shape-btn { padding: 12px 5px; background: #1a1a1a; border: 1px solid #333; color: #888; border-radius: 8px; cursor: pointer; font-size: 12px; transition: 0.2s; }
+        .shape-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: bold; box-shadow: 0 0 15px rgba(191,90,242,0.3); }
+        input[type=range] { width: 100%; accent-color: var(--accent); margin: 10px 0; }
+        input[type=text] { width: 100%; padding: 12px; background: #000; border: 1px solid #444; color: #fff; border-radius: 8px; box-sizing: border-box; }
         .apply-btn { width: 100%; padding: 15px; background: var(--accent); color: white; border: none; border-radius: 12px; margin-top: 25px; font-weight: bold; cursor: pointer; }
         #start-screen { position: fixed; inset: 0; z-index: 500; background: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .start-btn { padding: 20px 60px; font-size: 22px; background: var(--accent); border: none; border-radius: 50px; color: #fff; font-weight: bold; cursor: pointer; }
+        .start-btn { padding: 20px 60px; font-size: 22px; background: var(--accent); border: none; border-radius: 50px; color: #fff; font-weight: bold; cursor: pointer; box-shadow: 0 0 30px rgba(191,90,242,0.4); }
         #video-input { display: none; }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
@@ -27,18 +27,18 @@
 </head>
 <body>
 
-<div id="start-screen"><button class="start-btn" id="start-btn">开启互动烟花</button></div>
+<div id="start-screen"><button class="start-btn" id="start-btn">开启互动感官</button></div>
 <div class="top-nav">
-    <a href="index.html" class="btn-ui" style="background:#ff9f43">← 返回菜单</a>
+    <a href="index.html" class="btn-ui" style="background:#ff9f43">← 菜单</a>
     <button class="btn-ui" style="background:var(--accent)" onclick="document.getElementById('control-panel').classList.add('active')">⚙️ 设置参数</button>
 </div>
 
 <div id="control-panel">
     <div style="display:flex; justify-content:space-between; align-items:center;">
-        <span style="font-weight:bold; color:var(--accent)">QJ CONTROLS</span>
+        <span style="font-weight:bold; color:var(--accent); letter-spacing:1px">LUMI-OS 2.0</span>
         <button onclick="document.getElementById('control-panel').classList.remove('active')" style="background:none; border:none; color:#fff; font-size:24px;">&times;</button>
     </div>
-    <div style="margin-top:20px"><input type="text" id="text-input" value="ドラえもん"></div>
+    <div style="margin-top:25px"><input type="text" id="text-input" value="ドラえもん"></div>
     <div class="shape-grid">
         <button class="shape-btn" data-shape="sphere">Sphere</button>
         <button class="shape-btn" data-shape="ring">Ring</button>
@@ -48,14 +48,14 @@
         <button class="shape-btn" data-shape="burst">Burst</button>
     </div>
     <div id="sliders" style="margin-top:10px"></div>
-    <button class="apply-btn" onclick="document.getElementById('control-panel').classList.remove('active')">确认应用</button>
+    <button class="apply-btn" onclick="document.getElementById('control-panel').classList.remove('active')">注入系统</button>
 </div>
 
 <video id="video-input" playsinline muted autoplay></video>
 <canvas id="canvas"></canvas>
 
 <script>
-    const config = { particles: 200, speed: 12, gravity: 0.15, hue: 210, variance: 50, trail: 0.18, shape: 'text' };
+    const config = { particles: 350, speed: 14, gravity: 0.16, hue: 280, variance: 60, trail: 0.12, shape: 'text' };
     const canvas = document.getElementById('canvas'), ctx = canvas.getContext('2d', { alpha: false });
     let fireworks = [], particles = [];
 
@@ -63,15 +63,15 @@
     window.addEventListener('resize', resize); resize();
 
     const sliderDefs = [
-        { id: 'particles', label: '密度', min: 50, max: 800 },
-        { id: 'speed', label: '力度', min: 5, max: 25 },
-        { id: 'gravity', label: '重力', min: 0, max: 0.4, step: 0.01 },
-        { id: 'variance', label: '色彩', min: 0, max: 150 }
+        { id: 'particles', label: '粒子密度', min: 100, max: 1200 },
+        { id: 'speed', label: '爆炸推力', min: 8, max: 30 },
+        { id: 'gravity', label: '模拟重力', min: 0, max: 0.5, step: 0.01 },
+        { id: 'variance', label: '光谱范围', min: 0, max: 180 }
     ];
 
     sliderDefs.forEach(s => {
         const div = document.createElement('div');
-        div.innerHTML = `<div style="display:flex; justify-content:space-between; font-size:12px; margin-top:15px; color:#888;"><span>${s.label}</span><span id="${s.id}-v">${config[s.id]}</span></div>
+        div.innerHTML = `<div style="display:flex; justify-content:space-between; font-size:11px; margin-top:18px; color:#666; text-transform:uppercase;"><span>${s.label}</span><span id="${s.id}-v">${config[s.id]}</span></div>
                          <input type="range" id="${s.id}-s" min="${s.min}" max="${s.max}" step="${s.step||1}" value="${config[s.id]}">`;
         document.getElementById('sliders').appendChild(div);
         document.getElementById(`${s.id}-s`).oninput = (e) => {
@@ -88,88 +88,114 @@
         };
     });
 
+    // --- 高级粒子类 ---
     class Particle {
-        constructor(x, y, vx, vy, h, isTrail = false) {
+        constructor(x, y, vx, vy, h, size = 2.5, life = 1) {
             this.x = x; this.y = y; this.vx = vx; this.vy = vy;
-            this.h = h + (Math.random() * config.variance * 2 - config.variance);
-            this.alpha = 1;
-            this.isTrail = isTrail; // 是否为升空尾迹
+            this.h = h + (Math.random() * config.variance - config.variance/2);
+            this.alpha = life;
+            this.size = size;
+            this.decay = 0.008 + Math.random() * 0.015;
         }
         update() {
-            this.vx *= 0.96; this.vy *= 0.96; this.vy += config.gravity;
-            this.x += this.vx; this.y += this.vy; 
-            this.alpha -= this.isTrail ? 0.04 : 0.015; // 尾迹消失更快
+            this.vx *= 0.95; this.vy *= 0.95; this.vy += config.gravity;
+            this.x += this.vx; this.y += this.vy; this.alpha -= this.decay;
         }
         draw() {
             if(this.alpha <= 0) return;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size * this.alpha, 0, Math.PI * 2);
             ctx.fillStyle = `hsla(${this.h}, 100%, 75%, ${this.alpha})`;
-            ctx.fillRect(this.x, this.y, this.isTrail ? 1.5 : 2, this.isTrail ? 1.5 : 2);
+            ctx.fill();
         }
     }
 
+    // --- 升空尾迹类 ---
     class Shell {
         constructor(x, y, charge) {
+            this.startX = x; this.startY = y;
             this.x = x; this.y = y;
-            this.targetY = Math.max(50, y - (charge * 12) - 100);
-            this.done = false; this.lockedShape = config.shape;
+            // 根据蓄力计算高度，捏得越久飞得越高
+            const lift = Math.min(charge * 15, canvas.height - 100);
+            this.targetY = y - lift;
             this.hue = config.hue;
+            this.done = false;
+            this.lockedShape = config.shape;
+            this.velocity = -2; // 初始向上的速度
         }
         update() {
-            // 升空过程产生尾迹粒子
-            if (Math.random() > 0.3) {
-                particles.push(new Particle(this.x, this.y, (Math.random()-0.5)*2, (Math.random())*2, this.hue, true));
+            // 物理飞升模拟
+            let dist = this.y - this.targetY;
+            this.y -= (dist * 0.1) + 1; // 增加基础上升速度
+            
+            // 产生升空拖尾火花
+            if (Math.random() > 0.2) {
+                const vx = (Math.random() - 0.5) * 2;
+                const vy = Math.random() * 3;
+                particles.push(new Particle(this.x, this.y, vx, vy, this.hue, 1.5, 0.6));
             }
-            this.y += (this.targetY - this.y) * 0.1;
-            if (Math.abs(this.targetY - this.y) < 5) { this.done = true; this.explode(); }
+
+            if (this.y <= this.targetY + 5) {
+                this.done = true;
+                this.explode();
+            }
         }
         draw() {
-            ctx.fillStyle = `hsl(${this.hue}, 100%, 70%)`;
+            // 升空弹头效果
+            const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, 5);
+            grad.addColorStop(0, '#fff');
+            grad.addColorStop(1, `hsla(${this.hue}, 100%, 70%, 0)`);
+            ctx.fillStyle = grad;
             ctx.beginPath();
-            ctx.arc(this.x, this.y, 2.5, 0, Math.PI*2);
+            ctx.arc(this.x, this.y, 5, 0, Math.PI*2);
             ctx.fill();
         }
         explode() {
             let pts = [];
+            const count = config.particles;
+            
             if (this.lockedShape === 'text') {
                 const off = document.createElement('canvas'); const octx = off.getContext('2d');
-                off.width = 400; off.height = 150; octx.font = "bold 45px sans-serif"; octx.fillStyle = "white"; octx.textAlign = "center";
-                octx.fillText(document.getElementById('text-input').value, 200, 80);
-                const data = octx.getImageData(0,0,400,150).data;
-                for(let y=0; y<150; y+=4) for(let x=0; x<400; x+=4) if(data[(y*400+x)*4+3]>128) pts.push({dx:x-200, dy:y-80});
+                off.width = 500; off.height = 200; octx.font = "bold 60px sans-serif"; octx.fillStyle = "white"; octx.textAlign = "center";
+                octx.fillText(document.getElementById('text-input').value, 250, 100);
+                const data = octx.getImageData(0,0,500,200).data;
+                for(let y=0; y<200; y+=4) for(let x=0; x<500; x+=4) if(data[(y*500+x)*4+3]>128) pts.push({dx:x-250, dy:y-100});
             } else if (this.lockedShape === 'heart') {
-                for(let i=0; i<config.particles; i++) {
+                for(let i=0; i<count; i++) {
                     const t = Math.random() * Math.PI * 2;
-                    pts.push({ dx: 16 * Math.pow(Math.sin(t), 3) * 6, dy: -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)) * 6 });
+                    pts.push({ dx: 16 * Math.pow(Math.sin(t), 3) * 8, dy: -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)) * 8 });
                 }
             } else if (this.lockedShape === 'star') {
-                for(let i=0; i<config.particles; i++) {
-                    const l = i % 2 === 0 ? 100 : 50, ang = (i / config.particles) * Math.PI * 10;
+                for(let i=0; i<count; i++) {
+                    const l = i % 2 === 0 ? 120 : 60, ang = (i / count) * Math.PI * 10;
                     pts.push({ dx: Math.cos(ang) * l, dy: Math.sin(ang) * l });
                 }
-            } else if (this.lockedShape === 'ring') {
-                for(let i=0; i<config.particles; i++) {
-                    const ang = Math.random() * Math.PI * 2;
-                    pts.push({ dx: Math.cos(ang) * 110, dy: Math.sin(ang) * 110 });
+            } else {
+                for(let i=0; i<count; i++) {
+                    const ang = Math.random() * Math.PI * 2, spd = Math.random() * 1;
+                    pts.push({ dx: Math.cos(ang) * spd * 100, dy: Math.sin(ang) * spd * 100 });
                 }
             }
-            const usePts = pts.length > 0;
-            const count = usePts ? Math.min(pts.length, config.particles) : config.particles;
-            for (let i = 0; i < count; i++) {
+
+            const isMap = pts.length > 0;
+            const finalCount = isMap ? Math.min(pts.length, count) : count;
+            
+            for (let i = 0; i < finalCount; i++) {
                 let vx, vy;
-                if (usePts) {
+                if (isMap) {
                     const p = pts[i % pts.length];
-                    vx = p.dx * (config.speed/60); vy = p.dy * (config.speed/60);
+                    vx = p.dx * (config.speed/80); vy = p.dy * (config.speed/80);
                 } else {
                     const ang = Math.random() * Math.PI * 2, spd = Math.random() * config.speed;
                     vx = Math.cos(ang) * spd; vy = Math.sin(ang) * spd;
                 }
-                particles.push(new Particle(this.x, this.y, vx, vy, this.hue));
+                particles.push(new Particle(this.x, this.y, vx, vy, this.hue, 2.5, 1));
             }
         }
     }
 
     const hands = new Hands({ locateFile: (f) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
-    hands.setOptions({ maxNumHands: 1, modelComplexity: 0, minDetectionConfidence: 0.5 });
+    hands.setOptions({ maxNumHands: 1, modelComplexity: 1, minDetectionConfidence: 0.6 });
 
     let hPos = {x:0, y:0}, isP = false, charge = 0;
     hands.onResults(res => {
@@ -177,15 +203,19 @@
             const h = res.multiHandLandmarks[0];
             hPos.x = (1 - h[8].x) * canvas.width; hPos.y = h[8].y * canvas.height;
             const dist = Math.sqrt(Math.pow(h[8].x-h[4].x,2)+Math.pow(h[8].y-h[4].y,2));
-            if(dist < 0.18) { isP = true; charge = Math.min(charge + 2.5, 65); } 
-            else { if(isP && charge > 5) fireworks.push(new Shell(hPos.x, hPos.y, charge)); isP = false; charge = 0; }
-        }
+            
+            if(dist < 0.15) { 
+                isP = true; charge = Math.min(charge + 1.2, 60); 
+            } else { 
+                if(isP && charge > 8) fireworks.push(new Shell(hPos.x, hPos.y, charge)); 
+                isP = false; charge = 0; 
+            }
+        } else { isP = false; charge = 0; }
     });
 
-    const video = document.getElementById('video-input');
-    const cam = new Camera(video, {
-        onFrame: async () => { if(video.readyState >= 2) { try { await hands.send({image: video}); } catch(e) {} } },
-        width: 480, height: 360
+    const cam = new Camera(document.getElementById('video-input'), {
+        onFrame: async () => { try { await hands.send({image: document.getElementById('video-input')}); } catch(e){} },
+        width: 640, height: 480
     });
 
     document.getElementById('start-btn').onclick = () => {
@@ -193,14 +223,27 @@
         cam.start();
         const loop = () => {
             ctx.globalCompositeOperation = 'source-over';
-            ctx.fillStyle = `rgba(5, 5, 8, ${config.trail})`;
+            ctx.fillStyle = `rgba(3, 3, 5, ${config.trail})`;
             ctx.fillRect(0,0,canvas.width,canvas.height);
+            
             ctx.globalCompositeOperation = 'lighter';
             fireworks.forEach((f,i) => { f.update(); f.draw(); if(f.done) fireworks.splice(i,1); });
             particles.forEach((p,i) => { p.update(); p.draw(); if(p.alpha <= 0) particles.splice(i,1); });
+            
             if(isP) { 
-                ctx.strokeStyle=`hsl(${config.hue}, 100%, 65%)`; ctx.lineWidth=3; ctx.beginPath(); 
-                ctx.arc(hPos.x,hPos.y,charge,0,Math.PI*2); ctx.stroke(); 
+                // 动态蓄力光效
+                const opacity = charge / 60;
+                ctx.beginPath();
+                ctx.arc(hPos.x, hPos.y, charge * 1.5, 0, Math.PI*2);
+                ctx.strokeStyle = `hsla(${config.hue}, 100%, 70%, ${opacity})`;
+                ctx.lineWidth = 4;
+                ctx.stroke();
+                
+                // 内核光点
+                ctx.beginPath();
+                ctx.arc(hPos.x, hPos.y, 5, 0, Math.PI*2);
+                ctx.fillStyle = `rgba(255,255,255,${opacity})`;
+                ctx.fill();
             }
             requestAnimationFrame(loop);
         };
