@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visual Portfolio | QI JIANG</title>
     <style>
-        /* 使用国内镜像字体加速加载 */
         @import url('https://fonts.font.im/css2?family=Gochi+Hand&display=swap');
 
         * { font-family: 'Gochi Hand', cursive !important; box-sizing: border-box; }
 
         body, html {
             margin: 0; padding: 0; 
-            background-color: #ffffff;
+            /* 核心修改：背景色改为参考图中的米黄绢纸色 */
+            background-color: #fefae0; 
             width: 100%; height: 100%;
             overflow: hidden;
             display: flex; justify-content: center; align-items: center;
@@ -24,43 +24,43 @@
             max-width: 1920px; margin: 0 auto;
         }
 
-        /* 1. 核心修复：花线条背景（替代原 wuhu 文字，允许点击） */
+        /* 1. 背景线条：颜色调整为参考图中的宝蓝色 */
         .flower-bg-layer {
             position: absolute;
             top: 0; left: 0;
-            width: 50vw; /* 占据左侧视口区域 */
-            height: 100vh;
-            z-index: 5; /* 确保层级高于星星，低于长颈鹿 */
-            /* 核心修改：允许线条接收点击事件 */
+            width: 50vw; height: 100vh;
+            z-index: 5;
             pointer-events: auto; 
             cursor: pointer;
         }
 
         .flower-svg {
             width: 100%; height: 100%;
-            opacity: 0.6; /* 保持半透明 */
+            opacity: 0.7; /* 稍微增强颜色存在感 */
         }
 
         .flower-path {
             fill: none;
-            stroke: #ffb7b7; /* --- 核心修改：符合整体风格的莫兰迪粉 --- */
-            stroke-width: 3;
+            /* 核心修改：宝蓝色线条 */
+            stroke: #1e40af; 
+            stroke-width: 2.5;
             stroke-linecap: round;
             stroke-linejoin: round;
             stroke-dasharray: 1200;
             stroke-dashoffset: 1200;
-            /* 生长动画 + 摇曳动画 */
             animation: growLine 6s ease-in-out forwards, sway 5s infinite ease-in-out;
             transform-origin: bottom left;
+            /* 模拟点阵质感的微弱发光 */
+            filter: drop-shadow(0 0 1px rgba(30, 64, 175, 0.3));
         }
 
         @keyframes growLine { to { stroke-dashoffset: 0; } }
         @keyframes sway {
             0%, 100% { transform: rotate(0deg) scale(1); }
-            50% { transform: rotate(1.5deg) scale(1.02) translateX(1vw); }
+            50% { transform: rotate(1.2deg) scale(1.01) translateX(0.5vw); }
         }
 
-        /* 2. 主内容区域：保持原有的自适应缩放 */
+        /* 2. 主内容区域 */
         .main-content {
             position: absolute;
             right: 5vw; top: 45%;
@@ -70,22 +70,20 @@
         }
 
         .text-block { text-align: right; margin-bottom: 5vh; }
-        .title-text { font-size: 6vw; font-weight: bold; margin: 0; line-height: 1; color: #000; }
-        .name-text { font-size: 4vw; font-weight: bold; margin: 1vh 0 0 0; line-height: 1; color: #000; }
+        .title-text { font-size: 6vw; font-weight: bold; margin: 0; line-height: 1; color: #1e40af; }
+        .name-text { font-size: 4vw; font-weight: bold; margin: 1vh 0 0 0; line-height: 1; color: #1e40af; }
 
         .animal-img {
             width: 45vw; max-width: 800px;
-            /* 核心修改：去掉 cursor: pointer，长颈鹿不再工作 */
             cursor: default; 
             transform: scaleX(-1) rotate(2deg);
             transition: 0.3s; -webkit-user-drag: none;
             position: relative;
             z-index: 15;
-            /* 核心修改：去掉 onclick 事件，长颈鹿不再接收点击 */
             pointer-events: none; 
         }
 
-        /* 3. 底部导航：保持原有的加大效果 */
+        /* 3. 底部导航：边框也改为宝蓝色保持统一 */
         .nav-tabs {
             position: absolute; bottom: 8vh; left: 50%;
             transform: translateX(-50%);
@@ -93,56 +91,49 @@
         }
 
         .tab {
-            border: 0.4vw solid #000; border-radius: 100px;
+            border: 0.4vw solid #1e40af; border-radius: 100px;
             padding: 1.5vh 3.5vw; text-decoration: none;
-            color: #000; font-weight: bold; font-size: 1.8vw;
+            color: #1e40af; font-weight: bold; font-size: 1.8vw;
             background: #fff; transition: 0.3s; white-space: nowrap;
-            box-shadow: 0 0.5vh 0 #000;
+            box-shadow: 0 0.5vh 0 rgba(30, 64, 175, 0.2);
         }
-        .tab:hover { background: #000; color: #fff; transform: translateY(-0.5vh); box-shadow: 0 0.8vh 0 #000; }
+        .tab:hover { background: #1e40af; color: #fff; transform: translateY(-0.5vh); }
 
-        /* 4. 点击生成的线条小花样式 */
+        /* 4. 点击生成的线条小花样式：宝蓝色 */
         .click-flower {
             position: absolute;
-            width: 80px; height: 80px;
+            width: 90px; height: 90px;
             pointer-events: none;
             z-index: 1000;
-            /* 漂浮淡出动画 */
-            animation: flowerPop 2.5s ease-out forwards;
+            animation: flowerPop 2.2s ease-out forwards;
         }
 
         .click-flower path {
             fill: none;
-            stroke: #ffb7b7; /* 符合风格的莫兰迪粉线 */
-            stroke-width: 3;
+            stroke: #1e40af; /* 宝蓝色 */
+            stroke-width: 2.5;
             stroke-linecap: round;
             stroke-linejoin: round;
-            /* 生长动画设置 */
             stroke-dasharray: 200;
             stroke-dashoffset: 200;
-            animation: growMini 1.2s ease-out forwards;
+            animation: growMini 1s ease-out forwards;
         }
 
         @keyframes growMini { to { stroke-dashoffset: 0; } }
 
         @keyframes flowerPop {
-            0% { transform: scale(0.3) translateY(0); opacity: 0; }
-            15% { transform: scale(1) translateY(-10px); opacity: 1; }
-            80% { opacity: 1; }
-            100% { transform: scale(0.9) translateY(-40px); opacity: 0; }
+            0% { transform: scale(0.2) rotate(-10deg); opacity: 0; }
+            20% { transform: scale(1.1) rotate(0deg); opacity: 1; }
+            100% { transform: scale(1) translateY(-50px) rotate(10deg); opacity: 0; }
         }
 
-        /* 手机端专项适配：改为垂直排列 */
+        /* 手机端适配 */
         @media (max-width: 768px) {
-            /* 核心修改：手机上也要允许点击线条 */
-            .flower-bg-layer { width: 100vw; opacity: 0.4; pointer-events: auto; }
             .main-content { flex-direction: column; align-items: center; right: 0; left: 0; top: 40%; gap: 5vh; }
-            .text-block { text-align: center; }
-            .animal-img { width: 85vw; }
-            .title-text { font-size: 15vw; }
+            .title-text { font-size: 14vw; }
             .name-text { font-size: 8vw; }
-            .nav-tabs { flex-direction: column; bottom: 5vh; gap: 12px; width: 80%; }
-            .tab { font-size: 1.2rem; padding: 12px 0; width: 100%; text-align: center; border-width: 3px; }
+            .nav-tabs { flex-direction: column; bottom: 5vh; width: 80%; }
+            .tab { font-size: 1.2rem; width: 100%; border-width: 2px; }
         }
     </style>
 </head>
@@ -173,38 +164,29 @@
     </div>
 
 <script>
-    // 核心修改：新的点击线条开花函数（适配 PC 和 手机）
     function clickFlowerLine(e) {
-        // 获取点击坐标（适配 PC 和 手机）
         const x = e.clientX || (e.touches && e.touches[0].clientX);
         const y = e.clientY || (e.touches && e.touches[0].clientY);
-
-        // 在点击位置生成线条小花
         createFlower(x, y);
     }
 
-    // 创建点击开花 SVG 的函数
     function createFlower(x, y) {
         const flower = document.createElement('div');
         flower.className = 'click-flower';
-        // 居中生成小花
-        flower.style.left = (x - 40) + 'px';
-        flower.style.top = (y - 40) + 'px';
+        flower.style.left = (x - 45) + 'px';
+        flower.style.top = (y - 45) + 'px';
 
-        // 仿手绘风格的线条花路径
         const svgHTML = `
             <svg viewBox="0 0 100 100">
-                <path d="M50,90 Q40,70 50,50" />
-                <path d="M50,50 Q65,30 80,45 T70,60 Z" />
-                <path d="M50,50 Q35,30 20,45 T30,60 Z" />
-                <path d="M50,50 Q50,25 70,25 T50,10 T30,25 T50,50 Z" />
+                <path d="M50,85 Q45,65 50,50" />
+                <path d="M50,50 C60,35 85,35 75,55 C65,75 50,50 50,50" />
+                <path d="M50,50 C40,35 15,35 25,55 C35,75 50,50 50,50" />
+                <path d="M50,50 C55,30 50,10 50,10 C50,10 45,30 50,50" />
             </svg>
         `;
         flower.innerHTML = svgHTML;
         document.body.appendChild(flower);
-        
-        // 2.5秒后自动清理
-        setTimeout(() => flower.remove(), 2500);
+        setTimeout(() => flower.remove(), 2200);
     }
 </script>
 
