@@ -3,88 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cyberpunk Fireworks | QI JIANG</title>
+    <title>Cyberpunk Fireworks | LUMI</title>
     <style>
         :root {
-            --accent-purple: #bf5af2;
-            --accent-blue: #5ac8fa;
-            --bg-dark: #0a0a0f;
+            --accent: #bf5af2;
+            --bg: #0a0a0f;
+            --panel: rgba(16, 16, 22, 0.95);
             --vh: 1vh;
         }
 
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
             height: calc(var(--vh, 1vh) * 100);
-            background-color: var(--bg-dark); overflow: hidden;
-            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg); overflow: hidden;
+            font-family: -apple-system, system-ui, sans-serif;
             color: #fff;
         }
 
-        /* 顶部导航 */
-        .nav-header {
+        /* 顶部导航与开关 */
+        .ui-header {
             position: absolute; top: 0; left: 0; width: 100%;
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 20px; box-sizing: border-box; z-index: 100;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            padding: 15px; display: flex; justify-content: space-between;
+            z-index: 100; box-sizing: border-box;
         }
 
         .btn-ui {
             background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
-            color: #fff; padding: 8px 16px; border-radius: 8px; font-size: 14px;
-            text-decoration: none; backdrop-filter: blur(10px); cursor: pointer;
+            color: #fff; padding: 10px 18px; border-radius: 12px; font-size: 14px;
+            backdrop-filter: blur(10px); cursor: pointer; display: flex; align-items: center; gap: 6px;
         }
 
-        .btn-ui.primary { background: var(--accent-purple); border: none; font-weight: bold; }
-
-        /* 全屏控制面板 */
+        /* 核心修复：侧边设置栏适配 */
         #control-panel {
-            position: fixed; inset: 0; background: rgba(10, 10, 15, 0.98);
-            z-index: 1000; display: none; flex-direction: column;
-            padding: 40px 25px; overflow-y: auto;
+            position: fixed; top: 0; right: 0; width: 320px; height: 100%;
+            background: var(--panel); border-left: 1px solid #333;
+            z-index: 1000; padding: 30px 20px; box-sizing: border-box;
+            transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto; box-shadow: -10px 0 30px rgba(0,0,0,0.5);
         }
-        #control-panel.active { display: flex; }
 
-        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .panel-title { font-size: 20px; font-weight: bold; letter-spacing: 2px; color: var(--accent-blue); }
+        #control-panel.active { transform: translateX(0); }
 
+        /* 手机端全屏适配 */
+        @media (max-width: 768px) {
+            #control-panel { width: 85%; }
+        }
+
+        .section-title { font-size: 12px; color: #888; letter-spacing: 2px; margin: 25px 0 15px; text-transform: uppercase; }
         .control-group { margin-bottom: 20px; }
-        .control-label { display: flex; justify-content: space-between; font-size: 12px; color: #888; margin-bottom: 10px; }
-        .control-label span:last-child { color: var(--accent-purple); }
+        .label-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; }
+        .label-row span:last-child { color: var(--accent); font-family: monospace; }
 
-        input[type=range] { 
-            width: 100%; height: 4px; background: #333; border-radius: 2px;
-            appearance: none; outline: none;
-        }
-        input[type=range]::-webkit-slider-thumb {
-            appearance: none; width: 18px; height: 18px; background: var(--accent-purple);
-            border-radius: 50%; box-shadow: 0 0 10px var(--accent-purple);
-        }
+        input[type=range] { width: 100%; height: 4px; background: #333; border-radius: 2px; appearance: none; outline: none; }
+        input[type=range]::-webkit-slider-thumb { appearance: none; width: 18px; height: 18px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 10px var(--accent); cursor: pointer; }
 
-        #text-input {
-            width: 100%; background: #1a1a25; border: 1px solid #333;
-            color: #fff; padding: 12px; border-radius: 8px; font-size: 16px;
-            box-sizing: border-box; text-align: center;
-        }
+        input[type=text] { width: 100%; background: #1a1a25; border: 1px solid #444; color: #fff; padding: 12px; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
 
-        /* 画布与视频 */
+        .shape-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .shape-btn { padding: 8px; background: #222; border: 1px solid #444; color: #fff; border-radius: 6px; font-size: 12px; cursor: pointer; }
+        .shape-btn.active { background: var(--accent); border-color: var(--accent); }
+
         canvas { display: block; width: 100%; height: 100%; }
         #video-input { display: none; }
 
-        #start-screen {
-            position: fixed; inset: 0; z-index: 2000; background: var(--bg-dark);
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-        }
+        #start-screen { position: fixed; inset: 0; z-index: 2000; background: var(--bg); display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .start-btn { padding: 18px 45px; font-size: 20px; background: var(--accent); border: none; border-radius: 50px; color: #fff; font-weight: bold; box-shadow: 0 0 20px rgba(191,90,242,0.4); cursor: pointer; }
 
-        .glow-btn {
-            padding: 18px 45px; font-size: 20px; background: var(--accent-purple);
-            border: none; border-radius: 50px; color: #fff; font-weight: bold;
-            box-shadow: 0 0 20px rgba(191, 90, 242, 0.5); cursor: pointer;
-        }
-
-        #bottom-hint {
-            position: absolute; bottom: 20px; width: 100%; text-align: center;
-            font-size: 12px; color: rgba(255,255,255,0.4); pointer-events: none;
-        }
+        #bottom-bar { position: absolute; bottom: 0; width: 100%; padding: 10px; background: linear-gradient(transparent, rgba(0,0,0,0.8)); text-align: center; font-size: 12px; color: rgba(255,255,255,0.4); pointer-events: none; }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
@@ -92,86 +77,104 @@
 <body>
 
     <div id="start-screen">
-        <button class="glow-btn" id="start-btn">开启赛博烟花</button>
-        <p style="color:#555; margin-top:20px;">建议开启前置摄像头并正对光线</p>
+        <button class="start-btn" id="start-btn">开启互动烟花</button>
+        <p style="color:#555; margin-top:20px; font-size: 12px;">建议在 Safari/Chrome 浏览器中打开</p>
     </div>
 
-    <header class="nav-header">
+    <div class="ui-header">
         <a href="new-media.html" class="btn-ui">← 返回</a>
-        <button class="btn-ui primary" onclick="togglePanel()">⚙️ 设置参数</button>
-    </header>
+        <button class="btn-ui" onclick="togglePanel()" id="settings-btn">⚙️ 设置</button>
+    </div>
 
     <div id="control-panel">
-        <div class="panel-header">
-            <div class="panel-title">LUMI CONTROLS</div>
-            <button class="btn-ui" onclick="togglePanel()">关闭面板</button>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: bold; letter-spacing: 1px;">LUMI CONTROLS</span>
+            <button onclick="togglePanel()" style="background:none; border:none; color:#888; font-size:24px;">×</button>
         </div>
 
-        <div class="control-group">
-            <div class="control-label">烟花文字内容</div>
-            <input type="text" id="text-input" value="ドラえもん" maxlength="10">
+        <div class="section-title">Explosion Shape</div>
+        <div class="shape-grid">
+            <button class="shape-btn" onclick="setShape('sphere', this)">Sphere</button>
+            <button class="shape-btn" onclick="setShape('ring', this)">Ring</button>
+            <button class="shape-btn" onclick="setShape('star', this)">Star</button>
+            <button class="shape-btn active" onclick="setShape('text', this)">Text</button>
+            <button class="shape-btn" onclick="setShape('heart', this)">Heart</button>
+            <button class="shape-btn" onclick="setShape('burst', this)">Burst</button>
         </div>
 
-        <div id="sliders-box"></div>
+        <div class="section-title">Text Content</div>
+        <input type="text" id="text-input" value="ドラえもん">
 
-        <button onclick="clearCanvas()" style="margin-top:20px; padding:15px; background:none; border:1px solid #ff3b30; color:#ff3b30; border-radius:8px; cursor:pointer;">清空画布内容</button>
+        <div class="section-title">Physics & Visuals</div>
+        <div id="sliders-cont"></div>
+
+        <button onclick="clearCanvas()" style="width:100%; margin-top:30px; padding:12px; background:none; border:1px solid #ff453a; color:#ff453a; border-radius:8px;">CLEAR CANVAS</button>
     </div>
 
-    <div id="bottom-hint">✨ 捏合手指蓄力 | 松开手指发射</div>
+    <div id="bottom-bar">✨仙女棒 | ⚡️捏合蓄力 | 🎆松开发射</div>
 
     <video id="video-input" playsinline></video>
     <canvas id="canvas"></canvas>
 
 <script>
-    // 设置动态高度
+    // 适配动态高度
     const setVH = () => document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
     window.addEventListener('resize', setVH); setVH();
 
-    // 1. 核心配置 (炸出截图效果的关键参数)
+    // 1. 完全对标截图的参数预设
     const config = {
         particles: 250,
-        speed: 12,
+        explosionSpeed: 12,
         gravity: 0.18,
         friction: 0.96,
-        fade: 0.015,
+        fadeOut: 0.015,
         hue: 210,
-        trail: 0.15
+        trail: 0.15,
+        shape: 'text'
     };
 
     const togglePanel = () => document.getElementById('control-panel').classList.toggle('active');
 
-    // 2. 动态生成滑块 (还原截图右侧栏)
-    const sliders = [
+    // 2. 动态滑块生成
+    const sliderDefs = [
         { id: 'particles', label: 'PARTICLES', min: 50, max: 1000 },
-        { id: 'speed', label: 'EXPLOSION SPEED', min: 5, max: 30 },
+        { id: 'explosionSpeed', label: 'EXPLOSION SPEED', min: 5, max: 30 },
         { id: 'gravity', label: 'GRAVITY', min: 0, max: 0.5, step: 0.01 },
+        { id: 'friction', label: 'FRICTION', min: 0.8, max: 1, step: 0.01 },
+        { id: 'fadeOut', label: 'FADE OUT', min: 0.005, max: 0.05, step: 0.005 },
         { id: 'hue', label: 'HUE', min: 0, max: 360 }
     ];
 
-    const box = document.getElementById('sliders-box');
-    sliders.forEach(s => {
+    const cont = document.getElementById('sliders-cont');
+    sliderDefs.forEach(s => {
         const div = document.createElement('div');
         div.className = 'control-group';
         div.innerHTML = `
-            <div class="control-label"><span>${s.label}</span><span id="${s.id}-v">${config[s.id]}</span></div>
+            <div class="label-row"><span>${s.label}</span><span id="${s.id}-v">${config[s.id]}</span></div>
             <input type="range" id="${s.id}-s" min="${s.min}" max="${s.max}" step="${s.step || 1}" value="${config[s.id]}">
         `;
-        box.appendChild(div);
+        cont.appendChild(div);
         document.getElementById(`${s.id}-s`).oninput = (e) => {
             config[s.id] = parseFloat(e.target.value);
             document.getElementById(`${s.id}-v`).innerText = config[s.id];
         };
     });
 
-    // 3. 渲染引擎
-    const canvas = document.getElementById('canvas'), ctx = canvas.getContext('2d');
+    function setShape(type, btn) {
+        config.shape = type;
+        document.querySelectorAll('.shape-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    }
+
+    // 3. 霓虹发光引擎
+    const canvas = document.getElementById('canvas'), ctx = canvas.getContext('2d', { alpha: false });
     let fireworks = [], particles = [];
     function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
     window.addEventListener('resize', resize); resize();
 
     function clearCanvas() { fireworks = []; particles = []; }
 
-    function getShapePts(text) {
+    function getPoints(text) {
         const off = document.createElement('canvas');
         const octx = off.getContext('2d');
         off.width = 300; off.height = 100;
@@ -190,19 +193,18 @@
         update() { 
             this.vx *= config.friction; this.vy *= config.friction; 
             this.vy += config.gravity; this.x += this.vx; this.y += this.vy; 
-            this.alpha -= config.fade; 
+            this.alpha -= config.fadeOut; 
         }
         draw() {
-            // 霓虹发光核心：叠加模式
-            ctx.globalCompositeOperation = 'lighter';
+            ctx.globalCompositeOperation = 'lighter'; // 霓虹光叠加
             ctx.fillStyle = `hsla(${this.hue}, 100%, 70%, ${this.alpha})`;
-            ctx.shadowBlur = 5; ctx.shadowColor = `hsl(${this.hue}, 100%, 50%)`;
+            ctx.shadowBlur = 4; ctx.shadowColor = `hsl(${this.hue}, 100%, 50%)`;
             ctx.fillRect(this.x, this.y, 2, 2);
             ctx.shadowBlur = 0;
         }
     }
 
-    class Firework {
+    class Shell {
         constructor(x, y, charge) {
             this.x = x; this.y = y; this.targetY = y - (charge * 10) - 100;
             this.hue = config.hue; this.exploded = false;
@@ -211,23 +213,30 @@
             this.y += (this.targetY - this.y) * 0.1;
             if(Math.abs(this.targetY - this.y) < 5) {
                 this.exploded = true;
-                const pts = getShapePts(document.getElementById('text-input').value);
-                const count = Math.min(pts.length, config.particles);
+                const pts = config.shape === 'text' ? getPoints(document.getElementById('text-input').value) : [];
+                const count = pts.length > 0 ? Math.min(pts.length, config.particles) : config.particles;
                 for(let i=0; i<count; i++) {
-                    const p = pts[Math.floor(Math.random()*pts.length)];
-                    particles.push(new Particle(this.x, this.y, p.dx*(config.speed/30), p.dy*(config.speed/30), this.hue));
+                    let vx, vy;
+                    if(pts.length > 0) {
+                        const p = pts[Math.floor(Math.random()*pts.length)];
+                        vx = p.dx * (config.explosionSpeed/40); vy = p.dy * (config.explosionSpeed/40);
+                    } else {
+                        const ang = Math.random()*Math.PI*2, spd = Math.random()*config.explosionSpeed;
+                        vx = Math.cos(ang)*spd; vy = Math.sin(ang)*spd;
+                    }
+                    particles.push(new Particle(this.x, this.y, vx, vy, this.hue));
                 }
             }
         }
         draw() {
             ctx.fillStyle = `hsl(${this.hue}, 100%, 70%)`;
-            ctx.beginPath(); ctx.arc(this.x, this.y, 3, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.arc(this.x, this.y, 3, 0, 7); ctx.fill();
         }
     }
 
-    // 4. MediaPipe 手势识别 (解决报错版)
+    // 4. MediaPipe & Camera (报错修复版)
     const hands = new Hands({ locateFile: (f) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
-    hands.setOptions({ maxNumHands: 1, modelComplexity: 0, minDetectionConfidence: 0.6 });
+    hands.setOptions({ maxNumHands: 1, modelComplexity: 0, minDetectionConfidence: 0.5 });
 
     let handPos = {x:-100, y:-100}, isPinching = false, charge = 0;
     hands.onResults(res => {
@@ -236,8 +245,8 @@
             handPos.x = (1 - h[8].x) * canvas.width;
             handPos.y = h[8].y * canvas.height;
             const dist = Math.sqrt(Math.pow(h[8].x-h[4].x,2)+Math.pow(h[8].y-h[4].y,2));
-            if(dist < 0.07) { isPinching = true; charge = Math.min(charge + 1.5, 60); }
-            else { if(isPinching && charge > 10) fireworks.push(new Firework(handPos.x, handPos.y, charge)); isPinching=false; charge=0; }
+            if(dist < 0.07) { isPinching = true; charge = Math.min(charge + 1.2, 55); }
+            else { if(isPinching && charge > 8) fireworks.push(new Shell(handPos.x, handPos.y, charge)); isPinching=false; charge=0; }
         }
     });
 
@@ -249,11 +258,12 @@
 
     document.getElementById('start-btn').onclick = () => {
         document.getElementById('start-screen').style.display = 'none';
-        cam.start();
+        cam.start().catch(() => alert("摄像头开启失败"));
+        
         const loop = () => {
             ctx.globalCompositeOperation = 'source-over';
             ctx.fillStyle = `rgba(10, 10, 15, ${config.trail})`;
-            ctx.fillRect(0,0,canvas.width,canvas.height);
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
             
             fireworks.forEach((f,i) => { f.update(); f.draw(); if(f.exploded) fireworks.splice(i,1); });
             particles.forEach((p,i) => { p.update(); p.draw(); if(p.alpha <= 0) particles.splice(i,1); });
