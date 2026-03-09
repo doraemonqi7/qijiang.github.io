@@ -10,16 +10,21 @@
         canvas { display: block; width: 100%; height: 100%; position: absolute; z-index: 1; }
         .top-nav { position: absolute; top: 0; left: 0; width: 100%; padding: 15px; display: flex; justify-content: space-between; z-index: 100; box-sizing: border-box; pointer-events: none; }
         .btn-ui { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 10px 18px; border-radius: 12px; font-size: 14px; backdrop-filter: blur(15px); cursor: pointer; pointer-events: auto; text-decoration: none; }
+        
         #control-panel { position: fixed; top: 0; right: 0; width: 320px; height: 100%; background: var(--panel); border-left: 1px solid #333; z-index: 200; padding: 30px 20px; box-sizing: border-box; transform: translateX(100%); transition: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); overflow-y: auto; }
         #control-panel.active { transform: translateX(0); }
-        .shape-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 15px; }
+        
+        .section-title { font-size: 11px; color: #888; margin: 20px 0 10px; text-transform: uppercase; letter-spacing: 1px; }
+        .shape-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 5px; }
         .shape-btn { padding: 12px 5px; background: #1a1a1a; border: 1px solid #333; color: #888; border-radius: 8px; cursor: pointer; font-size: 12px; transition: 0.2s; }
         .shape-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: bold; box-shadow: 0 0 15px rgba(191,90,242,0.3); }
-        input[type=range] { width: 100%; accent-color: var(--accent); margin: 10px 0; }
+        
+        input[type=range] { width: 100%; accent-color: var(--accent); margin: 10px 0; cursor: pointer; }
         input[type=text] { width: 100%; padding: 12px; background: #000; border: 1px solid #444; color: #fff; border-radius: 8px; box-sizing: border-box; }
         .apply-btn { width: 100%; padding: 15px; background: var(--accent); color: white; border: none; border-radius: 12px; margin-top: 25px; font-weight: bold; cursor: pointer; }
+        
         #start-screen { position: fixed; inset: 0; z-index: 500; background: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .start-btn { padding: 20px 60px; font-size: 22px; background: var(--accent); border: none; border-radius: 50px; color: #fff; font-weight: bold; cursor: pointer; }
+        .start-btn { padding: 20px 60px; font-size: 22px; background: var(--accent); border: none; border-radius: 50px; color: #fff; font-weight: bold; cursor: pointer; box-shadow: 0 0 30px rgba(191,90,242,0.4); }
         #video-input { display: none; }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
@@ -27,7 +32,7 @@
 </head>
 <body>
 
-<div id="start-screen"><button class="start-btn" id="start-btn">开启互动感官</button></div>
+<div id="start-screen"><button class="start-btn" id="start-btn">放烟花啦～</button></div>
 <div class="top-nav">
     <a href="index.html" class="btn-ui" style="background:#ff9f43">← 菜单</a>
     <button class="btn-ui" style="background:var(--accent)" onclick="document.getElementById('control-panel').classList.add('active')">⚙️ 设置参数</button>
@@ -38,7 +43,9 @@
         <span style="font-weight:bold; color:var(--accent); letter-spacing:1px">LUMI PRO</span>
         <button onclick="document.getElementById('control-panel').classList.remove('active')" style="background:none; border:none; color:#fff; font-size:24px;">&times;</button>
     </div>
-    <div style="margin-top:25px"><input type="text" id="text-input" value="ドラえもん"></div>
+    <div class="section-title">文字内容 (TEXT)</div>
+    <input type="text" id="text-input" value="ドラえもん">
+    <div class="section-title">爆炸形状 (SHAPE)</div>
     <div class="shape-grid">
         <button class="shape-btn" data-shape="sphere">Sphere</button>
         <button class="shape-btn" data-shape="ring">Ring</button>
@@ -49,24 +56,26 @@
     </div>
     <div id="sliders" style="margin-top:10px"></div>
     <button class="apply-btn" onclick="document.getElementById('control-panel').classList.remove('active')">注入系统</button>
+    <button onclick="clearCanvas()" style="width:100%; margin-top:10px; background:none; border:1px solid #ff453a; color:#ff453a; padding:10px; border-radius:10px; cursor:pointer;">清空画布</button>
 </div>
 
 <video id="video-input" playsinline muted autoplay></video>
 <canvas id="canvas"></canvas>
 
 <script>
-    const config = { particles: 300, speed: 12, gravity: 0.15, hue: 280, variance: 60, trail: 0.15, shape: 'text' };
+    const config = { particles: 400, speed: 15, gravity: 0.16, hue: 280, variance: 70, trail: 0.12, shape: 'text' };
     const canvas = document.getElementById('canvas'), ctx = canvas.getContext('2d', { alpha: false });
     let fireworks = [], particles = [];
 
     function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
     window.addEventListener('resize', resize); resize();
+    function clearCanvas() { fireworks = []; particles = []; }
 
     const sliderDefs = [
-        { id: 'particles', label: '密度', min: 100, max: 1000 },
-        { id: 'speed', label: '爆炸推力', min: 5, max: 25 },
-        { id: 'gravity', label: '重力感', min: 0, max: 0.5, step: 0.01 },
-        { id: 'variance', label: '色彩多样', min: 0, max: 180 }
+        { id: 'particles', label: '粒子密度', min: 100, max: 1500 },
+        { id: 'speed', label: '爆炸推力', min: 8, max: 30 },
+        { id: 'gravity', label: '模拟重力', min: 0, max: 0.6, step: 0.01 },
+        { id: 'variance', label: '光谱范围', min: 0, max: 180 }
     ];
 
     sliderDefs.forEach(s => {
@@ -88,13 +97,14 @@
         };
     });
 
+    // --- 径向渐变粒子类 ---
     class Particle {
-        constructor(x, y, vx, vy, h, size = 2, life = 1) {
+        constructor(x, y, vx, vy, h, size = 3, life = 1) {
             this.x = x; this.y = y; this.vx = vx; this.vy = vy;
             this.h = h + (Math.random() * config.variance - config.variance/2);
             this.alpha = life;
-            this.size = size;
-            this.decay = 0.01 + Math.random() * 0.01;
+            this.size = size * (0.8 + Math.random() * 0.4);
+            this.decay = 0.008 + Math.random() * 0.012;
         }
         update() {
             this.vx *= 0.96; this.vy *= 0.96; this.vy += config.gravity;
@@ -102,77 +112,83 @@
         }
         draw() {
             if(this.alpha <= 0) return;
+            // 粒子叠加增亮模式
+            ctx.globalCompositeOperation = 'lighter';
+            
+            const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
+            grad.addColorStop(0, `hsla(${this.h}, 100%, 85%, ${this.alpha})`);
+            grad.addColorStop(1, `hsla(${this.h}, 100%, 60%, 0)`);
+
+            ctx.fillStyle = grad;
             ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size * this.alpha, 0, Math.PI * 2);
-            ctx.fillStyle = `hsla(${this.h}, 100%, 75%, ${this.alpha})`;
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
             ctx.fill();
+            ctx.globalCompositeOperation = 'source-over';
         }
     }
 
     class Shell {
         constructor(x, y, charge) {
             this.x = x; this.y = y;
-            // 限制爆炸高度：捏合蓄力越久飞得越高，但最高不超过屏幕顶部 10% 处
-            const maxLift = y - (window.innerHeight * 0.1); 
-            const actualLift = Math.min(charge * 18, maxLift); 
-            this.targetY = y - actualLift;
-            this.hue = config.hue;
-            this.done = false;
+            // 修复：高度锁定，绝不超出顶部 10% 区域
+            const maxLift = y - (window.innerHeight * 0.1);
+            this.targetY = y - Math.min(charge * 18, maxLift);
+            this.hue = config.hue; this.done = false;
             this.lockedShape = config.shape;
         }
         update() {
+            // 升空模拟
             let dist = this.y - this.targetY;
-            this.y -= (dist * 0.15) + 2; // 确保有向上的动力
+            this.y -= (dist * 0.12) + 2;
             
-            // 升空拖尾效果
-            if (Math.random() > 0.2) {
-                particles.push(new Particle(this.x, this.y, (Math.random()-0.5)*1.5, Math.random()*2, this.hue, 1.2, 0.5));
+            // 升空拖尾火花
+            if (Math.random() > 0.3) {
+                particles.push(new Particle(this.x, this.y, (Math.random()-0.5)*2, Math.random()*2, this.hue, 1.8, 0.5));
             }
 
-            if (this.y <= this.targetY + 5) {
-                this.done = true;
-                this.explode();
-            }
+            if (this.y <= this.targetY + 5) { this.done = true; this.explode(); }
         }
         draw() {
             ctx.fillStyle = `hsl(${this.hue}, 100%, 80%)`;
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, 3, 0, Math.PI*2);
-            ctx.fill();
+            ctx.beginPath(); ctx.arc(this.x, this.y, 3, 0, Math.PI*2); ctx.fill();
         }
         explode() {
             let pts = [];
-            const count = config.particles;
             if (this.lockedShape === 'text') {
                 const off = document.createElement('canvas'); const octx = off.getContext('2d');
-                off.width = 400; off.height = 150; octx.font = "bold 40px sans-serif"; octx.fillStyle = "white"; octx.textAlign = "center";
+                off.width = 400; off.height = 150; octx.font = "bold 45px sans-serif"; octx.fillStyle = "white"; octx.textAlign = "center";
                 octx.fillText(document.getElementById('text-input').value, 200, 80);
                 const data = octx.getImageData(0,0,400,150).data;
                 for(let y=0; y<150; y+=4) for(let x=0; x<400; x+=4) if(data[(y*400+x)*4+3]>128) pts.push({dx:x-200, dy:y-80});
             } else if (this.lockedShape === 'heart') {
-                for(let i=0; i<count; i++) {
+                for(let i=0; i<config.particles; i++) {
                     const t = Math.random() * Math.PI * 2;
                     pts.push({ dx: 16 * Math.pow(Math.sin(t), 3) * 6, dy: -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)) * 6 });
                 }
             } else if (this.lockedShape === 'star') {
-                for(let i=0; i<count; i++) {
-                    const l = i % 2 === 0 ? 100 : 50, ang = (i / count) * Math.PI * 10;
+                for(let i=0; i<config.particles; i++) {
+                    const l = i % 2 === 0 ? 100 : 50, ang = (i / config.particles) * Math.PI * 10;
                     pts.push({ dx: Math.cos(ang) * l, dy: Math.sin(ang) * l });
                 }
-            } else {
-                for(let i=0; i<count; i++) {
-                    const ang = Math.random() * Math.PI * 2, spd = Math.random();
-                    pts.push({ dx: Math.cos(ang) * spd * 100, dy: Math.sin(ang) * spd * 100 });
-                }
             }
-            pts.forEach(p => {
-                const vx = p.dx * (config.speed/80);
-                const vy = p.dy * (config.speed/80);
-                particles.push(new Particle(this.x, this.y, vx, vy, this.hue, 2.2, 1));
-            });
+            const usePts = pts.length > 0;
+            const finalCount = usePts ? Math.min(pts.length, config.particles) : config.particles;
+            for (let i = 0; i < finalCount; i++) {
+                let vx, vy;
+                if (usePts) {
+                    const p = pts[i % pts.length];
+                    const scatter = 0.8 + Math.random() * 0.4; // 增加散射质感
+                    vx = p.dx * (config.speed/70) * scatter; vy = p.dy * (config.speed/70) * scatter;
+                } else {
+                    const ang = Math.random() * Math.PI * 2, spd = Math.random() * config.speed;
+                    vx = Math.cos(ang) * spd; vy = Math.sin(ang) * spd;
+                }
+                particles.push(new Particle(this.x, this.y, vx, vy, this.hue, 3.5));
+            }
         }
     }
 
+    // --- 优化后的手势逻辑 ---
     const hands = new Hands({ locateFile: (f) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
     hands.setOptions({ maxNumHands: 1, modelComplexity: 1, minDetectionConfidence: 0.6 });
 
@@ -183,26 +199,16 @@
             const h = res.multiHandLandmarks[0];
             const indexF = h[8], thumbF = h[4];
             hPos.x = (1 - indexF.x) * canvas.width; hPos.y = indexF.y * canvas.height;
-            
-            // 计算手指物理距离
             const dist = Math.sqrt(Math.pow(indexF.x - thumbF.x, 2) + Math.pow(indexF.y - thumbF.y, 2));
             
-            // 捏合逻辑：只有距离够小才蓄力
+            // 捏合开启蓄力，松开立即发射
             if(dist < 0.1) { 
-                isPinching = true; 
-                charge += 1.5; // 蓄力速度
+                isPinching = true; charge += 1.8; 
             } else { 
-                // 松开逻辑：一旦距离拉开就发射
-                if(isPinching && charge > 5) {
-                    fireworks.push(new Shell(hPos.x, hPos.y, charge));
-                }
-                isPinching = false; 
-                charge = 0; 
+                if(isPinching && charge > 6) fireworks.push(new Shell(hPos.x, hPos.y, charge));
+                isPinching = false; charge = 0; 
             }
-        } else {
-            isPinching = false;
-            charge = 0;
-        }
+        } else { isPinching = false; charge = 0; }
     });
 
     const cam = new Camera(document.getElementById('video-input'), {
@@ -217,15 +223,15 @@
             ctx.globalCompositeOperation = 'source-over';
             ctx.fillStyle = `rgba(3, 3, 5, ${config.trail})`;
             ctx.fillRect(0,0,canvas.width,canvas.height);
-            ctx.globalCompositeOperation = 'lighter';
+            
             fireworks.forEach((f,i) => { f.update(); f.draw(); if(f.done) fireworks.splice(i,1); });
             particles.forEach((p,i) => { p.update(); p.draw(); if(p.alpha <= 0) particles.splice(i,1); });
+            
             if(isPinching) { 
-                ctx.beginPath();
-                ctx.arc(hPos.x, hPos.y, charge * 1.2, 0, Math.PI*2);
-                ctx.strokeStyle = `hsla(${config.hue}, 100%, 70%, 0.8)`;
-                ctx.lineWidth = 3;
-                ctx.stroke();
+                ctx.globalCompositeOperation = 'lighter';
+                ctx.beginPath(); ctx.arc(hPos.x, hPos.y, charge * 1.5, 0, Math.PI*2);
+                ctx.strokeStyle = `hsla(${config.hue}, 100%, 75%, 0.8)`; ctx.lineWidth = 4; ctx.stroke();
+                ctx.globalCompositeOperation = 'source-over';
             }
             requestAnimationFrame(loop);
         };
