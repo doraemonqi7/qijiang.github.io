@@ -3,25 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visual Art & Illustration | Boring Still Life</title>
+    <title>Visual Art & Illustration | QI JIANG</title>
     <style>
-        /* 1. 核心修复：使用国内秒开镜像，确保手写体生效 */
         @import url('https://fonts.font.im/css2?family=Gochi+Hand&display=swap');
 
         * { font-family: 'Gochi Hand', cursive !important; box-sizing: border-box; }
 
         body { 
             background-color: #ffffff; 
-            margin: 0; 
-            padding: 50px; 
-            overflow-x: hidden; 
-            /* 模拟蜡笔画纸张的极淡纹理（可选） */
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="4" height="4" viewBox="0 0 4 4"><rect width="4" height="4" fill="white"/><circle cx="1" cy="1" r="0.5" fill="%23f0f0f0"/></svg>');
+            margin: 0; padding: 50px; 
+            overflow-x: hidden;
         }
 
+        /* 顶部标题保持不变 */
         .gallery-header { margin-bottom: 40px; text-align: left; }
         .gallery-header h1 { font-size: 3.5rem; margin: 0; color: #000; }
-
         .back-btn {
             display: inline-block; border: 3px solid #000; border-radius: 12px;
             padding: 10px 30px; text-decoration: none; color: #000;
@@ -29,54 +25,80 @@
         }
         .back-btn:hover { background: #000; color: #fff; transform: translateY(-3px); }
 
+        /* 网格布局保持不变 */
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(3, minmax(250px, 380px)); 
             justify-content: center;
             gap: 70px; margin: 50px auto;
-            max-width: 1400px; align-items: start;
+            max-width: 1400px;
         }
 
         .gallery-item {
             position: relative;
-            /* 保持原有的浮动动画和放大逻辑 */
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             animation: float 4s infinite ease-in-out;
             cursor: pointer; width: 100%; padding: 15px;
         }
 
-        /* 悬停状态：停止浮动，放大 */
         .gallery-item:hover { 
             animation-play-state: paused;
             transform: scale(1.08) translateY(-15px) !important; 
             z-index: 100; 
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
-        /* 手绘边框样式 */
+        /* 核心修复：蜡笔质感容器 */
         .sketchy-frame {
             position: relative;
             display: block; width: 100%;
             background: #fff;
             border-radius: 5px;
-            overflow: hidden; /* 确保像素化边缘不溢出 */
-            z-index: 1;
+            overflow: hidden;
         }
 
+        /* 增加手绘边框层 */
         .sketchy-frame::after {
             content: "";
             position: absolute;
             top: -10px; left: -10px; right: -10px; bottom: -10px;
             border: 5px solid currentColor;
             border-radius: 255px 25px 225px 25px/25px 225px 25px 255px;
-            pointer-events: none; z-index: 3; /* 在最上层 */
+            pointer-events: none; z-index: 10;
         }
 
-        /* 莫兰迪配色方案 */
+        /* 模拟蜡笔颗粒的覆盖层 (噪声层) */
+        .grain-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            /* 使用 SVG 噪声模拟蜡笔笔触的颗粒感 */
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.18; /* 颗粒的可见度 */
+            z-index: 5;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .gallery-item:hover .grain-overlay {
+            opacity: 0; /* 鼠标放上去，颗粒消失 */
+        }
+
+        /* 图片处理：平时状态柔和模糊，保留色彩 */
+        .sketchy-frame img { 
+            width: 100%; height: auto; 
+            display: block;
+            /* 柔和处理：轻微模糊 + 提高亮度 */
+            filter: blur(2.5px) brightness(1.05);
+            transition: filter 0.5s ease;
+            z-index: 1;
+        }
+
+        .gallery-item:hover .sketchy-frame img { 
+            filter: blur(0) brightness(1); /* 恢复原始清晰度和颜色 */
+        }
+
+        /* 莫兰迪配色 */
         .c-pink { color: #ffb7b7; }
         .c-yellow { color: #ffeeba; }
         .c-blue { color: #b2ebf2; }
@@ -84,42 +106,7 @@
         .c-green { color: #c8e6c9; }
         .c-orange { color: #ffccbc; }
 
-        /* 5. 强力图片处理：模拟强烈蜡笔点画质感 */
-        .sketchy-frame img { 
-            width: 100%; height: auto; 
-            display: block; border-radius: 2px;
-            
-            /* --- 核心：攻克“褪色感”，还原“点画感” --- */
-            
-            /* A. 像素化渲染：生成可爱的像素颗粒 */
-            image-rendering: pixelated; 
-
-            /* B. 滤镜组合：推极限 */
-            filter: 
-                /* 1. 先轻微模糊，融化大色块 */
-                blur(1.5px) 
-                /* 2. 极大提高对比度，将边缘“拉”成锯齿状像素点 */
-                contrast(3.5) 
-                /* 3. 稍微调暗，增强大色块的厚重感 */
-                brightness(0.9) 
-                /* 4. 保留淡淡的灰度，模拟蜡笔画纸张的陈旧感 */
-                grayscale(0.1); 
-
-            transition: filter 0.6s ease, image-rendering 0.6s ease, transform 0.6s ease;
-            will-change: filter; z-index: 1;
-        }
-
-        /* 6. 悬停状态：图片变清晰 */
-        .gallery-item:hover .sketchy-frame img { 
-            filter: none; /* 清除所有滤镜 */
-            image-rendering: auto; /* 恢复正常渲染 */
-            transform: scale(1.01); /* 配合整体放大，微调图片自身比例 */
-        }
-
-        /* 手机端适配：保持原样 */
-        @media (max-width: 900px) {
-            .gallery-grid { grid-template-columns: 1fr; max-width: 450px; }
-        }
+        @media (max-width: 900px) { .gallery-grid { grid-template-columns: 1fr; max-width: 450px; } }
     </style>
 </head>
 <body>
@@ -132,30 +119,34 @@
     <div class="gallery-grid">
         <div class="gallery-item">
             <div class="sketchy-frame c-pink">
-                <img src="festival.png" alt="Festival">
+                <div class="grain-overlay"></div> <img src="festival.png" alt="Festival">
             </div>
         </div>
-        
+
         <div class="gallery-item">
             <div class="sketchy-frame c-yellow">
+                <div class="grain-overlay"></div>
                 <img src="tiger.png" alt="Tiger">
             </div>
         </div>
 
         <div class="gallery-item">
             <div class="sketchy-frame c-blue">
+                <div class="grain-overlay"></div>
                 <img src="cat.png" alt="Cat">
             </div>
         </div>
 
         <div class="gallery-item">
             <div class="sketchy-frame c-orange">
+                <div class="grain-overlay"></div>
                 <img src="apple.png" alt="Apple">
             </div>
         </div>
 
         <div class="gallery-item">
             <div class="sketchy-frame c-purple">
+                <div class="grain-overlay"></div>
                 <img src="aranya.png" alt="Architecture">
             </div>
         </div>
@@ -163,17 +154,20 @@
         <div class="gallery-item">
             <div class="sketchy-frame c-green">
                 <img src="friends.png" alt="Friends">
+                <div class="grain-overlay"></div>
             </div>
         </div>
 
         <div class="gallery-item">
             <div class="sketchy-frame c-pink">
+                <div class="grain-overlay"></div>
                 <img src="cute.png" alt="Cute">
             </div>
         </div>
 
         <div class="gallery-item">
             <div class="sketchy-frame c-blue">
+                <div class="grain-overlay"></div>
                 <img src="landscape.png" alt="Landscape">
             </div>
         </div>
