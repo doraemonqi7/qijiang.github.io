@@ -11,100 +11,103 @@
 
         body, html {
             margin: 0; padding: 0; 
-            background-color: #ffffff;
+            background-color: #ffffff; /* 纯白背景 */
             width: 100%; height: 100%;
             overflow: hidden;
         }
 
-        /* 1. wuhuwuhu 背景：极淡颜色，不再跳色 */
+        /* 1. 背景文字：仿手写 HAHA 风格 */
         .wuhu-bg-layer {
             position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            left: 5%; top: 10%;
             z-index: 1;
             pointer-events: none;
-            opacity: 0.15; /* 极低透明度 */
         }
 
         .wuhu-item {
-            position: absolute;
-            white-space: nowrap;
-            color: #eeeeee; /* 极浅灰色 */
-            animation: drift 6s infinite ease-in-out;
+            display: block;
+            font-size: 4.5rem;
+            line-height: 0.85;
+            color: #000;
+            letter-spacing: -2px;
+            animation: drift 4s infinite ease-in-out;
+            transform-origin: left;
         }
 
-        .t1 { top: 10%; left: 5%; font-size: 8rem; transform: rotate(-5deg); }
-        .t2 { top: 40%; left: 15%; font-size: 5rem; transform: rotate(10deg); }
-        .t3 { top: 70%; left: 8%; font-size: 6rem; transform: rotate(-8deg); }
-        .t4 { top: 20%; left: 40%; font-size: 4rem; transform: rotate(15deg); }
+        .t1 { animation-delay: 0s; }
+        .t2 { animation-delay: 0.2s; margin-left: 10px; }
+        .t3 { animation-delay: 0.4s; }
+        .t4 { animation-delay: 0.6s; margin-left: -5px; }
 
         @keyframes drift {
-            0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(10px, -10px); }
+            0%, 100% { transform: skew(0deg); }
+            50% { transform: skew(-2deg) translateX(5px); }
         }
 
-        /* 2. 主内容区域：长颈鹿和文字合为一体 */
+        /* 2. 主内容区域：长颈鹿位于右侧偏中 */
         .main-content {
             position: absolute;
-            right: 5%; bottom: 8%;
+            right: 15%; top: 50%;
+            transform: translateY(-50%);
             display: flex;
             flex-direction: column;
             align-items: center;
             z-index: 10;
         }
 
-        /* 文案放在长颈鹿背部上方 */
-        .text-block {
-            text-align: center;
-            margin-bottom: -40px; /* 负边距让文字靠近长颈鹿背部 */
-            transform: rotate(-3deg);
-            z-index: 20;
-        }
-
-        .title-text { font-size: 4rem; font-weight: bold; margin: 0; line-height: 1; color: #000; }
-        .name-text { font-size: 2.5rem; font-weight: bold; margin: 5px 0 0 0; line-height: 1; color: #000; }
-
-        /* 长颈鹿 */
         .animal-img {
-            width: 600px;
+            width: 450px;
             cursor: pointer;
-            transform: scaleX(-1) rotate(2deg);
+            transform: scaleX(-1); /* 面朝右 */
             transition: 0.3s;
             -webkit-user-drag: none;
         }
 
         .animal-img.active { animation: shake 0.4s ease-in-out; }
         @keyframes shake {
-            0%, 100% { transform: scaleX(-1) rotate(2deg); }
-            50% { transform: scaleX(-1) scale(1.02) rotate(-1deg); }
+            0%, 100% { transform: scaleX(-1) rotate(0deg); }
+            50% { transform: scaleX(-1) rotate(-3deg); }
         }
 
-        /* 3. 底部导航：大尺寸 */
+        /* 签名文字：仿署名风格 */
+        .signature-block {
+            margin-top: -10px;
+            text-align: center;
+        }
+
+        .name-text { 
+            font-size: 2.2rem; 
+            font-weight: bold; 
+            color: #000; 
+            text-transform: uppercase;
+        }
+
+        /* 3. 底部胶囊按钮 */
         .nav-tabs {
             position: absolute;
-            bottom: 5%; left: 45%; /* 稍微偏左，避开长颈鹿脚部 */
+            bottom: 8%; left: 50%;
             transform: translateX(-50%);
-            display: flex; gap: 20px;
+            display: flex; gap: 15px;
             z-index: 30;
         }
 
         .tab {
-            border: 3px solid #000;
-            border-radius: 50px;
-            padding: 15px 40px;
+            border: 2px solid #000;
+            border-radius: 30px; /* 胶囊形状 */
+            padding: 8px 25px;
             text-decoration: none;
             color: #000;
             font-weight: bold;
-            font-size: 1.4rem;
+            font-size: 1.1rem;
             background: #fff;
-            transition: 0.3s;
-            box-shadow: 0 5px 0 #000;
+            transition: 0.2s;
+            text-transform: uppercase;
         }
-        .tab:hover { background: #000; color: #fff; transform: translateY(-5px); }
+        .tab:hover { background: #000; color: #fff; }
 
-        /* 星星 */
+        /* 星星特效 */
         .sparkle {
-            position: absolute; width: 35px; height: 35px;
+            position: absolute; width: 30px; height: 30px;
             background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.8 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z" fill="%23FFD700"/></svg>') no-repeat center/contain;
             pointer-events: none; animation: burst 0.8s ease-out forwards; z-index: 2000;
         }
@@ -114,29 +117,29 @@
             100% { transform: scale(1.5) translate(var(--dx), var(--dy)); opacity: 0; }
         }
 
-        @media (max-width: 850px) {
-            .main-content { right: 0; bottom: 15%; width: 100%; align-items: center; }
-            .animal-img { width: 80vw; }
-            .nav-tabs { flex-direction: column; left: 50%; width: 80%; }
-            .tab { text-align: center; }
+        @media (max-width: 768px) {
+            .wuhu-bg-layer { opacity: 0.4; transform: scale(0.7); }
+            .main-content { right: 0; left: 0; align-items: center; }
+            .animal-img { width: 70vw; }
+            .nav-tabs { flex-direction: column; width: 60%; align-items: center; }
+            .tab { width: 100%; text-align: center; }
         }
     </style>
 </head>
 <body>
 
     <div class="wuhu-bg-layer">
-        <span class="wuhu-item t1">wuhuwuhu</span>
-        <span class="wuhu-item t2">wuhuwuhuwuhu</span>
-        <span class="wuhu-item t3">wuhulalaal</span>
-        <span class="wuhu-item t4">wuhu~</span>
+        <span class="wuhu-item t1">wuhuwuhulala</span>
+        <span class="wuhu-item t2">wuhuwuhu</span>
+        <span class="wuhu-item t3">wuhulala</span>
+        <span class="wuhu-item t4">lalalala</span>
     </div>
 
     <div class="main-content">
-        <div class="text-block">
-            <p class="title-text">Portfolio</p>
-            <p class="name-text">BY QI JIANG</p>
-        </div>
         <img id="giraffe" class="animal-img" onclick="clickGiraffe(event)" src="1.png">
+        <div class="signature-block">
+            <p class="name-text">Portfolio BY QI JIANG</p>
+        </div>
     </div>
 
     <div class="nav-tabs">
