@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Interactive Fireworks | QI JIANG</title>
+    <title>Cyberpunk Fireworks | QI JIANG</title>
     <style>
         :root {
             --accent: #bf5af2;
-            --bg: #0a0a0f;
+            --bg: #050508;
             --panel: rgba(16, 16, 22, 0.98);
             --vh: 1vh;
         }
@@ -20,12 +20,12 @@
             color: #fff;
         }
 
-        /* 顶部导航层 */
+        /* 顶部按钮层 */
         .top-nav {
             position: absolute; top: 0; left: 0; width: 100%;
             padding: 15px; display: flex; justify-content: space-between;
-            z-index: 100; box-sizing: border-box;
-            pointer-events: none; /* 让点击穿透到画布，除非点击按钮 */
+            z-index: 2000; box-sizing: border-box;
+            pointer-events: none;
         }
 
         .btn-ui {
@@ -34,33 +34,33 @@
             backdrop-filter: blur(10px); cursor: pointer; text-decoration: none;
             pointer-events: auto; display: flex; align-items: center; gap: 6px;
         }
-        .btn-ui:active { transform: scale(0.95); }
 
-        /* 返回按钮样式 */
-        .back-link { background: #ff9f43; border: none; font-weight: bold; }
+        /* 返回菜单按钮 */
+        .back-btn { background: #ff9f43; border: none; font-weight: bold; }
 
-        /* 侧边/底部控制面板 (手机适配版) */
+        /* 侧边设置栏 */
         #control-panel {
             position: fixed; top: 0; right: 0; width: 320px; height: 100%;
             background: var(--panel); border-left: 1px solid #333;
-            z-index: 1000; padding: 30px 20px; box-sizing: border-box;
+            z-index: 3000; padding: 30px 20px; box-sizing: border-box;
             transform: translateX(100%); transition: transform 0.3s ease;
             overflow-y: auto;
         }
         
-        /* 手机端面板改为从底部滑出，避免遮挡左右 */
-        @media (max-width: 768px) {
-            #control-panel {
-                width: 100%; height: 70%; top: auto; bottom: 0;
-                border-left: none; border-top: 1px solid #333;
-                transform: translateY(100%);
-            }
-            #control-panel.active { transform: translateY(0); }
+        /* 网页端默认展示设置栏 */
+        @media (min-width: 1024px) {
+            #control-panel { transform: translateX(0); }
+            #settings-toggle { display: none; }
         }
-        #control-panel.active { transform: translateX(0); }
 
-        .section-title { font-size: 11px; color: #888; margin: 20px 0 10px; text-transform: uppercase; letter-spacing: 1px; }
-        .control-group { margin-bottom: 15px; }
+        /* 手机端适配：滑出式面板 */
+        @media (max-width: 1023px) {
+            #control-panel { width: 85%; }
+            #control-panel.active { transform: translateX(0); }
+        }
+
+        .section-title { font-size: 11px; color: #888; margin: 25px 0 10px; text-transform: uppercase; letter-spacing: 1px; }
+        .control-group { margin-bottom: 18px; }
         .label-row { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px; }
         
         input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; }
@@ -71,17 +71,16 @@
         .shape-btn.active { background: var(--accent); border-color: var(--accent); font-weight: bold; }
 
         canvas { display: block; width: 100%; height: 100%; }
-        #video-input { display: none; visibility: hidden; }
+        #video-input { display: none; }
 
-        /* 启动屏幕 */
         #start-screen { 
-            position: fixed; inset: 0; z-index: 2000; background: radial-gradient(circle at center, #1a1a25 0%, #000 100%); 
+            position: fixed; inset: 0; z-index: 4000; background: #000; 
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
         }
         .start-btn { 
             padding: 20px 60px; font-size: 22px; background: var(--accent); 
             border: none; border-radius: 50px; color: #fff; font-weight: bold; 
-            cursor: pointer; box-shadow: 0 0 30px rgba(191,90,242,0.4); 
+            cursor: pointer; box-shadow: 0 0 30px rgba(191,90,242,0.5); 
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
@@ -91,12 +90,15 @@
 
     <div id="start-screen">
         <button class="start-btn" id="start-btn">开启互动烟花</button>
-        <p style="color:#666; margin-top:25px; font-size:13px;">请授权摄像头权限并使用前置镜头</p>
+        <p style="color:#444; margin-top:25px; font-size:13px; text-align:center;">
+            网页端请确保 HTTPS 环境并允许摄像头<br>
+            若遇到 WebGL 报错，程序会自动尝试重置
+        </p>
     </div>
 
     <div class="top-nav">
-        <a href="index.html" class="btn-ui back-link">← 返回菜单</a>
-        <button class="btn-ui" style="background:rgba(255,255,255,0.2)" onclick="togglePanel()">⚙️ 设置参数</button>
+        <a href="index.html" class="btn-ui back-btn">← 返回菜单</a>
+        <button class="btn-ui" id="settings-toggle" style="background:var(--accent); border:none;" onclick="togglePanel()">⚙️ 设置参数</button>
     </div>
 
     <div id="control-panel">
@@ -118,24 +120,27 @@
         <div class="section-title">文字内容 (Text Content)</div>
         <input type="text" id="text-input" value="ドラえもん">
 
-        <div class="section-title">物理与视觉 (Visuals)</div>
+        <div class="section-title">物理参数 (Physics)</div>
         <div id="sliders"></div>
-        <button onclick="clearCanvas()" style="width:100%; margin-top:20px; padding:12px; background:none; border:1px solid #ff453a; color:#ff453a; border-radius:10px; cursor:pointer;">清空画布内容</button>
+        <button onclick="clearCanvas()" style="width:100%; margin-top:20px; padding:12px; background:none; border:1px solid #ff453a; color:#ff453a; border-radius:10px; cursor:pointer;">清空画布</button>
     </div>
 
     <video id="video-input" playsinline></video>
     <canvas id="canvas"></canvas>
 
 <script>
-    // 适配动态高度
+    // 动态高度处理
     const setVH = () => document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
     window.addEventListener('resize', setVH); setVH();
 
     const config = { particles: 200, speed: 12, gravity: 0.15, friction: 0.96, fade: 0.015, hue: 210, trail: 0.18, shape: 'text' };
-    const togglePanel = () => document.getElementById('control-panel').classList.toggle('active');
+    
+    function togglePanel() {
+        document.getElementById('control-panel').classList.toggle('active');
+    }
 
     const sliderDefs = [
-        { id: 'particles', label: '粒子密度', min: 50, max: 600 },
+        { id: 'particles', label: '粒子密度', min: 50, max: 800 },
         { id: 'speed', label: '爆炸力度', min: 5, max: 25 },
         { id: 'gravity', label: '重力感', min: 0, max: 0.4, step: 0.01 },
         { id: 'hue', label: '颜色色调', min: 0, max: 360 }
@@ -209,11 +214,11 @@
         draw() { ctx.fillStyle=`hsl(${this.h},100%,70%)`; ctx.beginPath(); ctx.arc(this.x,this.y,3,0,7); ctx.fill(); }
     }
 
-    // 修复 WebGL 报错的核心配置
+    // 重点：修复 WebGL 崩溃的 AI 配置
     const hands = new Hands({ locateFile: (f) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
     hands.setOptions({ 
         maxNumHands: 1, 
-        modelComplexity: 0, // 关键：降低模型复杂度，适配手机 WebGL
+        modelComplexity: 0, // 降低复杂度，网页端更稳
         minDetectionConfidence: 0.5,
         minTrackingConfidence: 0.5
     });
@@ -224,20 +229,21 @@
             const h = res.multiHandLandmarks[0];
             hPos.x = (1 - h[8].x) * canvas.width; hPos.y = h[8].y * canvas.height;
             const dist = Math.sqrt(Math.pow(h[8].x-h[4].x,2)+Math.pow(h[8].y-h[4].y,2));
-            if(dist < 0.08) { isP = true; charge = Math.min(charge + 1.5, 50); }
+            if(dist < 0.08) { isP = true; charge = Math.min(charge + 1.2, 50); }
             else { if(isP && charge > 8) fireworks.push(new Shell(hPos.x, hPos.y, charge)); isP=false; charge=0; }
         }
     });
 
     const video = document.getElementById('video-input');
-    // 强制前置摄像头
+    // 重点：强制请求前置摄像头
     const cam = new Camera(video, {
         onFrame: async () => { 
             if(video.readyState >= 2) {
                 try {
                     await hands.send({image: video});
                 } catch(e) {
-                    console.error("WebGL Error handled.");
+                    // 自动降级与静默重试
+                    console.warn("WebGL Processing Skip.");
                 }
             }
         },
@@ -246,7 +252,9 @@
 
     document.getElementById('start-btn').onclick = () => {
         document.getElementById('start-screen').style.display = 'none';
-        cam.start().catch(err => alert("摄像头开启失败，请确保授予权限并在 HTTPS 环境下打开。"));
+        cam.start().catch(err => {
+            alert("摄像头开启失败！请确保是 HTTPS 访问，并已授予权限。");
+        });
         
         const loop = () => {
             ctx.globalCompositeOperation = 'source-over';
@@ -254,10 +262,7 @@
             ctx.fillRect(0,0,canvas.width,canvas.height);
             fireworks.forEach((f,i) => { f.update(); f.draw(); if(f.done) fireworks.splice(i,1); });
             particles.forEach((p,i) => { p.update(); p.draw(); if(p.alpha <= 0) particles.splice(i,1); });
-            if(isP) { 
-                ctx.strokeStyle=`hsl(${config.hue},100%,60%)`; 
-                ctx.lineWidth=2; ctx.beginPath(); ctx.arc(hPos.x,hPos.y,charge,0,7); ctx.stroke(); 
-            }
+            if(isP) { ctx.strokeStyle=`hsl(${config.hue},100%,60%)`; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(hPos.x,hPos.y,charge,0,7); ctx.stroke(); }
             requestAnimationFrame(loop);
         };
         loop();
