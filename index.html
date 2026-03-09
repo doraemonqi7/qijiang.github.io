@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visual Portfolio | QI JIANG</title>
     <style>
-        /* 使用国内镜像字体加速加载 */
         @import url('https://fonts.font.im/css2?family=Gochi+Hand&display=swap');
 
         * { font-family: 'Gochi Hand', cursive !important; box-sizing: border-box; }
@@ -17,39 +16,45 @@
             overflow: hidden;
         }
 
-        /* 1. 经典背景文字：倒三角错落布局 */
-        .wuhu-container {
+        /* 1. 自由散落的背景文字：不再整齐排列 */
+        .wuhu-bg-layer {
             position: absolute;
-            left: 5%; top: 8%;
+            top: 0; left: 0;
+            width: 60%; /* 限制在左侧区域 */
+            height: 100%;
             z-index: 1;
             pointer-events: none;
-            opacity: 0.5;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
+            opacity: 0.4;
         }
 
-        .wuhu-line { display: block; line-height: 0.9; animation: drift 4s infinite ease-in-out; }
-        
-        /* 倒三角形状设置 */
-        .s1 { font-size: 7rem; font-weight: bold; margin-left: 0; }
-        .s2 { font-size: 5.5rem; margin-left: 50px; animation-delay: 0.5s; }
-        .s3 { font-size: 4.5rem; margin-left: 100px; animation-delay: 1s; }
-        .s4 { font-size: 3.5rem; margin-left: 150px; animation-delay: 1.5s; }
-        .s5 { font-size: 2.5rem; margin-left: 200px; animation-delay: 0.2s; }
+        .wuhu-item {
+            position: absolute;
+            white-space: nowrap;
+            display: inline-block;
+            animation: drift 5s infinite ease-in-out;
+        }
+
+        /* 随机坐标与角度，营造自由感 */
+        .t1 { top: 12%; left: 8%; font-size: 6rem; transform: rotate(-12deg); }
+        .t2 { top: 28%; left: 22%; font-size: 4.5rem; transform: rotate(10deg); font-weight: bold; }
+        .t3 { top: 48%; left: 5%; font-size: 7rem; transform: rotate(-5deg); }
+        .t4 { top: 18%; left: 45%; font-size: 3rem; transform: rotate(15deg); }
+        .t5 { top: 68%; left: 12%; font-size: 5rem; transform: rotate(-10deg); }
+        .t6 { top: 78%; left: 35%; font-size: 3.5rem; transform: rotate(8deg); }
+        .t7 { top: 5%; left: 35%; font-size: 2.5rem; transform: rotate(-20deg); }
 
         @keyframes drift {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            50% { transform: translate(10px, -5px) rotate(1deg); }
+            0%, 100% { transform: translate(0, 0) rotate(var(--r, 0deg)); }
+            50% { transform: translate(15px, -10px) rotate(calc(var(--r, 0deg) + 2deg)); }
         }
 
-        /* 2. 主内容布局：确保长颈鹿在右，Portfolio 在左 */
+        /* 2. 主内容区域 */
         .main-content {
             position: relative;
             width: 100%; height: 100%;
             display: flex;
-            justify-content: flex-end; /* 整体靠右 */
-            align-items: flex-end; /* 整体靠下 */
+            justify-content: flex-end; 
+            align-items: flex-end; 
             padding-right: 5%;
             padding-bottom: 5%;
             z-index: 10;
@@ -59,59 +64,61 @@
             display: flex;
             align-items: flex-end;
             gap: 30px;
+            /* 核心修改：长颈鹿向上挪一些 */
+            margin-bottom: 60px; 
         }
 
         .text-block {
             display: flex;
             flex-direction: column;
             align-items: flex-end;
-            margin-bottom: 100px; /* 标题位置适中 */
+            margin-bottom: 120px; /* 标题文字随之上提 */
         }
 
-        .title-text { font-size: 5rem; font-weight: bold; margin: 0; line-height: 1; }
-        .name-text { font-size: 3.5rem; font-weight: bold; margin: 10px 0 0 0; line-height: 1; }
+        .title-text { font-size: 5.5rem; font-weight: bold; margin: 0; line-height: 1; }
+        .name-text { font-size: 3.8rem; font-weight: bold; margin: 10px 0 0 0; line-height: 1; }
 
-        /* 3. 长颈鹿：恢复经典大尺寸 */
+        /* 3. 长颈鹿：点击晃动与星星 */
         .animal-img {
-            width: 650px;
+            width: 680px;
             cursor: pointer;
             transform: scaleX(-1) rotate(2deg);
             transition: 0.3s;
             -webkit-user-drag: none;
         }
 
-        /* 核心修复：长颈鹿点击晃动动画 */
         .animal-img.active { animation: shake 0.4s ease-in-out; }
         @keyframes shake {
             0%, 100% { transform: scaleX(-1) rotate(2deg); }
             50% { transform: scaleX(-1) scale(1.03) rotate(-1.5deg); }
         }
 
-        /* 4. 底部导航：尺寸适中 */
+        /* 4. 底部导航：加大尺寸 */
         .nav-tabs {
             position: absolute;
-            bottom: 4%;
+            bottom: 6%;
             left: 50%;
             transform: translateX(-50%);
-            display: flex; gap: 20px;
+            display: flex; gap: 25px;
             z-index: 20;
         }
 
         .tab {
-            border: 3px solid #000;
-            border-radius: 50px;
-            padding: 12px 35px;
+            border: 4px solid #000;
+            border-radius: 60px;
+            padding: 15px 45px; /* 增加内边距 */
             text-decoration: none;
             color: #000;
             font-weight: bold;
-            font-size: 1.3rem;
+            font-size: 1.5rem; /* 字体变大 */
             background: #fff;
             transition: 0.3s;
             white-space: nowrap;
+            box-shadow: 0 6px 0 #000; /* 增加厚度感 */
         }
-        .tab:hover { background: #000; color: #fff; transform: translateY(-5px); }
+        .tab:hover { background: #000; color: #fff; transform: translateY(-5px); box-shadow: 0 8px 0 #000; }
 
-        /* 5. 星星特效：金色 */
+        /* 5. 星星特效 */
         .sparkle {
             position: absolute; width: 40px; height: 40px;
             background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.8 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z" fill="%23FFD700"/></svg>') no-repeat center/contain;
@@ -125,24 +132,26 @@
 
         /* 手机端适配 */
         @media (max-width: 850px) {
-            .wuhu-container { display: none; } /* 手机端隐藏背景文字，保持清爽 */
+            .wuhu-bg-layer { opacity: 0.2; }
             .main-content { justify-content: center; align-items: center; padding: 0; }
             .content-aligner { flex-direction: column; align-items: center; }
             .text-block { align-items: center; margin-bottom: 30px; }
-            .animal-img { width: 80vw; }
-            .nav-tabs { flex-direction: column; bottom: 2%; gap: 10px; width: 80%; }
-            .tab { text-align: center; font-size: 1.1rem; }
+            .animal-img { width: 85vw; }
+            .nav-tabs { flex-direction: column; bottom: 3%; gap: 12px; width: 85%; }
+            .tab { font-size: 1.2rem; padding: 12px 0; width: 100%; text-align: center; }
         }
     </style>
 </head>
 <body>
 
-    <div class="wuhu-container">
-        <span class="wuhu-line s1">wuhuwuhuwuhu</span>
-        <span class="wuhu-line s2">wuhuwuhuwuhu</span>
-        <span class="wuhu-line s3">wuhuwuhuwuhu</span>
-        <span class="wuhu-line s4">wuhuwuhuwuhu</span>
-        <span class="wuhu-line s5">wuhulalaalala</span>
+    <div class="wuhu-bg-layer">
+        <span class="wuhu-item t1">wuhuwuhu</span>
+        <span class="wuhu-item t2">wuhuwuhuwuhu</span>
+        <span class="wuhu-item t3">wuhulalaal</span>
+        <span class="wuhu-item t4">wuhu~</span>
+        <span class="wuhu-item t5">wuhuwuhu</span>
+        <span class="wuhu-item t6">lalalala</span>
+        <span class="wuhu-item t7">wuhu!</span>
     </div>
 
     <div class="main-content">
@@ -167,10 +176,8 @@
         img.classList.remove('active');
         void img.offsetWidth;
         img.classList.add('active');
-
         const x = e.clientX || (e.touches && e.touches[0].clientX);
         const y = e.clientY || (e.touches && e.touches[0].clientY);
-
         for(let i=0; i<10; i++) createStar(x, y);
     }
 
