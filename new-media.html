@@ -3,37 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Media Art & Installation</title>
+    <title>New Media Art & Installation | QI JIANG</title>
     <style>
-        /* 核心修复：使用国内镜像加速字体，解决国内不点 VPN 打不开的问题 */
+        /* 使用国内镜像加速字体，确保手写体风格一致 */
         @import url('https://fonts.font.im/css2?family=Gochi+Hand&display=swap');
         
         * { font-family: 'Gochi Hand', cursive !important; box-sizing: border-box; }
 
-        body {
-            background-color: #ffffff;
-            margin: 0;
-            padding: 4vw;
-            overflow-x: hidden;
-        }
+        body { background-color: #ffffff; margin: 0; padding: 4vw; overflow-x: hidden; }
 
         .gallery-header { margin-bottom: 50px; }
         .gallery-header h1 { font-size: 3.5rem; margin: 0; color: #000; }
 
         .back-btn {
-            display: inline-block;
-            border: 3px solid #000;
-            border-radius: 12px;
-            padding: 10px 30px;
-            text-decoration: none;
-            color: #000;
-            font-weight: bold;
-            font-size: 1.3rem;
-            transition: 0.3s;
+            display: inline-block; border: 3px solid #000; border-radius: 12px;
+            padding: 10px 30px; text-decoration: none; color: #000;
+            font-weight: bold; font-size: 1.3rem; transition: 0.3s;
         }
         .back-btn:hover { background: #000; color: #fff; transform: translateY(-5px); }
 
-        /* 核心布局：一行两个 */
+        /* 网格布局：一行两个 */
         .media-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr); 
@@ -66,18 +55,15 @@
         .poster { width: 100%; height: auto; display: block; border-radius: 15px; }
 
         .video-player {
-            width: 100%;
-            height: auto;
-            display: none; 
-            background: #000;
-            border-radius: 15px;
+            width: 100%; height: auto; display: none; 
+            background: #000; border-radius: 15px;
         }
 
         .media-info { padding: 25px; text-align: left; }
-        .media-info h2 { margin: 0 0 12px 0; font-size: 2.2rem; }
-        .media-info p { margin: 0; font-size: 1.3rem; line-height: 1.4; opacity: 0.8; }
+        .media-info h2 { margin: 0 0 12px 0; font-size: 2.2rem; text-transform: uppercase; }
+        .media-info p { margin: 0; font-size: 1.25rem; line-height: 1.5; opacity: 0.9; color: #333; }
 
-        /* 彩色边框配色 */
+        /* 莫兰迪配色边框 */
         .item-pink { border: 8px solid #ffb7b7; }
         .item-blue { border: 8px solid #b2ebf2; }
         .item-green { border: 8px solid #dcedc8; }
@@ -98,15 +84,15 @@
 
 <div class="media-grid">
     <div class="media-item item-pink" onclick="handleMediaPlay(this)">
-    <img src="chuchuang.png" class="poster">
-    <video class="video-player" controls playsinline muted preload="metadata">
-        <source src="chuchuang.mp4" type="video/mp4">
-    </video>
-    <div class="media-info">
-        <h2>WINDOW DESIGN</h2>
-        <p>Combining new media art with window design...</p>
+        <img src="chuchuang.png" class="poster">
+        <video class="video-player" controls playsinline>
+            <source src="chuchuang.mp4" type="video/mp4">
+        </video>
+        <div class="media-info">
+            <h2>Return to Eden</h2>
+            <p>In view of the current situation of domestic window design, combining new media art with window design, breaking the original single visual design form, and providing consumers with multi-sensory shopping experience.</p>
+        </div>
     </div>
-</div>
 
     <div class="media-item item-blue" onclick="handleMediaPlay(this)">
         <img src="sichou.png" class="poster">
@@ -158,7 +144,7 @@
         const poster = container.querySelector('.poster');
         const video = container.querySelector('.video-player');
         
-        if (poster && (poster.style.display !== 'none')) {
+        if (poster && poster.style.display !== 'none') {
             poster.style.display = 'none';
             video.style.display = 'block';
             video.load(); 
