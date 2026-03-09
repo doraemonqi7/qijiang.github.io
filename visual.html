@@ -3,21 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visual Art & Illustration | QI JIANG</title>
+    <title>Visual Art & Illustration | Boring Still Life</title>
     <style>
+        /* 1. 核心字体加载 */
         @import url('https://fonts.font.im/css2?family=Gochi+Hand&display=swap');
 
         * { font-family: 'Gochi Hand', cursive !important; box-sizing: border-box; }
 
         body { 
             background-color: #ffffff; 
-            margin: 0; padding: 50px; 
-            overflow-x: hidden;
+            margin: 0; 
+            padding: 50px; 
+            overflow-x: hidden; 
         }
 
-        /* 顶部标题保持不变 */
         .gallery-header { margin-bottom: 40px; text-align: left; }
         .gallery-header h1 { font-size: 3.5rem; margin: 0; color: #000; }
+
         .back-btn {
             display: inline-block; border: 3px solid #000; border-radius: 12px;
             padding: 10px 30px; text-decoration: none; color: #000;
@@ -25,13 +27,13 @@
         }
         .back-btn:hover { background: #000; color: #fff; transform: translateY(-3px); }
 
-        /* 网格布局保持不变 */
+        /* 2. 布局锁定 */
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(3, minmax(250px, 380px)); 
             justify-content: center;
             gap: 70px; margin: 50px auto;
-            max-width: 1400px;
+            max-width: 1400px; align-items: start;
         }
 
         .gallery-item {
@@ -39,26 +41,31 @@
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             animation: float 4s infinite ease-in-out;
             cursor: pointer; width: 100%; padding: 15px;
+            z-index: 1;
         }
 
+        /* 3. 悬停效果：移除滤镜，显著放大 */
         .gallery-item:hover { 
             animation-play-state: paused;
-            transform: scale(1.08) translateY(-15px) !important; 
+            /* 核心修改：放大比例从 1.08 提升至 1.18，让图片更大 */
+            transform: scale(1.18) translateY(-20px) !important; 
             z-index: 100; 
         }
 
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
 
-        /* 核心修复：蜡笔质感容器 */
+        /* 4. 手绘边框样式 */
         .sketchy-frame {
             position: relative;
             display: block; width: 100%;
             background: #fff;
             border-radius: 5px;
-            overflow: hidden;
+            overflow: visible; /* 允许边框和图片溢出效果 */
         }
 
-        /* 增加手绘边框层 */
         .sketchy-frame::after {
             content: "";
             position: absolute;
@@ -68,37 +75,17 @@
             pointer-events: none; z-index: 10;
         }
 
-        /* 模拟蜡笔颗粒的覆盖层 (噪声层) */
-        .grain-overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            /* 使用 SVG 噪声模拟蜡笔笔触的颗粒感 */
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-            opacity: 0.18; /* 颗粒的可见度 */
-            z-index: 5;
-            pointer-events: none;
-            transition: opacity 0.4s ease;
-        }
-
-        .gallery-item:hover .grain-overlay {
-            opacity: 0; /* 鼠标放上去，颗粒消失 */
-        }
-
-        /* 图片处理：平时状态柔和模糊，保留色彩 */
+        /* 5. 图片样式：去除所有模糊和颗粒滤镜 */
         .sketchy-frame img { 
             width: 100%; height: auto; 
-            display: block;
-            /* 柔和处理：轻微模糊 + 提高亮度 */
-            filter: blur(2.5px) brightness(1.05);
-            transition: filter 0.5s ease;
-            z-index: 1;
+            display: block; 
+            border-radius: 2px;
+            filter: none; /* 确保无模糊 */
+            image-rendering: auto; /* 确保画质细腻 */
+            transition: transform 0.4s ease;
         }
 
-        .gallery-item:hover .sketchy-frame img { 
-            filter: blur(0) brightness(1); /* 恢复原始清晰度和颜色 */
-        }
-
-        /* 莫兰迪配色 */
+        /* 莫兰迪配色方案 */
         .c-pink { color: #ffb7b7; }
         .c-yellow { color: #ffeeba; }
         .c-blue { color: #b2ebf2; }
@@ -106,7 +93,11 @@
         .c-green { color: #c8e6c9; }
         .c-orange { color: #ffccbc; }
 
-        @media (max-width: 900px) { .gallery-grid { grid-template-columns: 1fr; max-width: 450px; } }
+        /* 手机端适配 */
+        @media (max-width: 900px) {
+            .gallery-grid { grid-template-columns: 1fr; max-width: 450px; }
+            .gallery-item:hover { transform: scale(1.05) translateY(-5px) !important; }
+        }
     </style>
 </head>
 <body>
@@ -119,34 +110,30 @@
     <div class="gallery-grid">
         <div class="gallery-item">
             <div class="sketchy-frame c-pink">
-                <div class="grain-overlay"></div> <img src="festival.png" alt="Festival">
+                <img src="festival.png" alt="Festival">
             </div>
         </div>
-
+        
         <div class="gallery-item">
             <div class="sketchy-frame c-yellow">
-                <div class="grain-overlay"></div>
                 <img src="tiger.png" alt="Tiger">
             </div>
         </div>
 
         <div class="gallery-item">
             <div class="sketchy-frame c-blue">
-                <div class="grain-overlay"></div>
                 <img src="cat.png" alt="Cat">
             </div>
         </div>
 
         <div class="gallery-item">
             <div class="sketchy-frame c-orange">
-                <div class="grain-overlay"></div>
                 <img src="apple.png" alt="Apple">
             </div>
         </div>
 
         <div class="gallery-item">
             <div class="sketchy-frame c-purple">
-                <div class="grain-overlay"></div>
                 <img src="aranya.png" alt="Architecture">
             </div>
         </div>
@@ -154,20 +141,17 @@
         <div class="gallery-item">
             <div class="sketchy-frame c-green">
                 <img src="friends.png" alt="Friends">
-                <div class="grain-overlay"></div>
             </div>
         </div>
 
         <div class="gallery-item">
             <div class="sketchy-frame c-pink">
-                <div class="grain-overlay"></div>
                 <img src="cute.png" alt="Cute">
             </div>
         </div>
 
         <div class="gallery-item">
             <div class="sketchy-frame c-blue">
-                <div class="grain-overlay"></div>
                 <img src="landscape.png" alt="Landscape">
             </div>
         </div>
