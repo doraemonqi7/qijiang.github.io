@@ -17,17 +17,21 @@
             display: flex; justify-content: center; align-items: center;
         }
 
+        /* 1. 响应式大容器：解决“旁边空缺”问题 */
         .viewport-wrapper {
             position: relative;
             width: 100vw; height: 100vh;
-            max-width: 1600px; margin: 0 auto;
+            /* 锁定最大宽度，防止在大屏幕上过度拉伸 */
+            max-width: 1400px; 
+            margin: 0 auto;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
 
-        /* 1. 文字小而零散：向中心收拢，不再贴边 */
+        /* 2. 背景文字层：限制宽度为 40%，绝对不会与中间元素重叠 */
         .wuhu-bg-layer {
             position: absolute;
-            width: 80%; height: 80%;
+            top: 0; left: 0;
+            width: 40%; height: 100%;
             z-index: 1;
             pointer-events: none;
         }
@@ -39,27 +43,27 @@
             animation: drift 5s infinite ease-in-out;
         }
 
-        /* 调整坐标：让文字靠近中间的模块 */
-        .t1 { top: 15%; left: 10%; font-size: 3rem; transform: rotate(-8deg); }
-        .t2 { top: 25%; left: 18%; font-size: 2.2rem; transform: rotate(5deg); opacity: 0.6; }
-        .t3 { top: 60%; left: 5%; font-size: 4rem; transform: rotate(-3deg); font-weight: bold; }
-        .t4 { top: 10%; left: 45%; font-size: 2rem; transform: rotate(12deg); }
-        .t5 { top: 75%; left: 20%; font-size: 3.2rem; transform: rotate(-5deg); }
-        .t6 { top: 45%; left: 12%; font-size: 1.8rem; transform: rotate(15deg); opacity: 0.5; }
+        /* 零散分布，但避开中心区 */
+        .t1 { top: 12%; left: 10%; font-size: 3rem; transform: rotate(-8deg); }
+        .t2 { top: 28%; left: 25%; font-size: 2rem; transform: rotate(5deg); opacity: 0.5; }
+        .t3 { top: 55%; left: 8%; font-size: 4.5rem; transform: rotate(-3deg); font-weight: bold; }
+        .t4 { top: 78%; left: 20%; font-size: 2.5rem; transform: rotate(10deg); }
+        .t5 { top: 40%; left: 15%; font-size: 1.8rem; transform: rotate(15deg); opacity: 0.6; }
 
         @keyframes drift {
-            0%, 100% { transform: translate(0, 0) rotate(var(--r, 0deg)); }
-            50% { transform: translate(8px, -8px) rotate(calc(var(--r, 0deg) + 1.5deg)); }
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(8px, -8px); }
         }
 
-        /* 2. 核心视觉模块：长颈鹿、香蕉、签名 */
+        /* 3. 核心视觉模块：居中锁定 */
         .main-center-module {
             position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
             z-index: 10;
-            margin-bottom: 5vh;
+            /* 确保长颈鹿模块始终在中心 */
+            margin: 0 auto; 
         }
 
         .animal-container {
@@ -70,7 +74,7 @@
         }
 
         .animal-img {
-            width: 380px; /* 减小尺寸，更精致 */
+            width: 420px;
             cursor: pointer;
             transform: scaleX(-1);
             transition: 0.3s;
@@ -79,17 +83,16 @@
 
         .banana-img {
             position: absolute;
-            bottom: 5px; right: -15px;
-            width: 65px; /* 香蕉也相应缩小 */
-            transform: rotate(10deg);
+            bottom: 5px; right: -10px;
+            width: 60px;
+            transform: rotate(12deg);
             z-index: 11;
-            pointer-events: none;
         }
 
         .animal-img.active { animation: shake 0.4s ease-in-out; }
         @keyframes shake {
             0%, 100% { transform: scaleX(-1) rotate(0deg); }
-            50% { transform: scaleX(-1) rotate(-2.5deg); }
+            50% { transform: scaleX(-1) rotate(-3deg); }
         }
 
         .signature-block {
@@ -98,17 +101,16 @@
         }
 
         .name-text { 
-            font-size: 2rem; 
+            font-size: 2.2rem; 
             font-weight: bold; 
             color: #000; 
             text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
-        /* 3. 底部按钮：保持胶囊感，尺寸适中 */
+        /* 4. 底部按钮：自适应布局 */
         .nav-tabs {
-            margin-top: 20px;
-            display: flex; gap: 18px;
+            margin-top: 40px;
+            display: flex; gap: 20px;
             z-index: 30;
         }
 
@@ -119,7 +121,7 @@
             text-decoration: none;
             color: #000;
             font-weight: bold;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             background: #fff;
             transition: 0.2s;
             text-transform: uppercase;
@@ -134,14 +136,13 @@
         }
         @keyframes burst {
             0% { transform: scale(0); opacity: 0; }
-            50% { opacity: 1; }
             100% { transform: scale(1.5) translate(var(--dx), var(--dy)); opacity: 0; }
         }
 
+        /* 手机端适配 */
         @media (max-width: 768px) {
-            .wuhu-bg-layer { width: 90%; transform: scale(0.8); }
+            .wuhu-bg-layer { width: 100%; opacity: 0.3; }
             .animal-img { width: 75vw; }
-            .banana-img { width: 12vw; }
             .nav-tabs { flex-direction: column; gap: 10px; width: 70%; }
             .tab { width: 100%; text-align: center; }
         }
@@ -154,9 +155,8 @@
             <span class="wuhu-item t1">wuhuwuhulala</span>
             <span class="wuhu-item t2">wuhuwuhu</span>
             <span class="wuhu-item t3">wuhulala</span>
-            <span class="wuhu-item t4">lalala</span>
-            <span class="wuhu-item t5">wuhuwuhu</span>
-            <span class="wuhu-item t6">wuhu!</span>
+            <span class="wuhu-item t4">wuhuwuhu</span>
+            <span class="wuhu-item t5">wuhu!</span>
         </div>
 
         <div class="main-center-module">
@@ -186,6 +186,7 @@
         const y = e.clientY || (e.touches && e.touches[0].clientY);
         for(let i=0; i<8; i++) createStar(x, y);
     }
+
     function createStar(x, y) {
         const star = document.createElement('div');
         star.className = 'sparkle';
@@ -198,6 +199,15 @@
         document.body.appendChild(star);
         setTimeout(() => star.remove(), 800);
     }
+
+    /* 核心修复：按 Esc 退出全屏 */
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            }
+        }
+    });
 </script>
 </body>
 </html>
