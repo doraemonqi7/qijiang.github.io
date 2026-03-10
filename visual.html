@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visual Art & Illustration | Boring Still Life</title>
     <style>
-        /* 1. 核心字体加载 */
+        /* 1. 核心字体与全局样式 */
         @import url('https://fonts.font.im/css2?family=Gochi+Hand&display=swap');
 
         * { font-family: 'Gochi Hand', cursive !important; box-sizing: border-box; }
@@ -27,7 +27,7 @@
         }
         .back-btn:hover { background: #000; color: #fff; transform: translateY(-3px); }
 
-        /* 2. 布局锁定 */
+        /* 2. 响应式网格布局 */
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(3, minmax(250px, 380px)); 
@@ -44,6 +44,7 @@
             z-index: 1;
         }
 
+        /* 悬停放大与位移 */
         .gallery-item:hover { 
             animation-play-state: paused;
             transform: scale(1.18) translateY(-20px) !important; 
@@ -55,7 +56,7 @@
             50% { transform: translateY(-10px); }
         }
 
-        /* 3. 手绘边框样式优化 */
+        /* 3. 手绘边框样式 */
         .sketchy-frame {
             position: relative;
             display: block; width: 100%;
@@ -64,15 +65,14 @@
             overflow: visible;
         }
 
-        /* 核心修复：确保伪元素边框强制继承当前类的颜色 */
         .sketchy-frame::after {
             content: "";
             position: absolute;
             top: -12px; left: -12px; right: -12px; bottom: -12px;
-            border: 6px solid currentColor; /* 稍微加粗一点点，更有手绘感 */
+            border: 6px solid currentColor;
             border-radius: 255px 25px 225px 25px/25px 225px 25px 255px;
             pointer-events: none; z-index: 10;
-            opacity: 0.85; /* 增加一点透明度，让颜色更柔和 */
+            opacity: 0.85;
         }
 
         .sketchy-frame img { 
@@ -80,20 +80,17 @@
             display: block; 
             border-radius: 2px;
             filter: none;
-            transition: transform 0.4s ease;
         }
 
-        /* 4. 重新校准的莫兰迪配色 (Morandi Palette) */
-        /* 更加灰调、优雅，符合你作品集的艺术质感 */
-        .c-pink { color: #d4a5a5 !important; }   /* 灰粉 */
-        .c-yellow { color: #e5d1a4 !important; } /* 灰黄 */
-        .c-blue { color: #9ab7c1 !important; }   /* 霾蓝 */
-        .c-purple { color: #b8a9c9 !important; } /* 烟灰紫 */
-        .c-green { color: #a8b89e !important; }  /* 灰绿 */
-        .c-orange { color: #d69d85 !important; } /* 陶土橘 */
-        .c-grey { color: #8e8d8a !important; }   /* 经典莫兰迪灰 */
+        /* 4. 莫兰迪色系 (Morandi Palette) */
+        .c-pink { color: #d4a5a5 !important; }
+        .c-yellow { color: #e5d1a4 !important; }
+        .c-blue { color: #9ab7c1 !important; }
+        .c-purple { color: #b8a9c9 !important; }
+        .c-green { color: #a8b89e !important; }
+        .c-orange { color: #d69d85 !important; }
+        .c-grey { color: #8e8d8a !important; }
 
-        /* 手机端适配 */
         @media (max-width: 900px) {
             .gallery-grid { grid-template-columns: 1fr; max-width: 450px; }
             .gallery-item:hover { transform: scale(1.05) translateY(-5px) !important; }
@@ -158,7 +155,7 @@
 
         <div class="gallery-item">
             <div class="sketchy-frame c-pink">
-                <img src="festival.png" alt="Repeat">
+                <img src="visual.png" alt="Visual Concept">
             </div>
         </div>
     </div>
