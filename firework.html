@@ -9,7 +9,7 @@
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--bg); overflow: hidden; font-family: 'Gochi Hand', -apple-system, sans-serif; color: #fff; }
         canvas { display: block; width: 100%; height: 100%; position: absolute; z-index: 1; }
         
-        /* 顶部导航：修改返回链接 */
+        /* 顶部导航 */
         .top-nav { position: absolute; top: 0; left: 0; width: 100%; padding: 15px; display: flex; justify-content: space-between; z-index: 100; box-sizing: border-box; pointer-events: none; }
         .btn-ui { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 10px 18px; border-radius: 12px; font-size: 14px; backdrop-filter: blur(15px); cursor: pointer; pointer-events: auto; text-decoration: none; display: flex; align-items: center; }
         
@@ -24,9 +24,10 @@
         input[type=text] { width: 100%; padding: 12px; background: #000; border: 1px solid #444; color: #fff; border-radius: 8px; box-sizing: border-box; }
         .apply-btn { width: 100%; padding: 15px; background: var(--accent); color: white; border: none; border-radius: 12px; margin-top: 25px; font-weight: bold; cursor: pointer; }
         
-        /* 开始与玩法说明 */
-        #start-screen { position: fixed; inset: 0; z-index: 500; background: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-        .how-to-play { color: #888; margin-top: 30px; font-size: 1.1rem; line-height: 1.6; max-width: 80%; }
+        /* 开始与报错说明 */
+        #start-screen { position: fixed; inset: 0; z-index: 500; background: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
+        .how-to-play { color: #888; margin-top: 30px; font-size: 1.1rem; line-height: 1.6; max-width: 500px; }
+        .error-msg { color: #ff4d4f; background: rgba(255, 77, 79, 0.1); padding: 15px; border-radius: 8px; margin-bottom: 20px; display: none; }
         .highlight { color: var(--accent); font-weight: bold; }
         .start-btn { padding: 20px 60px; font-size: 22px; background: var(--accent); border: none; border-radius: 50px; color: #fff; font-weight: bold; cursor: pointer; box-shadow: 0 0 30px rgba(191,90,242,0.4); }
         
@@ -38,12 +39,17 @@
 <body>
 
 <div id="start-screen">
+    <div id="env-error" class="error-msg">
+        ⚠️ <b>环境安全检测失败</b><br>
+        当前处于 HTTP 非安全连接，无法调用摄像头。<br>
+        <a href="https://doraemonqi7.github.io/qijiang.github.io/firework.html" style="color: #fff; text-decoration: underline;">点击此处前往 HTTPS 安全备份站</a>
+    </div>
+
     <button class="start-btn" id="start-btn">放烟花啦～</button>
     <div class="how-to-play">
         <p>🖐️ <span class="highlight">交互玩法说明：</span></p>
-        <p>1. 请确保在 <span class="highlight">HTTPS</span> 环境下开启摄像头权限</p>
-        <p>2. 伸出食指与大拇指 <span class="highlight">“捏合”</span> 即可蓄力光圈</p>
-        <p>3. 蓄力后 <span class="highlight">“松开”</span> 即可向该位置发射定制烟花</p>
+        <p>1. 伸出食指与大拇指 <span class="highlight">“捏合”</span> 即可蓄力光圈</p>
+        <p>2. 蓄力后 <span class="highlight">“松开”</span> 即可在指尖位置发射定制烟花</p>
     </div>
 </div>
 
@@ -57,9 +63,9 @@
         <span style="font-weight:bold; color:var(--accent)">LUMI 3.5</span>
         <button onclick="document.getElementById('control-panel').classList.remove('active')" style="background:none; border:none; color:#fff; font-size:24px;">&times;</button>
     </div>
-    <div class="section-title">文字 (TEXT)</div>
+    <div class="section-title">文字内容 (TEXT)</div>
     <input type="text" id="text-input" value="ドラえもん">
-    <div class="section-title">形状 (SHAPE)</div>
+    <div class="section-title">烟花形状 (SHAPE)</div>
     <div class="shape-grid">
         <button class="shape-btn" data-shape="sphere">Sphere</button>
         <button class="shape-btn" data-shape="ring">Ring</button>
@@ -76,6 +82,11 @@
 <canvas id="canvas"></canvas>
 
 <script>
+    // 自动 HTTPS 跳转
+    if (location.protocol === 'http:' && location.hostname !== 'localhost') {
+        document.getElementById('env-error').style.display = 'block';
+    }
+
     const config = { particles: 450, speed: 16, gravity: 0.18, hue: 280, variance: 60, trail: 0.18, shape: 'text' };
     const canvas = document.getElementById('canvas'), ctx = canvas.getContext('2d', { alpha: false });
     let fireworks = [], particles = [];
@@ -109,6 +120,7 @@
         };
     });
 
+    // 粒子与烟花核心逻辑
     class Particle {
         constructor(x, y, vx, vy, h, size = 3.5, life = 1) {
             this.x = x; this.y = y; this.vx = vx; this.vy = vy;
@@ -199,61 +211,10 @@
         }
     }
 
+    // 媒体处理
     const hands = new Hands({ locateFile: (f) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
     hands.setOptions({ maxNumHands: 1, modelComplexity: 1, minDetectionConfidence: 0.7 });
 
     let hPos = {x:0, y:0}, isPinching = false, charge = 0;
 
     hands.onResults(res => {
-        if(res.multiHandLandmarks && res.multiHandLandmarks[0]) {
-            const h = res.multiHandLandmarks[0];
-            const indexF = h[8], thumbF = h[4];
-            hPos.x = (1 - indexF.x) * canvas.width; hPos.y = indexF.y * canvas.height;
-            const dist = Math.sqrt(Math.pow(indexF.x - thumbF.x, 2) + Math.pow(indexF.y - thumbF.y, 2));
-            if(dist < 0.1) { 
-                isPinching = true; charge += 2.5; 
-            } else { 
-                if(isPinching && charge > 10) fireworks.push(new Shell(hPos.x, hPos.y, Math.min(charge, 100)));
-                isPinching = false; charge = 0; 
-            }
-        } else { isPinching = false; charge = 0; }
-    });
-
-    const cam = new Camera(document.getElementById('video-input'), {
-        onFrame: async () => { try { await hands.send({image: document.getElementById('video-input')}); } catch(e){} },
-        width: 640, height: 480
-    });
-
-    document.getElementById('start-btn').onclick = () => {
-        document.getElementById('start-screen').style.display = 'none';
-        cam.start();
-        const loop = () => {
-            ctx.globalCompositeOperation = 'source-over';
-            ctx.fillStyle = `rgba(3, 3, 5, ${config.trail})`;
-            ctx.fillRect(0,0,canvas.width,canvas.height);
-            for (let i = fireworks.length - 1; i >= 0; i--) {
-                fireworks[i].update();
-                fireworks[i].draw();
-                if (fireworks[i].done) fireworks.splice(i, 1);
-            }
-            for (let i = particles.length - 1; i >= 0; i--) {
-                particles[i].update();
-                particles[i].draw();
-                if (particles[i].alpha <= 0) particles.splice(i, 1);
-            }
-            if(isPinching) { 
-                ctx.globalCompositeOperation = 'lighter';
-                const radius = (charge * 0.7) + Math.sin(Date.now() * 0.1) * 2;
-                ctx.beginPath(); 
-                ctx.arc(hPos.x, hPos.y, radius, 0, Math.PI*2);
-                ctx.strokeStyle = `hsla(${config.hue}, 100%, 80%, 0.8)`; 
-                ctx.lineWidth = 4; ctx.stroke();
-                ctx.globalCompositeOperation = 'source-over';
-            }
-            requestAnimationFrame(loop);
-        };
-        loop();
-    };
-</script>
-</body>
-</html>
