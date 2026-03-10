@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Interactive Fireworks Masterpiece | QJ</title>
+    <title>Interactive Fireworks | Firework 1.0</title>
     <style>
         @import url('https://fonts.font.im/css2?family=Gochi+Hand&display=swap');
         :root { --accent: #bf5af2; --bg: #030305; --panel: rgba(10, 10, 15, 0.98); }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--bg); overflow: hidden; font-family: 'Gochi Hand', cursive, sans-serif; color: #fff; }
         canvas { display: block; width: 100%; height: 100%; position: absolute; z-index: 1; }
         
-        /* 顶部导航 */
         .top-nav { position: absolute; top: 0; left: 0; width: 100%; padding: 15px; display: flex; justify-content: space-between; z-index: 100; box-sizing: border-box; pointer-events: none; }
         .btn-ui { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 10px 18px; border-radius: 12px; font-size: 14px; backdrop-filter: blur(15px); cursor: pointer; pointer-events: auto; text-decoration: none; }
         
@@ -24,12 +23,10 @@
         input[type=text] { width: 100%; padding: 10px; background: #000; border: 1px solid #444; color: #fff; border-radius: 8px; box-sizing: border-box; }
         .apply-btn { width: 100%; padding: 15px; background: var(--accent); color: white; border: none; border-radius: 12px; margin-top: 20px; font-weight: bold; cursor: pointer; }
 
-        /* 开始屏幕与玩法说明 */
         #start-screen { position: fixed; inset: 0; z-index: 500; background: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
         .start-btn { padding: 20px 60px; font-size: 24px; background: var(--accent); border: none; border-radius: 50px; color: #fff; font-weight: bold; cursor: pointer; box-shadow: 0 0 30px rgba(191,90,242,0.4); }
-        .how-to-play { color: #888; margin-top: 25px; max-width: 400px; line-height: 1.6; font-size: 1.1rem; }
+        .how-to-play { color: #888; margin-top: 25px; max-width: 400px; line-height: 1.6; }
         .highlight { color: var(--accent); font-weight: bold; }
-        .error-hint { color: #ff4d4f; font-size: 14px; margin-bottom: 20px; display: none; background: rgba(255, 77, 79, 0.1); padding: 15px; border-radius: 8px; }
 
         #video-input { display: none; }
     </style>
@@ -39,38 +36,33 @@
 <body>
 
 <div id="start-screen">
-    <div id="env-error" class="error-hint">
-        ⚠️ <b>检测到非安全连接 (HTTP)</b><br>
-        摄像头手势功能可能无法使用。建议使用 HTTPS 访问。<br>
-        但你仍可以点击按钮并使用<b>屏幕点击</b>来玩！
-    </div>
     <button class="start-btn" id="start-btn">放烟花啦～</button>
     <div class="how-to-play">
-        🖐️ <span class="highlight">交互说明：</span>捏合指尖蓄力并松开即可发射。<br>
-        🖱️ <span class="highlight">备选：</span>若没相机，点击/长按屏幕也能发射！
+        🖐️ <span class="highlight">交互说明：</span>捏合指尖时间越长，烟花越大越高。<br>
+        🖱️ 点击/长按屏幕也能发射！
     </div>
 </div>
 
 <div class="top-nav">
     <a href="new-media.html" class="btn-ui" style="background:#ff9f43">← 返回菜单</a>
-    <button class="btn-ui" style="background:var(--accent)" onclick="document.getElementById('control-panel').classList.add('active')">⚙️ 设置参数</button>
+    <button class="btn-ui" style="background:var(--accent)" onclick="document.getElementById('control-panel').classList.add('active')">⚙️ 参数</button>
 </div>
 
 <div id="control-panel">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
-        <span style="font-weight:bold; color:var(--accent); font-size: 1.5rem;">LUMI 3.5</span>
+        <span style="font-weight:bold; color:var(--accent); font-size: 1.5rem;">Firework 1.0</span>
         <button onclick="document.getElementById('control-panel').classList.remove('active')" style="background:none; border:none; color:#fff; font-size:30px;">&times;</button>
     </div>
     <div class="section-title">文字 (TEXT)</div>
     <input type="text" id="text-input" value="ドラえもん">
     <div class="section-title">形状 (SHAPE)</div>
     <div class="shape-grid">
-        <button class="shape-btn active" data-shape="text">Text</button>
-        <button class="shape-btn" data-shape="heart">Heart</button>
-        <button class="shape-btn" data-shape="star">Star</button>
-        <button class="shape-btn" data-shape="sphere">Sphere</button>
+        <button class="shape-btn active" data-shape="sphere">Sphere</button>
         <button class="shape-btn" data-shape="ring">Ring</button>
+        <button class="shape-btn" data-shape="star">Star</button>
         <button class="shape-btn" data-shape="burst">Burst</button>
+        <button class="shape-btn" data-shape="heart">Heart</button>
+        <button class="shape-btn" data-shape="text">Text</button>
     </div>
     <div id="sliders"></div>
     <button class="apply-btn" onclick="document.getElementById('control-panel').classList.remove('active')">确认应用</button>
@@ -80,12 +72,7 @@
 <canvas id="canvas"></canvas>
 
 <script>
-    // 环境安全检查
-    if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
-        document.getElementById('env-error').style.display = 'block';
-    }
-
-    const config = { particles: 450, speed: 18, gravity: 0.18, hue: 280, variance: 60, trail: 0.18, shape: 'text' };
+    const config = { particles: 450, speed: 18, gravity: 0.18, hue: 280, variance: 60, trail: 0.18, shape: 'sphere' };
     const canvas = document.getElementById('canvas'), ctx = canvas.getContext('2d', { alpha: false });
     let fireworks = [], particles = [];
     let isPinching = false, charge = 0, hPos = {x:0, y:0};
@@ -93,11 +80,10 @@
     function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
     window.addEventListener('resize', resize); resize();
 
-    // 滑块逻辑
     const sliderDefs = [
-        { id: 'particles', label: '粒子密度', min: 100, max: 1500 },
-        { id: 'speed', label: '爆炸推力', min: 8, max: 35 },
-        { id: 'gravity', label: '重力感', min: 0.1, max: 0.6, step: 0.01 }
+        { id: 'particles', label: '基础粒子数', min: 100, max: 1500 },
+        { id: 'speed', label: '爆炸力', min: 8, max: 35 },
+        { id: 'gravity', label: '重力', min: 0.1, max: 0.6, step: 0.01 }
     ];
 
     sliderDefs.forEach(s => {
@@ -119,13 +105,11 @@
         };
     });
 
-    // 粒子逻辑
     class Particle {
-        constructor(x, y, vx, vy, h, size = 3.5, life = 1) {
+        constructor(x, y, vx, vy, h, size, life) {
             this.x = x; this.y = y; this.vx = vx; this.vy = vy;
             this.h = h + (Math.random() * config.variance - config.variance/2);
-            this.alpha = life; this.size = size * (0.8 + Math.random()*0.4);
-            this.decay = 0.006 + Math.random() * 0.012;
+            this.alpha = life; this.size = size; this.decay = 0.008 + Math.random() * 0.012;
             this.friction = 0.96;
         }
         update() { 
@@ -146,9 +130,13 @@
     class Shell {
         constructor(x, y, charge) {
             this.x = x; this.y = y;
-            const targetDist = charge * 18;
-            this.targetY = Math.max(50, y - targetDist);
-            this.hue = Math.random() * 360; this.done = false; this.lockedShape = config.shape;
+            // 动力学修正：蓄力越久飞得越高
+            const power = Math.min(charge, 80); 
+            this.targetY = Math.max(80, y - (power * 15));
+            this.chargeFactor = power / 40; // 大小系数
+            this.hue = Math.random() * 360; 
+            this.done = false; 
+            this.lockedShape = config.shape;
         }
         update() {
             let dist = this.y - this.targetY;
@@ -156,36 +144,57 @@
             if (this.y <= this.targetY + 8) { this.done = true; this.explode(); }
         }
         draw() { ctx.fillStyle = `hsl(${this.hue}, 100%, 80%)`; ctx.beginPath(); ctx.arc(this.x, this.y, 4, 0, Math.PI*2); ctx.fill(); }
+        
         explode() {
             let pts = [];
+            const particleCount = config.particles * this.chargeFactor;
+            const radius = 100 * this.chargeFactor;
+
             if (this.lockedShape === 'text') {
                 const off = document.createElement('canvas'); const octx = off.getContext('2d');
-                off.width = 400; off.height = 150; octx.font = "bold 50px 'Gochi Hand', sans-serif"; octx.fillStyle = "white"; octx.textAlign = "center";
+                off.width = 400; off.height = 150; octx.font = "bold 50px 'Gochi Hand'"; octx.fillStyle = "white"; octx.textAlign = "center";
                 octx.fillText(document.getElementById('text-input').value, 200, 80);
                 const data = octx.getImageData(0,0,400,150).data;
-                for(let y=0; y<150; y+=4) for(let x=0; x<400; x+=4) if(data[(y*400+x)*4+3]>128) pts.push({dx:x-200, dy:y-80});
+                for(let y=0; y<150; y+=4) for(let x=0; x<400; x+=4) if(data[(y*400+x)*4+3]>128) pts.push({dx: (x-200) * this.chargeFactor, dy: (y-80) * this.chargeFactor});
+            } else if (this.lockedShape === 'star') {
+                for(let i=0; i<particleCount; i++) {
+                    const l = i % 2 === 0 ? radius : radius/2, ang = (i / particleCount) * Math.PI * 10;
+                    pts.push({ dx: Math.cos(ang) * l, dy: Math.sin(ang) * l });
+                }
+            } else if (this.lockedShape === 'ring') {
+                for(let i=0; i<particleCount; i++) {
+                    const ang = (i / particleCount) * Math.PI * 2;
+                    pts.push({ dx: Math.cos(ang) * radius, dy: Math.sin(ang) * radius });
+                }
             } else if (this.lockedShape === 'heart') {
-                for(let i=0; i<config.particles; i++) {
+                for(let i=0; i<particleCount; i++) {
                     const t = Math.random() * Math.PI * 2;
-                    pts.push({ dx: 16 * Math.pow(Math.sin(t), 3) * 8, dy: -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)) * 8 });
+                    pts.push({ dx: 16 * Math.pow(Math.sin(t), 3) * (radius/12), dy: -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)) * (radius/12) });
+                }
+            } else if (this.lockedShape === 'sphere') {
+                for(let i=0; i<particleCount; i++) {
+                    const ang = Math.random() * Math.PI * 2, spd = Math.random() * radius;
+                    pts.push({ dx: Math.cos(ang) * spd, dy: Math.sin(ang) * spd });
                 }
             }
-            const count = pts.length > 0 ? Math.min(pts.length, config.particles) : config.particles;
-            for (let i = 0; i < count; i++) {
+
+            const isCustom = pts.length > 0;
+            const finalCount = isCustom ? pts.length : particleCount;
+            
+            for (let i = 0; i < finalCount; i++) {
                 let vx, vy;
-                if(pts.length > 0) { 
-                    const p = pts[i % pts.length];
-                    vx = p.dx * (config.speed/80); vy = p.dy * (config.speed/80); 
-                } else { 
-                    const ang = Math.random()*Math.PI*2, spd = Math.random()*config.speed; 
-                    vx = Math.cos(ang)*spd; vy = Math.sin(ang)*spd; 
+                if(isCustom) {
+                    vx = pts[i].dx * (config.speed / 100); 
+                    vy = pts[i].dy * (config.speed / 100);
+                } else { // Burst 模式
+                    const ang = Math.random() * Math.PI * 2, spd = Math.random() * config.speed * this.chargeFactor;
+                    vx = Math.cos(ang) * spd; vy = Math.sin(ang) * spd;
                 }
-                particles.push(new Particle(this.x, this.y, vx, vy, this.hue, 4.0));
+                particles.push(new Particle(this.x, this.y, vx, vy, this.hue, 4.0 * this.chargeFactor, 1.0));
             }
         }
     }
 
-    // MediaPipe 初始化
     const hands = new Hands({ locateFile: (f) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
     hands.setOptions({ maxNumHands: 1, modelComplexity: 1, minDetectionConfidence: 0.7 });
     hands.onResults(res => {
@@ -193,7 +202,7 @@
             const h = res.multiHandLandmarks[0];
             hPos.x = (1 - h[8].x) * canvas.width; hPos.y = h[8].y * canvas.height;
             const dist = Math.sqrt(Math.pow(h[8].x - h[4].x, 2) + Math.pow(h[8].y - h[4].y, 2));
-            if(dist < 0.1) { isPinching = true; charge += 2; }
+            if(dist < 0.1) { isPinching = true; charge += 1.8; }
             else { if(isPinching && charge > 10) fireworks.push(new Shell(hPos.x, hPos.y, charge)); isPinching = false; charge = 0; }
         } else { isPinching = false; charge = 0; }
     });
@@ -203,34 +212,21 @@
         width: 640, height: 480
     });
 
-    // 交互辅助：支持鼠标/触摸点击
     canvas.addEventListener('mousedown', (e) => { isPinching = true; hPos.x = e.clientX; hPos.y = e.clientY; });
-    canvas.addEventListener('mousemove', (e) => { if(isPinching) { hPos.x = e.clientX; hPos.y = e.clientY; charge += 1.5; } });
+    canvas.addEventListener('mousemove', (e) => { if(isPinching) { hPos.x = e.clientX; hPos.y = e.clientY; charge += 1.2; } });
     canvas.addEventListener('mouseup', () => { if(charge > 10) fireworks.push(new Shell(hPos.x, hPos.y, charge)); isPinching = false; charge = 0; });
-    
-    // 启动按钮逻辑
+
     document.getElementById('start-btn').onclick = () => {
         document.getElementById('start-screen').style.display = 'none';
-        
-        // 尝试启动相机，失败不影响点击模式
-        cam.start().catch(() => console.warn("摄像头启动失败，切换为点击模式"));
-
+        cam.start().catch(() => {});
         const loop = () => {
             ctx.globalCompositeOperation = 'source-over';
             ctx.fillStyle = `rgba(3, 3, 5, ${config.trail})`;
             ctx.fillRect(0,0,canvas.width,canvas.height);
-            
-            for (let i = fireworks.length - 1; i >= 0; i--) {
-                fireworks[i].update(); fireworks[i].draw();
-                if (fireworks[i].done) fireworks.splice(i, 1);
-            }
-            for (let i = particles.length - 1; i >= 0; i--) {
-                particles[i].update(); particles[i].draw();
-                if (particles[i].alpha <= 0) particles.splice(i, 1);
-            }
-
+            fireworks.forEach((f,i) => { f.update(); f.draw(); if(f.done) fireworks.splice(i,1); });
+            particles.forEach((p,i) => { p.update(); p.draw(); if(p.alpha <= 0) particles.splice(i,1); });
             if(isPinching) {
-                ctx.beginPath(); ctx.arc(hPos.x, hPos.y, charge * 0.8, 0, Math.PI*2);
+                ctx.beginPath(); ctx.arc(hPos.x, hPos.y, Math.min(charge, 80) * 0.8, 0, Math.PI*2);
                 ctx.strokeStyle = `hsla(${config.hue}, 100%, 75%, 0.9)`;
                 ctx.lineWidth = 4; ctx.stroke();
             }
