@@ -27,13 +27,16 @@
         }
         .back-btn:hover { background: #000; color: #fff; transform: translateY(-3px); }
 
-        /* 2. 响应式网格布局 */
+        /* 2. 响应式网格布局：优化为自动填充，不再强制留空 */
         .gallery-grid {
             display: grid;
-            grid-template-columns: repeat(3, minmax(250px, 380px)); 
+            /* 核心修改：使用 auto-fill 自动根据宽度排列，不再强制固定列数 */
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
             justify-content: center;
-            gap: 70px; margin: 50px auto;
-            max-width: 1400px; align-items: start;
+            gap: 60px; 
+            margin: 50px auto;
+            max-width: 1400px; 
+            align-items: start;
         }
 
         .gallery-item {
@@ -44,10 +47,9 @@
             z-index: 1;
         }
 
-        /* 悬停放大与位移 */
         .gallery-item:hover { 
             animation-play-state: paused;
-            transform: scale(1.18) translateY(-20px) !important; 
+            transform: scale(1.1) translateY(-15px) !important; 
             z-index: 100; 
         }
 
@@ -82,7 +84,7 @@
             filter: none;
         }
 
-        /* 4. 莫兰迪色系 (Morandi Palette) */
+        /* 4. 莫兰迪色系 */
         .c-pink { color: #d4a5a5 !important; }
         .c-yellow { color: #e5d1a4 !important; }
         .c-blue { color: #9ab7c1 !important; }
@@ -93,7 +95,6 @@
 
         @media (max-width: 900px) {
             .gallery-grid { grid-template-columns: 1fr; max-width: 450px; }
-            .gallery-item:hover { transform: scale(1.05) translateY(-5px) !important; }
         }
     </style>
 </head>
@@ -153,12 +154,7 @@
             </div>
         </div>
 
-        <div class="gallery-item">
-            <div class="sketchy-frame c-pink">
-                <img src="visual.png" alt="Visual Concept">
-            </div>
         </div>
-    </div>
 
 </body>
 </html>
