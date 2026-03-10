@@ -8,8 +8,12 @@
         :root { --accent: #bf5af2; --bg: #030305; --panel: rgba(10, 10, 15, 0.98); }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--bg); overflow: hidden; font-family: 'Gochi Hand', -apple-system, sans-serif; color: #fff; }
         canvas { display: block; width: 100%; height: 100%; position: absolute; z-index: 1; }
+        
+        /* 顶部导航：修改返回链接 */
         .top-nav { position: absolute; top: 0; left: 0; width: 100%; padding: 15px; display: flex; justify-content: space-between; z-index: 100; box-sizing: border-box; pointer-events: none; }
         .btn-ui { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 10px 18px; border-radius: 12px; font-size: 14px; backdrop-filter: blur(15px); cursor: pointer; pointer-events: auto; text-decoration: none; display: flex; align-items: center; }
+        
+        /* 设置面板 */
         #control-panel { position: fixed; top: 0; right: 0; width: 320px; height: 100%; background: var(--panel); border-left: 1px solid #333; z-index: 200; padding: 30px 20px; box-sizing: border-box; transform: translateX(100%); transition: 0.3s cubic-bezier(0.165, 0.84, 0.44, 1); overflow-y: auto; }
         #control-panel.active { transform: translateX(0); }
         .section-title { font-size: 11px; color: #888; margin: 20px 0 10px; text-transform: uppercase; letter-spacing: 1px; }
@@ -19,8 +23,13 @@
         input[type=range] { width: 100%; accent-color: var(--accent); margin: 10px 0; }
         input[type=text] { width: 100%; padding: 12px; background: #000; border: 1px solid #444; color: #fff; border-radius: 8px; box-sizing: border-box; }
         .apply-btn { width: 100%; padding: 15px; background: var(--accent); color: white; border: none; border-radius: 12px; margin-top: 25px; font-weight: bold; cursor: pointer; }
-        #start-screen { position: fixed; inset: 0; z-index: 500; background: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        
+        /* 开始与玩法说明 */
+        #start-screen { position: fixed; inset: 0; z-index: 500; background: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        .how-to-play { color: #888; margin-top: 30px; font-size: 1.1rem; line-height: 1.6; max-width: 80%; }
+        .highlight { color: var(--accent); font-weight: bold; }
         .start-btn { padding: 20px 60px; font-size: 22px; background: var(--accent); border: none; border-radius: 50px; color: #fff; font-weight: bold; cursor: pointer; box-shadow: 0 0 30px rgba(191,90,242,0.4); }
+        
         #video-input { display: none; }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
@@ -28,9 +37,18 @@
 </head>
 <body>
 
-<div id="start-screen"><button class="start-btn" id="start-btn">放烟花啦～</button></div>
+<div id="start-screen">
+    <button class="start-btn" id="start-btn">放烟花啦～</button>
+    <div class="how-to-play">
+        <p>🖐️ <span class="highlight">交互玩法说明：</span></p>
+        <p>1. 请确保在 <span class="highlight">HTTPS</span> 环境下开启摄像头权限</p>
+        <p>2. 伸出食指与大拇指 <span class="highlight">“捏合”</span> 即可蓄力光圈</p>
+        <p>3. 蓄力后 <span class="highlight">“松开”</span> 即可向该位置发射定制烟花</p>
+    </div>
+</div>
+
 <div class="top-nav">
-    <a href="index.html" class="btn-ui" style="background:#ff9f43">← 菜单</a>
+    <a href="new-media.html" class="btn-ui" style="background:#ff9f43">← 返回菜单</a>
     <button class="btn-ui" style="background:var(--accent)" onclick="document.getElementById('control-panel').classList.add('active')">⚙️ 设置参数</button>
 </div>
 
@@ -94,7 +112,6 @@
     class Particle {
         constructor(x, y, vx, vy, h, size = 3.5, life = 1) {
             this.x = x; this.y = y; this.vx = vx; this.vy = vy;
-            // 爆炸时色彩微调，增加层次
             this.h = h + (Math.random() * config.variance - config.variance/2);
             this.alpha = life;
             this.size = size * (0.7 + Math.random() * 0.6);
@@ -122,7 +139,6 @@
             this.x = x; this.y = y;
             const minH = window.innerHeight * 0.12;
             const maxH = window.innerHeight * 0.45;
-            // 修正发射目标点计算
             this.targetY = Math.max(minH, Math.min(maxH, y - (charge * 18)));
             this.hue = Math.random() * 360; 
             this.done = false;
@@ -131,8 +147,6 @@
         update() {
             let dist = this.y - this.targetY;
             this.y -= (dist * 0.12) + 2.5; 
-            
-            // 发射轨迹粒子
             if (Math.random() > 0.4) {
                 particles.push(new Particle(this.x, this.y, (Math.random()-0.5)*1.5, Math.random()*1.5, this.hue, 2.0, 0.4));
             }
@@ -168,7 +182,6 @@
                     pts.push({ dx: Math.cos(ang) * l, dy: Math.sin(ang) * l });
                 }
             }
-
             const usePts = pts.length > 0;
             const finalCount = usePts ? Math.min(pts.length, config.particles) : config.particles;
             for (let i = 0; i < finalCount; i++) {
@@ -197,13 +210,10 @@
             const indexF = h[8], thumbF = h[4];
             hPos.x = (1 - indexF.x) * canvas.width; hPos.y = indexF.y * canvas.height;
             const dist = Math.sqrt(Math.pow(indexF.x - thumbF.x, 2) + Math.pow(indexF.y - thumbF.y, 2));
-            
             if(dist < 0.1) { 
                 isPinching = true; charge += 2.5; 
             } else { 
-                if(isPinching && charge > 10) {
-                    fireworks.push(new Shell(hPos.x, hPos.y, Math.min(charge, 100)));
-                }
+                if(isPinching && charge > 10) fireworks.push(new Shell(hPos.x, hPos.y, Math.min(charge, 100)));
                 isPinching = false; charge = 0; 
             }
         } else { isPinching = false; charge = 0; }
@@ -221,35 +231,23 @@
             ctx.globalCompositeOperation = 'source-over';
             ctx.fillStyle = `rgba(3, 3, 5, ${config.trail})`;
             ctx.fillRect(0,0,canvas.width,canvas.height);
-            
-            // 倒序遍历防止数组塌陷
             for (let i = fireworks.length - 1; i >= 0; i--) {
                 fireworks[i].update();
                 fireworks[i].draw();
                 if (fireworks[i].done) fireworks.splice(i, 1);
             }
-            
             for (let i = particles.length - 1; i >= 0; i--) {
                 particles[i].update();
                 particles[i].draw();
                 if (particles[i].alpha <= 0) particles.splice(i, 1);
             }
-
             if(isPinching) { 
                 ctx.globalCompositeOperation = 'lighter';
-                // 蓄力环增加抖动感
-                const shake = Math.sin(Date.now() * 0.1) * 2;
-                const radius = (charge * 0.7) + shake;
-                
+                const radius = (charge * 0.7) + Math.sin(Date.now() * 0.1) * 2;
                 ctx.beginPath(); 
                 ctx.arc(hPos.x, hPos.y, radius, 0, Math.PI*2);
                 ctx.strokeStyle = `hsla(${config.hue}, 100%, 80%, 0.8)`; 
                 ctx.lineWidth = 4; ctx.stroke();
-                
-                // 核心亮点
-                ctx.beginPath();
-                ctx.arc(hPos.x, hPos.y, 5, 0, Math.PI*2);
-                ctx.fillStyle = "#fff"; ctx.fill();
                 ctx.globalCompositeOperation = 'source-over';
             }
             requestAnimationFrame(loop);
